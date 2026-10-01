@@ -93,7 +93,6 @@
     }
 
     .gold-gradient-text {
-      background: linear-[#eab308,#fde047,#ca8a04];
       background: linear-gradient(135deg, #fef08a 0%, #eab308 50%, #ca8a04 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -117,14 +116,6 @@
     }
     ::-webkit-scrollbar-thumb:hover {
       background: #0d9488;
-    }
-
-    @keyframes pulseGlow {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 0.8; }
-    }
-    .pulse-glow {
-      animation: pulseGlow 3s infinite ease-in-out;
     }
   </style>
 
@@ -214,7 +205,6 @@
           dial.rotation.x = Math.PI / 2;
           group.add(dial);
 
-          // Watch hands
           const handGeo = new THREE.BoxGeometry(0.06, 0.7, 0.02);
           const handMat = new THREE.MeshStandardMaterial({ color: 0x2dd4bf, emissive: 0x14b8a6 });
           const hand = new THREE.Mesh(handGeo, handMat);
@@ -246,6 +236,28 @@
           const carpet = new THREE.Mesh(sheetGeo, mat);
           carpet.rotation.x = -Math.PI / 4;
           group.add(carpet);
+        } else if (modelType === 'glasses') {
+          // AR Glasses
+          const frameGeo = new THREE.TorusGeometry(0.6, 0.06, 16, 50);
+          const mat = new THREE.MeshStandardMaterial({ color: 0x2dd4bf, metalness: 0.9, roughness: 0.1 });
+          const glassL = new THREE.Mesh(frameGeo, mat);
+          glassL.position.x = -0.7;
+          const glassR = new THREE.Mesh(frameGeo, mat);
+          glassR.position.x = 0.7;
+
+          const bridgeGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.3, 16);
+          const bridge = new THREE.Mesh(bridgeGeo, mat);
+          bridge.rotation.z = Math.PI / 2;
+
+          group.add(glassL);
+          group.add(glassR);
+          group.add(bridge);
+        } else if (modelType === 'appliance') {
+          // Espresso Machine
+          const bodyGeo = new THREE.BoxGeometry(1.6, 1.8, 1.2);
+          const bodyMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 });
+          const body = new THREE.Mesh(bodyGeo, bodyMat);
+          group.add(body);
         } else {
           // Default Crystal Jewel Icosahedron
           const geo = new THREE.IcosahedronGeometry(1.2, 1);
@@ -322,7 +334,7 @@
       const [cart, setCart] = useState([
         { productId: 'prd_1', variantId: 'prd_1_v1', quantity: 1 }
       ]);
-      const [wishlist, setWishlist] = useState(['prd_2']);
+      const [wishlist, setWishlist] = useState(['prd_2', 'prd_8']);
       const [isCartOpen, setIsCartOpen] = useState(false);
       const [isAiOpen, setIsAiOpen] = useState(false);
 
@@ -1072,12 +1084,10 @@
     const CatalogPage = ({ products, categories, vendors, lang, onSelectProduct, onAddToCart, onToggleWishlist, wishlist }) => {
       const [selectedCategory, setSelectedCategory] = useState('');
       const [sortBy, setSortBy] = useState('featured');
-      const [minPrice, setMinPrice] = useState(0);
 
       const filtered = useMemo(() => {
         return products.filter(p => {
           if (selectedCategory && p.category_id !== selectedCategory) return false;
-          if (p.final_price_tomans < minPrice) return false;
           return true;
         }).sort((a, b) => {
           if (sortBy === 'price_asc') return a.final_price_tomans - b.final_price_tomans;
@@ -1085,7 +1095,7 @@
           if (sortBy === 'rating') return b.rating - a.rating;
           return b.featured - a.featured;
         });
-      }, [products, selectedCategory, sortBy, minPrice]);
+      }, [products, selectedCategory, sortBy]);
 
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -1163,6 +1173,7 @@
       const [product, setProduct] = useState(null);
       const [selectedVariant, setSelectedVariant] = useState(null);
       const [activeImage, setActiveImage] = useState(0);
+      const [active3DModel, setActive3DModel] = useState('watch');
       const [newRating, setNewRating] = useState(5);
       const [newComment, setNewComment] = useState('');
 
@@ -1171,6 +1182,7 @@
           .then(r => r.json())
           .then(data => {
             setProduct(data);
+            setActive3DModel(data.model_type || 'watch');
             if (data.variants && data.variants.length > 0) {
               setSelectedVariant(data.variants[0]);
             }
@@ -1207,7 +1219,22 @@
             {/* Left 3D Stage & Media Viewer */}
             <div className="lg:col-span-6 space-y-4">
               <div className="h-[380px] w-full relative">
-                <Three3DViewer modelType={product.model_type} isInteractive={true} />
+                <Three3DViewer modelType={active3DModel} isInteractive={true} />
+              </div>
+
+              {/* Model Switcher Buttons */}
+              <div className="flex gap-2 justify-center">
+                {['watch', 'headphones', 'carpet', 'glasses', 'appliance'].map(m => (
+                  <button
+                    key={m}
+                    onClick={() => setActive3DModel(m)}
+                    className={`px-3 py-1 text-[10px] rounded-lg font-mono border transition ${
+                      active3DModel === m ? 'bg-teal-500/20 text-teal-300 border-teal-400' : 'bg-slate-900 border-slate-800 text-slate-500'
+                    }`}
+                  >
+                    3D {m}
+                  </button>
+                ))}
               </div>
 
               {/* Thumbnails */}
@@ -1253,7 +1280,7 @@
 
                 <div className="text-left text-xs text-slate-400">
                   <span className="text-teal-400 font-bold block">موجود در انبار ({toPersianDigits(product.stock)} عدد)</span>
-                  <span>ارسال فوری با تیپاکس</span>
+                  <span>ارسال فوری با تیپاکس / پست سفارشی</span>
                 </div>
               </div>
 
@@ -1361,7 +1388,7 @@
       );
     };
 
-    // --- CHECKOUT PAGE WITH IDEMPOTENCY & ADDRESS MAP ---
+    // --- CHECKOUT PAGE WITH IDEMPOTENCY & COUPON VALIDATION ---
     const CheckoutPage = ({ cart, lang, onOrderComplete }) => {
       const [address, setAddress] = useState({
         city: 'تهران',
@@ -1371,7 +1398,26 @@
         phone: '09124444444'
       });
       const [paymentMethod, setPaymentMethod] = useState('زرین‌پال / درگاه مستقیم شتاب');
+      const [couponCode, setCouponCode] = useState('SHAHKAR2026');
+      const [calculatedCart, setCalculatedCart] = useState(null);
       const [isSubmitting, setIsSubmitting] = useState(false);
+
+      const recalculate = async () => {
+        try {
+          const res = await fetch('./api/cart/calculate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: cart, couponCode })
+          }).then(r => r.json());
+          setCalculatedCart(res);
+        } catch (e) {
+          console.error(e);
+        }
+      };
+
+      useEffect(() => {
+        recalculate();
+      }, [cart, couponCode]);
 
       const handlePay = async () => {
         setIsSubmitting(true);
@@ -1388,12 +1434,13 @@
               userId: 'usr_customer1',
               items: cart,
               paymentMethod,
-              shippingAddress: address
+              shippingAddress: address,
+              couponCode
             })
           }).then(r => r.json());
 
           if (res.success) {
-            window.confetti && window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            window.confetti && window.confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
             onOrderComplete();
           }
         } catch (e) {
@@ -1407,40 +1454,129 @@
         <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
           <h2 className="text-2xl font-black text-white">{lang === 'fa' ? 'تکمیل سفارش و درگاه پرداخت' : 'Secure Checkout & Payment'}</h2>
 
-          <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
-            <h3 className="text-sm font-bold text-teal-300">{lang === 'fa' ? '۱. آدرس گیرنده و تحویل' : '1. Shipping Address'}</h3>
-            <input
-              type="text"
-              value={address.address}
-              onChange={(e) => setAddress({ ...address, address: e.target.value })}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-100"
-            />
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-7 space-y-6">
+              <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
+                <h3 className="text-sm font-bold text-teal-300">{lang === 'fa' ? '۱. آدرس گیرنده و تحویل' : '1. Shipping Address'}</h3>
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="text-slate-400 block mb-1">نام گیرنده:</label>
+                    <input
+                      type="text"
+                      value={address.recipient_name}
+                      onChange={(e) => setAddress({ ...address, recipient_name: e.target.value })}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-400 block mb-1">نشانی کامل پستی:</label>
+                    <input
+                      type="text"
+                      value={address.address}
+                      onChange={(e) => setAddress({ ...address, address: e.target.value })}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-slate-400 block mb-1">کد پستی ۱۰ رقمی:</label>
+                      <input
+                        type="text"
+                        value={address.postal_code}
+                        onChange={(e) => setAddress({ ...address, postal_code: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-slate-400 block mb-1">شماره تماس:</label>
+                      <input
+                        type="text"
+                        value={address.phone}
+                        onChange={(e) => setAddress({ ...address, phone: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-          <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
-            <h3 className="text-sm font-bold text-amber-300">{lang === 'fa' ? '۲. انتخاب درگاه پرداخت ایمن' : '2. Payment Method'}</h3>
-            <div className="space-y-2">
-              {['زرین‌پال / درگاه مستقیم شتاب', 'بانک ملت (سپهر)', 'رمز ارز USDT (تتر شبکه TRC20)'].map((method, idx) => (
-                <label key={idx} className="flex items-center gap-3 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer">
+              <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
+                <h3 className="text-sm font-bold text-amber-300">{lang === 'fa' ? '۲. انتخاب درگاه پرداخت ایمن' : '2. Payment Method'}</h3>
+                <div className="space-y-2">
+                  {['زرین‌پال / درگاه مستقیم شتاب', 'بانک ملت (سپهر)', 'رمز ارز USDT (تتر شبکه TRC20)'].map((method, idx) => (
+                    <label key={idx} className="flex items-center gap-3 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="pay"
+                        checked={paymentMethod === method}
+                        onChange={() => setPaymentMethod(method)}
+                      />
+                      <span className="text-xs font-semibold text-slate-200">{method}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Price Summary Box */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
+                <h3 className="text-sm font-bold text-white mb-2">{lang === 'fa' ? 'کد تخفیف و فاکتور نهایی' : 'Coupon & Summary'}</h3>
+                
+                <div className="flex gap-2">
                   <input
-                    type="radio"
-                    name="pay"
-                    checked={paymentMethod === method}
-                    onChange={() => setPaymentMethod(method)}
+                    type="text"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    placeholder="کد تخفیف..."
+                    className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 flex-1 uppercase"
                   />
-                  <span className="text-xs font-semibold text-slate-200">{method}</span>
-                </label>
-              ))}
+                  <button onClick={recalculate} className="bg-teal-500/20 text-teal-300 border border-teal-500/40 text-xs px-3 py-2 rounded-xl font-bold">
+                    اعمال
+                  </button>
+                </div>
+
+                {calculatedCart && (
+                  <div className="space-y-2.5 text-xs border-t border-slate-800 pt-4">
+                    <div className="flex justify-between text-slate-400">
+                      <span>جمع اقلام:</span>
+                      <span className="font-mono">{formatTomans(calculatedCart.subtotalTomans, lang)}</span>
+                    </div>
+                    <div className="flex justify-between text-teal-400">
+                      <span>تخفیف کالاها:</span>
+                      <span className="font-mono">- {formatTomans(calculatedCart.itemDiscountTomans, lang)}</span>
+                    </div>
+                    {calculatedCart.couponDiscountTomans > 0 && (
+                      <div className="flex justify-between text-amber-400 font-bold">
+                        <span>تخفیف کوپن ({calculatedCart.appliedCoupon?.code}):</span>
+                        <span className="font-mono">- {formatTomans(calculatedCart.couponDiscountTomans, lang)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-slate-400">
+                      <span>هزینه ارسال اکسپرس:</span>
+                      <span className="font-mono">{formatTomans(calculatedCart.totalShippingTomans, lang)}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-400">
+                      <span>مالیات بر ارزش افزوده (۱۰٪):</span>
+                      <span className="font-mono">{formatTomans(calculatedCart.vatTaxTomans, lang)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm font-extrabold text-amber-400 border-t border-slate-800 pt-3">
+                      <span>مبلغ قابل پرداخت:</span>
+                      <span className="font-mono">{formatTomans(calculatedCart.grandTotalTomans, lang)}</span>
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  onClick={handlePay}
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-black text-sm py-4 rounded-2xl shadow-xl shadow-teal-500/25 transition mt-4"
+                >
+                  {isSubmitting ? 'در حال پرداخت و صدور فاکتور...' : 'پرداخت نهایی و ثبت سفارش'}
+                </button>
+              </div>
             </div>
           </div>
-
-          <button
-            onClick={handlePay}
-            disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-black text-base py-4 rounded-2xl shadow-xl shadow-teal-500/25 transition"
-          >
-            {isSubmitting ? 'در حال پرداخت و صدور فاکتور...' : 'پرداخت نهایی و ثبت سفارش'}
-          </button>
         </div>
       );
     };
@@ -1448,6 +1584,7 @@
     // --- ORDERS TRACKING PAGE ---
     const OrdersPage = ({ lang }) => {
       const [orders, setOrders] = useState([]);
+      const [selectedOrder, setSelectedOrder] = useState(null);
 
       useEffect(() => {
         fetch('./api/orders?userId=usr_customer1')
@@ -1473,6 +1610,16 @@
                   </div>
                 </div>
 
+                {/* Items List */}
+                <div className="space-y-2">
+                  {o.items?.map(it => (
+                    <div key={it.id} className="flex justify-between items-center text-xs bg-slate-900/60 p-3 rounded-xl">
+                      <span className="font-semibold text-slate-200">{it.product_title}</span>
+                      <span className="text-amber-400 font-mono">{formatTomans(it.unit_price_tomans, lang)}</span>
+                    </div>
+                  ))}
+                </div>
+
                 {/* Milestone Visual Progress */}
                 <div className="grid grid-cols-4 gap-2 text-center text-[10px] pt-2">
                   <div className="bg-teal-500/20 text-teal-300 p-2 rounded-xl font-bold">ثبت سفارش</div>
@@ -1487,10 +1634,21 @@
       );
     };
 
-    // --- VENDOR DASHBOARD PAGE ---
+    // --- VENDOR DASHBOARD PAGE WITH PRODUCT MANAGEMENT MODAL ---
     const VendorDashboardPage = ({ lang, onRefreshProducts }) => {
       const [data, setData] = useState(null);
       const [settlementAmount, setSettlementAmount] = useState('');
+      const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+
+      // New product form
+      const [newProd, setNewProd] = useState({
+        title_fa: '',
+        title_en: '',
+        base_price_tomans: 10000000,
+        discount_percent: 0,
+        stock: 20,
+        model_type: 'watch'
+      });
 
       const loadDashboard = async () => {
         const res = await fetch('./api/vendor/dashboard?vendorId=vnd_1').then(r => r.json());
@@ -1516,6 +1674,29 @@
         loadDashboard();
       };
 
+      const handleAddProduct = async (e) => {
+        e.preventDefault();
+        await fetch('./api/vendor/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            vendor_id: 'vnd_1',
+            category_id: 'cat_elec',
+            title_fa: newProd.title_fa || 'کالای سفارشی فروشنده',
+            title_en: newProd.title_en || 'Custom Seller Product',
+            base_price_tomans: Number(newProd.base_price_tomans),
+            discount_percent: Number(newProd.discount_percent),
+            stock: Number(newProd.stock),
+            model_type: newProd.model_type,
+            images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80'],
+            specifications: { 'ضمانت': '۲۴ ماه گارانتی طلایی' }
+          })
+        });
+        setIsAddProductOpen(false);
+        loadDashboard();
+        onRefreshProducts();
+      };
+
       if (!data) return <div className="p-20 text-center text-slate-400">در حال بارگذاری داشبورد فروشنده...</div>;
 
       return (
@@ -1525,9 +1706,20 @@
               <h2 className="text-2xl font-black text-white">{data.vendor.store_name}</h2>
               <span className="text-xs text-amber-400 font-bold">{data.vendor.badge}</span>
             </div>
-            <div className="text-left">
-              <span className="text-xs text-slate-400 block">{lang === 'fa' ? 'موجودی قابل تسویه:' : 'Available Balance:'}</span>
-              <strong className="text-xl font-mono text-teal-400">{formatTomans(data.balanceTomans, lang)}</strong>
+            
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setIsAddProductOpen(true)}
+                className="bg-teal-500 text-slate-950 font-extrabold text-xs px-5 py-2.5 rounded-xl hover:bg-teal-400 transition flex items-center gap-2"
+              >
+                <i data-lucide="plus" className="w-4 h-4"></i>
+                <span>{lang === 'fa' ? 'افزودن محصول جدید' : 'Add New Product'}</span>
+              </button>
+
+              <div className="text-left">
+                <span className="text-xs text-slate-400 block">{lang === 'fa' ? 'موجودی قابل تسویه:' : 'Available Balance:'}</span>
+                <strong className="text-xl font-mono text-teal-400">{formatTomans(data.balanceTomans, lang)}</strong>
+              </div>
             </div>
           </div>
 
@@ -1566,6 +1758,69 @@
               </button>
             </div>
           </div>
+
+          {/* Add Product Modal */}
+          {isAddProductOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+              <div className="glass-panel p-6 rounded-3xl border-slate-700 max-w-lg w-full space-y-4 shadow-2xl">
+                <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                  <h3 className="text-base font-bold text-white">افزودن کالا به غرفه فروشگاه</h3>
+                  <button onClick={() => setIsAddProductOpen(false)} className="text-slate-400 hover:text-white">
+                    <i data-lucide="x" className="w-5 h-5"></i>
+                  </button>
+                </div>
+
+                <form onSubmit={handleAddProduct} className="space-y-3 text-xs">
+                  <div>
+                    <label className="text-slate-300 block mb-1">عنوان فارسی محصول:</label>
+                    <input
+                      type="text"
+                      required
+                      value={newProd.title_fa}
+                      onChange={(e) => setNewProd({ ...newProd, title_fa: e.target.value })}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-slate-100"
+                      placeholder="مثال: گوشی هوشمند جدید آریا..."
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-300 block mb-1">عنوان انگلیسی:</label>
+                    <input
+                      type="text"
+                      required
+                      value={newProd.title_en}
+                      onChange={(e) => setNewProd({ ...newProd, title_en: e.target.value })}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-slate-100"
+                      placeholder="e.g. Arya Smart Phone..."
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-slate-300 block mb-1">قیمت (تومان):</label>
+                      <input
+                        type="number"
+                        required
+                        value={newProd.base_price_tomans}
+                        onChange={(e) => setNewProd({ ...newProd, base_price_tomans: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-slate-100"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-slate-300 block mb-1">درصد تخفیف:</label>
+                      <input
+                        type="number"
+                        value={newProd.discount_percent}
+                        onChange={(e) => setNewProd({ ...newProd, discount_percent: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-slate-100"
+                      />
+                    </div>
+                  </div>
+                  <button type="submit" className="w-full bg-teal-500 text-slate-950 font-bold py-3 rounded-xl mt-4">
+                    ثبت و انتشار محصول
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
       );
     };
@@ -1745,7 +2000,7 @@
       );
     };
 
-    // --- AI ASSISTANT DRAWER COMPONENT ---
+    // --- AI ASSISTANT DRAWER COMPONENT WITH QUICK ACTION PROMPTS ---
     const AIAssistantDrawer = ({ lang, onClose, onSelectProduct }) => {
       const [messages, setMessages] = useState([
         { sender: 'ai', text: lang === 'fa' ? 'درود! من دستیار هوشمند خریدهای فاخر «شاهکار» هستم. چطور می‌توانم راهنماییتان کنم؟' : 'Greetings! How can I assist your shopping today?' }
@@ -1753,18 +2008,26 @@
       const [input, setInput] = useState('');
       const [isTyping, setIsTyping] = useState(false);
 
-      const handleSend = async () => {
-        if (!input.trim()) return;
-        const userMsg = input;
+      const quickPrompts = [
+        'راهنمایی خرید ساعت لوکس',
+        'بهترین هدفون هوشمند',
+        'خاویار امپریال و زعفران',
+        'فرش ابریشم قم'
+      ];
+
+      const handleSend = async (queryText = null) => {
+        const textToSend = queryText || input;
+        if (!textToSend.trim()) return;
+        
         setInput('');
-        setMessages(prev => [...prev, { sender: 'user', text: userMsg }]);
+        setMessages(prev => [...prev, { sender: 'user', text: textToSend }]);
         setIsTyping(true);
 
         try {
           const res = await fetch('./api/ai/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: userMsg, lang })
+            body: JSON.stringify({ message: textToSend, lang })
           }).then(r => r.json());
 
           setMessages(prev => [...prev, { sender: 'ai', text: res.reply, products: res.suggestedProducts }]);
@@ -1789,7 +2052,20 @@
                 </button>
               </div>
 
-              <div className="space-y-4 mt-6 overflow-y-auto max-h-[65vh] p-2">
+              {/* Quick Action Prompt Pills */}
+              <div className="flex flex-wrap gap-1.5 mt-4">
+                {quickPrompts.map((qp, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleSend(qp)}
+                    className="bg-slate-800 hover:bg-teal-500/20 hover:text-teal-300 border border-slate-700 text-[11px] px-2.5 py-1 rounded-full text-slate-300 transition"
+                  >
+                    {qp}
+                  </button>
+                ))}
+              </div>
+
+              <div className="space-y-4 mt-4 overflow-y-auto max-h-[55vh] p-2">
                 {messages.map((m, idx) => (
                   <div key={idx} className={`p-4 rounded-2xl text-xs leading-relaxed ${
                     m.sender === 'user' ? 'bg-teal-500/20 border border-teal-500/30 text-teal-200 ml-8' : 'bg-slate-950/80 border border-slate-800 text-slate-200 mr-8'
@@ -1828,7 +2104,7 @@
                 placeholder={lang === 'fa' ? 'مثال: یک هدفون نویزکنسلینگ با شارژ بالا پیشنهاد بده...' : 'Ask AI anything...'}
                 className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none"
               />
-              <button onClick={handleSend} className="bg-amber-400 text-slate-950 font-bold px-4 rounded-xl">
+              <button onClick={() => handleSend()} className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-4 rounded-xl transition">
                 ارسال
               </button>
             </div>

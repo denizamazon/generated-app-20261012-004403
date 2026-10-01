@@ -391,6 +391,64 @@ export class App extends DurableObject {
           'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80'
         ]),
         tags_json: JSON.stringify(['عطر', 'ادکلن', 'زعفران', 'زیبایی', 'Perfume'])
+      },
+      {
+        id: 'prd_7',
+        vendor_id: 'vnd_1',
+        category_id: 'cat_elec',
+        title_fa: 'آیفون ۱۶ پرو مکس نچرال تیتانیوم ۲۵۶ گیگابایت',
+        title_en: 'iPhone 16 Pro Max Natural Titanium 256GB',
+        slug: 'iphone-16-pro-max-natural-titanium',
+        description_fa: 'پرچمدار اپل با پردازنده A18 Pro، بدنه تیتانیومی درجه ۵، سیستم دوربین ۴۸ مگاپیکسلی هوشمند و دکمه جدید Camera Control.',
+        description_en: 'Apple flagship smartphone powered by A18 Pro chip, Grade 5 Titanium frame, 48MP fusion camera system and dedicated Camera Control button.',
+        base_price_tomans: 98000000,
+        discount_percent: 5,
+        stock: 14,
+        rating: 4.9,
+        review_count: 112,
+        featured: 1,
+        is_3d_enabled: 1,
+        model_type: 'watch',
+        specifications_json: JSON.stringify({
+          'پردازنده': 'Apple A18 Pro 3nm',
+          'حافظه داخلی': '۲۵۶ گیگابایت',
+          'صفحه نمایش': '۶.۹ اینچ Super Retina XDR 120Hz',
+          'گارانتی': '۱۸ ماه گارانتی شرکتی + کد رجیستری همتا'
+        }),
+        images_json: JSON.stringify([
+          'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'
+        ]),
+        tags_json: JSON.stringify(['آیفون', 'گوشی', 'موبایل', 'اپل', 'iPhone', 'Apple'])
+      },
+      {
+        id: 'prd_8',
+        vendor_id: 'vnd_2',
+        category_id: 'cat_rugs',
+        title_fa: 'پک هدیه فاخر خاویار بلوگا امپریال و زعفران صادراتی قائنات',
+        title_en: 'Imperial Beluga Caviar & Premium Saffron Luxury Gift Box',
+        slug: 'beluga-caviar-saffron-luxury-box',
+        description_fa: 'بسته‌بندی شاهانه شامل ۱۰۰ گرم خاویار اصل بلوگا امپریال دریای خزر و ۵۰ گرم زعفران نگین سوپر صادراتی قائنات در جعبه چوبی خاتم‌کاری اصفهان.',
+        description_en: 'Royal gift box containing 100g Caspian Beluga Imperial Caviar and 50g Super Negin Saffron presented in handcrafted Khatam-kari wooden case.',
+        base_price_tomans: 28000000,
+        discount_percent: 10,
+        stock: 12,
+        rating: 5.0,
+        review_count: 34,
+        featured: 1,
+        is_3d_enabled: 1,
+        model_type: 'carpet',
+        specifications_json: JSON.stringify({
+          'خاویار': '۱۰۰ گرم بلوگا امپریال پرورشی دریای خزر',
+          'زعفران': '۵۰ گرم سوپر نگین قائنات',
+          'جعبه': 'چوب طبیعی با خاتم‌کاری سنگ و استخوان',
+          'ارسال': 'ارسال زنجیره سرد (Cold Chain Courier)'
+        }),
+        images_json: JSON.stringify([
+          'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=800&q=80'
+        ]),
+        tags_json: JSON.stringify(['خاویار', 'زعفران', 'هدیه', 'لوکس', 'Caviar', 'Saffron'])
       }
     ];
 
@@ -934,7 +992,11 @@ export class App extends DurableObject {
         totalSalesCount: vendor.total_sales,
         balanceTomans: vendor.balance_tomans,
         recentOrderItems: orderItems,
-        products,
+        products: products.map((p: any) => ({
+          ...p,
+          specifications: JSON.parse(p.specifications_json || "{}"),
+          images: JSON.parse(p.images_json || "[]")
+        })),
         settlements
       });
     });
@@ -960,7 +1022,7 @@ export class App extends DurableObject {
 
       const now = Date.now();
       const prodId = id || `prd_v_${Date.now()}`;
-      const slug = `${title_en.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${Date.now().toString().slice(-4)}`;
+      const slug = `${(title_en || 'product').toLowerCase().replace(/[^a-z0-9]/g, '-')}-${Date.now().toString().slice(-4)}`;
 
       if (id) {
         this.ctx.storage.sql.exec(`
@@ -1038,9 +1100,13 @@ export class App extends DurableObject {
         matchedProducts = products.filter((p: any) => p.category_id === 'cat_rugs' || p.id === 'prd_3');
         replyFa = `اصیل‌ترین اثر پیشنهادی ما: **فرش دستباف ابریشم ۱۰۰٪ قم طرح لچک ترنج**. تراکم ۱۲۰ رج واقعی با رنگرزی سنتی گیاهی و شناسه اصالت رسمی فدراسیون فرش ایران.`;
         replyEn = `Our authentic Iranian heritage choice: **100% Qom Pure Silk Hand-Knotted Rug**. 120 Raj knot density with natural botanical dyes and official certificate.`;
+      } else if (message.includes("خاویار") || message.includes("زعفران") || message.includes("هدیه")) {
+        matchedProducts = products.filter((p: any) => p.id === 'prd_8' || p.id === 'prd_6');
+        replyFa = `پیشنهاد شاهانه ما برای هدیه: **پک هدیه فاخر خاویار بلوگا امپریال و زعفران صادراتی قائنات**. شامل ۱۰۰ گرم خاویار اصل بلوگا و ۵۰ گرم زعفران نگین در جعبه چوبی خاتم‌کاری اصفهان.`;
+        replyEn = `Our royal gift suggestion: **Imperial Beluga Caviar & Premium Saffron Luxury Gift Box**. Handcrafted Khatam-kari wooden case with cold-chain express delivery.`;
       } else {
         matchedProducts = products.slice(0, 3);
-        replyFa = `درود! من دستیار هوشمند خریدهای فاخر «شاهکار» هستم. با تحلیل ده‌ها هزار ثبت سفارش و تاییدیه اصالت، گزینه‌های برتر بازار مانند هدفون‌های نویزکنسلینگ تیتانیومی، ساعت‌های توربیون طلای ۱۸ عیار و فرش‌های ابریشم قم را برای شما معرفی می‌کنم. چطور می‌توانم راهنماییتان کنم؟`;
+        replyFa = `درود! من دستیار هوشمند خریدهای فاخر «شاهکار» هستم. با تحلیل ده‌ها هزار ثبت سفارش و تاییدیه اصالت، گزینه‌های برتر بازار مانند هدفون‌های نویزکنسلینگ تیتانیومی، ساعت‌های توربیون طلای ۱۸ عیار، خاویار امپریال و فرش‌های ابریشم قم را برای شما معرفی می‌کنم. چطور می‌توانم راهنماییتان کنم؟`;
         replyEn = `Greetings! I am the Shahkar AI Shopping Advisor. I can assist you with real-time price comparisons, authenticity verifications, and tailored luxury product discovery across all verified vendors.`;
       }
 
