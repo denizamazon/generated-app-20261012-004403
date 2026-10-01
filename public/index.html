@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بازار بزرگ بین‌المللی شاهکار | Shahkar Global AI Marketplace</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              400: '#2dd4bf',
+              500: '#14b8a6',
+              600: '#0d9488',
+              800: '#115e59',
+              900: '#134e4a',
+            },
+            gold: {
+              300: '#fde047',
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+            },
+            obsidian: {
+              800: '#0f172a',
+              900: '#0b0f19',
+              950: '#05070d',
+            }
+          },
+          fontFamily: {
+            persian: ['Vazirmatn', 'Tahoma', 'sans-serif'],
+            latin: ['Outfit', 'Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Vazirmatn for Persian & Outfit for English -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Three.js for 3D WebGL Product Stage -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background-color: #05070d;
+      color: #f1f5f9;
+      overflow-x: hidden;
+    }
+    
+    .latin-font {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* Glassmorphism Styles */
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: rgba(20, 30, 50, 0.5);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-card:hover {
+      background: rgba(30, 45, 75, 0.6);
+      border-color: rgba(45, 212, 191, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px -8px rgba(13, 148, 136, 0.25);
+    }
+
+    .gold-gradient-text {
+      background: linear-[#eab308,#fde047,#ca8a04];
+      background: linear-gradient(135deg, #fef08a 0%, #eab308 50%, #ca8a04 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cyan-glow {
+      box-shadow: 0 0 25px rgba(20, 184, 166, 0.3);
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0f19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #0d9488;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+    .pulse-glow {
+      animation: pulseGlow 3s infinite ease-in-out;
+    }
+  </style>
+
+  <!-- React Importmap -->
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18.3.1",
+      "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+      "react-dom": "https://esm.sh/react-dom@18.3.1",
+      "react-dom/client": "https://esm.sh/react-dom@18.3.1/client"
+    }
+  }
+  </script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="selection:bg-brand-500 selection:text-white">
+  <div id="root"></div>
+
+  <script type="text/babel" data-type="module" data-presets="react">
+    import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+    import { createRoot } from "react-dom/client";
+
+    // Helper functions
+    const formatTomans = (num, lang = 'fa') => {
+      if (!num) return '۰ تومان';
+      const formatted = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "٫");
+      if (lang === 'fa') {
+        const persianDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+        const faNum = formatted.replace(/[0-9]/g, w => persianDigits[parseInt(w)]);
+        return `${faNum} تومان`;
+      }
+      return `${formatted} Tomans (~$${(num / 600000).toFixed(1)} USD)`;
+    };
+
+    const toPersianDigits = (str) => {
+      if (str === null || str === undefined) return '';
+      const persianDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+      return str.toString().replace(/[0-9]/g, w => persianDigits[parseInt(w)]);
+    };
+
+    // --- 3D THREE.JS CANVAS COMPONENT ---
+    const Three3DViewer = ({ modelType = 'watch', isInteractive = true }) => {
+      const mountRef = useRef(null);
+
+      useEffect(() => {
+        const container = mountRef.current;
+        if (!container) return;
+
+        const width = container.clientWidth || 300;
+        const height = container.clientHeight || 280;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+        camera.position.set(0, 0, 5);
+
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+
+        const dirLight1 = new THREE.DirectionalLight(0x2dd4bf, 2.5);
+        dirLight1.position.set(5, 5, 5);
+        scene.add(dirLight1);
+
+        const dirLight2 = new THREE.DirectionalLight(0xeab308, 2.0);
+        dirLight2.position.set(-5, -5, -2);
+        scene.add(dirLight2);
+
+        // Create 3D Mesh based on modelType
+        const group = new THREE.Group();
+
+        if (modelType === 'watch') {
+          // Luxury Tourbillon Watch model primitive
+          const ringGeo = new THREE.TorusGeometry(1.2, 0.18, 16, 100);
+          const goldMat = new THREE.MeshStandardMaterial({ color: 0xeab308, metalness: 0.9, roughness: 0.1 });
+          const ring = new THREE.Mesh(ringGeo, goldMat);
+          group.add(ring);
+
+          const dialGeo = new THREE.CylinderGeometry(1.1, 1.1, 0.1, 32);
+          const dialMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.3 });
+          const dial = new THREE.Mesh(dialGeo, dialMat);
+          dial.rotation.x = Math.PI / 2;
+          group.add(dial);
+
+          // Watch hands
+          const handGeo = new THREE.BoxGeometry(0.06, 0.7, 0.02);
+          const handMat = new THREE.MeshStandardMaterial({ color: 0x2dd4bf, emissive: 0x14b8a6 });
+          const hand = new THREE.Mesh(handGeo, handMat);
+          hand.position.y = 0.25;
+          group.add(hand);
+        } else if (modelType === 'headphones') {
+          // Spatial ANC Headphones
+          const arcGeo = new THREE.TorusGeometry(1.3, 0.08, 16, 50, Math.PI);
+          const arcMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8 });
+          const arc = new THREE.Mesh(arcGeo, arcMat);
+          arc.rotation.x = Math.PI / 2;
+          group.add(arc);
+
+          const cupGeo = new THREE.CylinderGeometry(0.5, 0.5, 0.4, 32);
+          const cupMat = new THREE.MeshStandardMaterial({ color: 0x0d9488, metalness: 0.7, roughness: 0.2 });
+          const cupL = new THREE.Mesh(cupGeo, cupMat);
+          cupL.position.set(-1.3, 0, 0);
+          cupL.rotation.z = Math.PI / 2;
+
+          const cupR = cupL.clone();
+          cupR.position.set(1.3, 0, 0);
+
+          group.add(cupL);
+          group.add(cupR);
+        } else if (modelType === 'carpet') {
+          // Persian Silk Carpet 3D stage
+          const sheetGeo = new THREE.PlaneGeometry(2.4, 3.2, 32, 32);
+          const mat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.8, side: THREE.DoubleSide });
+          const carpet = new THREE.Mesh(sheetGeo, mat);
+          carpet.rotation.x = -Math.PI / 4;
+          group.add(carpet);
+        } else {
+          // Default Crystal Jewel Icosahedron
+          const geo = new THREE.IcosahedronGeometry(1.2, 1);
+          const mat = new THREE.MeshStandardMaterial({ color: 0x2dd4bf, wireframe: true });
+          const mesh = new THREE.Mesh(geo, mat);
+          group.add(mesh);
+        }
+
+        scene.add(group);
+
+        // Animation loop
+        let animationFrameId;
+        let mouseX = 0, mouseY = 0;
+
+        const onMouseMove = (e) => {
+          if (!isInteractive) return;
+          const rect = container.getBoundingClientRect();
+          mouseX = ((e.clientX - rect.left) / width) * 2 - 1;
+          mouseY = -((e.clientY - rect.top) / height) * 2 + 1;
+        };
+
+        if (isInteractive) {
+          container.addEventListener('mousemove', onMouseMove);
+        }
+
+        const animate = () => {
+          animationFrameId = requestAnimationFrame(animate);
+          group.rotation.y += 0.008;
+          group.rotation.x += (mouseY * 0.5 - group.rotation.x) * 0.05;
+          group.rotation.z += (mouseX * 0.5 - group.rotation.z) * 0.05;
+
+          renderer.render(scene, camera);
+        };
+
+        animate();
+
+        return () => {
+          cancelAnimationFrame(animationFrameId);
+          if (isInteractive) container.removeEventListener('mousemove', onMouseMove);
+          if (container.contains(renderer.domElement)) {
+            container.removeChild(renderer.domElement);
+          }
+        };
+      }, [modelType, isInteractive]);
+
+      return (
+        <div className="relative w-full h-full min-h-[260px] flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-b from-slate-900/40 to-slate-950/80 border border-slate-800/50">
+          <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+          <div className="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] text-teal-400 font-mono flex items-center gap-1.5 border border-teal-500/20">
+            <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
+            3D Interactive Stage • WebGL Active
+          </div>
+        </div>
+      );
+    };
+
+    // --- MAIN APP CONTAINER ---
+    const App = () => {
+      // Global States
+      const [lang, setLang] = useState('fa'); // 'fa' | 'en'
+      const [dir, setDir] = useState('rtl');
+      const [currency, setCurrency] = useState('TOMAN'); // 'TOMAN' | 'USD'
+      const [currentRoute, setCurrentRoute] = useState('home'); // home, catalog, product-detail, cart, checkout, orders, vendor-dashboard, vendor-store, wishlist, analytics
+      const [selectedProductId, setSelectedProductId] = useState('prd_1');
+      const [selectedVendorId, setSelectedVendorId] = useState('vnd_1');
+
+      // Data States from API
+      const [products, setProducts] = useState([]);
+      const [categories, setCategories] = useState([]);
+      const [vendors, setVendors] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      // Cart & Wishlist States
+      const [cart, setCart] = useState([
+        { productId: 'prd_1', variantId: 'prd_1_v1', quantity: 1 }
+      ]);
+      const [wishlist, setWishlist] = useState(['prd_2']);
+      const [isCartOpen, setIsCartOpen] = useState(false);
+      const [isAiOpen, setIsAiOpen] = useState(false);
+
+      // Search & Autocomplete
+      const [searchQuery, setSearchQuery] = useState('');
+      const [searchResults, setSearchResults] = useState([]);
+      const [suggestions, setSuggestions] = useState([]);
+      const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+      // Notification Toasts
+      const [toast, setToast] = useState(null);
+
+      const showToast = (message, type = 'success') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3500);
+      };
+
+      // Language & Direction Sync
+      const toggleLanguage = () => {
+        const next = lang === 'fa' ? 'en' : 'fa';
+        setLang(next);
+        setDir(next === 'fa' ? 'rtl' : 'ltr');
+        document.documentElement.setAttribute('dir', next === 'fa' ? 'rtl' : 'ltr');
+        document.documentElement.setAttribute('lang', next);
+      };
+
+      // Fetch Initial Data
+      const loadProducts = async () => {
+        try {
+          setLoading(true);
+          const [resP, resC, resV] = await Promise.all([
+            fetch('./api/products').then(r => r.json()),
+            fetch('./api/categories').then(r => r.json()),
+            fetch('./api/vendors').then(r => r.json())
+          ]);
+          setProducts(resP);
+          setCategories(resC);
+          setVendors(resV);
+        } catch (e) {
+          console.error("Error loading products:", e);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      useEffect(() => {
+        loadProducts();
+      }, []);
+
+      // Lucide Icon Auto-render
+      useEffect(() => {
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      });
+
+      // Autocomplete Fetcher
+      useEffect(() => {
+        if (!searchQuery.trim() || searchQuery.length < 2) {
+          setSuggestions([]);
+          setSearchResults([]);
+          return;
+        }
+
+        const timer = setTimeout(async () => {
+          try {
+            const data = await fetch(`./api/search/autocomplete?q=${encodeURIComponent(searchQuery)}`).then(r => r.json());
+            setSuggestions(data.suggestions || []);
+            setSearchResults(data.products || []);
+          } catch (e) {
+            console.error(e);
+          }
+        }, 200);
+
+        return () => clearTimeout(timer);
+      }, [searchQuery]);
+
+      // Cart Actions
+      const addToCart = (productId, variantId = null) => {
+        setCart(prev => {
+          const idx = prev.findIndex(item => item.productId === productId && item.variantId === variantId);
+          if (idx >= 0) {
+            const updated = [...prev];
+            updated[idx].quantity += 1;
+            return updated;
+          }
+          return [...prev, { productId, variantId, quantity: 1 }];
+        });
+        showToast(lang === 'fa' ? 'کالا با موفقیت به سبد خرید اضافه شد' : 'Item added to cart successfully');
+        setIsCartOpen(true);
+      };
+
+      const toggleWishlist = (productId) => {
+        setWishlist(prev => {
+          const exists = prev.includes(productId);
+          if (exists) {
+            showToast(lang === 'fa' ? 'از لیست علاقه‌مندی‌ها حذف شد' : 'Removed from wishlist', 'info');
+            return prev.filter(id => id !== productId);
+          } else {
+            showToast(lang === 'fa' ? 'به لیست علاقه‌مندی‌ها اضافه شد' : 'Added to wishlist');
+            return [...prev, productId];
+          }
+        });
+      };
+
+      const totalCartCount = useMemo(() => cart.reduce((acc, item) => acc + item.quantity, 0), [cart]);
+
+      return (
+        <div className={`min-h-screen flex flex-col bg-[#05070d] text-slate-100 ${lang === 'fa' ? 'font-persian' : 'font-latin'}`} dir={dir}>
+          {/* Toast Notification */}
+          {toast && (
+            <div className="fixed bottom-6 left-6 z-50 flex items-center gap-3 glass-panel px-5 py-3 rounded-xl border-brand-500/40 text-teal-300 shadow-2xl animate-bounce">
+              <i data-lucide="check-circle" className="w-5 h-5 text-teal-400"></i>
+              <span className="text-sm font-medium">{toast.message}</span>
+            </div>
+          )}
+
+          {/* TOP ANNOUNCEMENT BAR */}
+          <div className="bg-gradient-to-r from-teal-950 via-slate-900 to-amber-950 text-slate-300 text-xs py-2 px-4 border-b border-slate-800 flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider">
+                {lang === 'fa' ? 'جشنواره نوروز ۱۴۰۵' : 'NOROOZ FESTIVAL'}
+              </span>
+              <span className="hidden sm:inline text-slate-300">
+                {lang === 'fa' ? 'ارسال رایگان اکسپرس سراسری با کد تخفیف: ' : 'Free Global Express Shipping with Code: '}
+                <strong className="text-teal-400 font-mono">SHAHKAR2026</strong>
+              </span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              {/* Language Switcher */}
+              <button onClick={toggleLanguage} className="flex items-center gap-1.5 hover:text-teal-400 transition">
+                <i data-lucide="globe" className="w-3.5 h-3.5"></i>
+                <span>{lang === 'fa' ? 'English (LTR)' : 'فارسی (RTL)'}</span>
+              </button>
+
+              <span className="text-slate-700">|</span>
+
+              {/* Currency Toggle */}
+              <button onClick={() => setCurrency(c => c === 'TOMAN' ? 'USD' : 'TOMAN')} className="font-mono text-xs hover:text-amber-400 transition">
+                {currency === 'TOMAN' ? 'تومان (IRR)' : 'USD ($)'}
+              </button>
+
+              <span className="text-slate-700">|</span>
+
+              {/* Vendor Portal Quick Access */}
+              <button onClick={() => setCurrentRoute('vendor-dashboard')} className="text-teal-400 hover:text-teal-300 font-medium flex items-center gap-1">
+                <i data-lucide="store" className="w-3.5 h-3.5"></i>
+                <span>{lang === 'fa' ? 'پنل فروشندگان' : 'Seller Hub'}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* MAIN HEADER / NAVIGATION */}
+          <header className="sticky top-0 z-40 glass-panel border-b border-slate-800/80">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-6">
+              
+              {/* Brand Logo */}
+              <div className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentRoute('home')}>
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-500 via-amber-400 to-teal-300 p-[2px] shadow-lg shadow-teal-500/20">
+                  <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                    <span className="text-xl font-black gold-gradient-text">شـ</span>
+                  </div>
+                </div>
+                <div>
+                  <h1 className="text-xl font-black tracking-tight text-white flex items-center gap-2">
+                    {lang === 'fa' ? 'شاهـکــار' : 'SHAHKAR'}
+                    <span className="text-[10px] bg-teal-500/20 text-teal-300 px-1.5 py-0.5 rounded border border-teal-500/30 font-mono">GLOBAL</span>
+                  </h1>
+                  <p className="text-[10px] text-slate-400 tracking-wider">
+                    {lang === 'fa' ? 'اکوسیستم بازار جهانی هوشمند' : 'AI Multi-Vendor Ecosystem'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Search Bar with Live Autocomplete Trigger */}
+              <div className="flex-1 max-w-2xl relative hidden md:block">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setIsSearchOpen(true);
+                    }}
+                    onFocus={() => setIsSearchOpen(true)}
+                    placeholder={lang === 'fa' ? 'جستجوی هوشمند در میلیون‌ها کالای فاخر و فروشندگان برتر...' : 'Search millions of verified products, brands and artisan stores...'}
+                    className="w-full bg-slate-900/90 border border-slate-700/60 rounded-2xl py-2.5 px-10 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 transition-all shadow-inner"
+                  />
+                  <i data-lucide="search" className="w-4 h-4 text-slate-400 absolute right-3.5 top-3"></i>
+                  {searchQuery && (
+                    <button onClick={() => setSearchQuery('')} className="absolute left-3 top-3 text-slate-500 hover:text-slate-300">
+                      <i data-lucide="x" className="w-4 h-4"></i>
+                    </button>
+                  )}
+                </div>
+
+                {/* Autocomplete Dropdown */}
+                {isSearchOpen && (suggestions.length > 0 || searchResults.length > 0) && (
+                  <div className="absolute top-12 right-0 left-0 glass-panel rounded-2xl p-4 shadow-2xl border border-slate-700 z-50 mt-1 max-h-96 overflow-y-auto">
+                    {suggestions.length > 0 && (
+                      <div className="mb-3">
+                        <span className="text-[11px] text-slate-400 font-bold block mb-2">{lang === 'fa' ? 'کلیدواژه‌های پیشنهادی:' : 'Suggested Keywords:'}</span>
+                        <div className="flex flex-wrap gap-2">
+                          {suggestions.map((s, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => {
+                                setSearchQuery(s);
+                                setCurrentRoute('catalog');
+                              }}
+                              className="bg-slate-800/80 hover:bg-teal-500/20 hover:text-teal-300 border border-slate-700 text-xs px-3 py-1 rounded-full transition"
+                            >
+                              {s}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {searchResults.length > 0 && (
+                      <div>
+                        <span className="text-[11px] text-slate-400 font-bold block mb-2">{lang === 'fa' ? 'محصولات مرتبط:' : 'Matching Products:'}</span>
+                        <div className="space-y-2">
+                          {searchResults.map(p => (
+                            <div
+                              key={p.id}
+                              onClick={() => {
+                                setSelectedProductId(p.id);
+                                setCurrentRoute('product-detail');
+                                setIsSearchOpen(false);
+                              }}
+                              className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-800/60 cursor-pointer transition"
+                            >
+                              <div className="flex items-center gap-3">
+                                <img src={p.images[0]} alt={p.title_fa} className="w-10 h-10 object-cover rounded-lg" />
+                                <div>
+                                  <h4 className="text-xs font-semibold text-slate-200">{lang === 'fa' ? p.title_fa : p.title_en}</h4>
+                                  <span className="text-[10px] text-amber-400 font-mono">{formatTomans(p.final_price_tomans, lang)}</span>
+                                </div>
+                              </div>
+                              <i data-lucide="chevron-left" className="w-4 h-4 text-slate-500"></i>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Action Navigation Buttons */}
+              <div className="flex items-center gap-3">
+                {/* AI Assistant Floating Trigger */}
+                <button
+                  onClick={() => setIsAiOpen(true)}
+                  className="relative group bg-gradient-to-r from-teal-500/20 to-amber-500/20 hover:from-teal-500/30 hover:to-amber-500/30 border border-teal-500/40 text-teal-300 text-xs font-bold px-3.5 py-2.5 rounded-2xl flex items-center gap-2 transition shadow-lg shadow-teal-500/10"
+                >
+                  <i data-lucide="sparkles" className="w-4 h-4 text-amber-400 animate-spin"></i>
+                  <span className="hidden sm:inline">{lang === 'fa' ? 'دستیار AI شاهکار' : 'AI Advisor'}</span>
+                </button>
+
+                {/* Wishlist Button */}
+                <button
+                  onClick={() => setCurrentRoute('wishlist')}
+                  className="relative p-2.5 bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 text-slate-300 hover:text-white transition"
+                >
+                  <i data-lucide="heart" className="w-5 h-5"></i>
+                  {wishlist.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-amber-500 text-slate-950 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                      {wishlist.length}
+                    </span>
+                  )}
+                </button>
+
+                {/* Orders History Button */}
+                <button
+                  onClick={() => setCurrentRoute('orders')}
+                  className="p-2.5 bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 text-slate-300 hover:text-white transition hidden sm:flex"
+                  title={lang === 'fa' ? 'سفارش‌های من' : 'My Orders'}
+                >
+                  <i data-lucide="package" className="w-5 h-5"></i>
+                </button>
+
+                {/* Cart Drawer Trigger */}
+                <button
+                  onClick={() => setIsCartOpen(true)}
+                  className="relative p-2.5 bg-teal-500 text-slate-950 font-bold rounded-2xl hover:bg-teal-400 transition flex items-center gap-2 shadow-lg shadow-teal-500/20"
+                >
+                  <i data-lucide="shopping-bag" className="w-5 h-5"></i>
+                  <span className="text-xs hidden sm:inline">{lang === 'fa' ? 'سبد خرید' : 'Cart'}</span>
+                  {totalCartCount > 0 && (
+                    <span className="bg-slate-950 text-teal-300 text-[11px] font-black px-2 py-0.5 rounded-full font-mono">
+                      {toPersianDigits(totalCartCount)}
+                    </span>
+                  )}
+                </button>
+              </div>
+
+            </div>
+
+            {/* CATEGORY NAV RIBBON */}
+            <div className="border-t border-slate-800/60 bg-slate-950/40 px-4 sm:px-6">
+              <div className="max-w-7xl mx-auto flex items-center justify-between text-xs font-medium py-2.5 overflow-x-auto gap-6 scrollbar-none">
+                <button
+                  onClick={() => setCurrentRoute('catalog')}
+                  className="flex items-center gap-1.5 text-teal-400 font-bold hover:text-teal-300 whitespace-nowrap"
+                >
+                  <i data-lucide="grid" className="w-4 h-4"></i>
+                  <span>{lang === 'fa' ? 'دسته‌بندی کلیه محصولات' : 'All Categories'}</span>
+                </button>
+
+                {categories.map(cat => (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      setCurrentRoute('catalog');
+                    }}
+                    className="text-slate-400 hover:text-slate-200 whitespace-nowrap transition"
+                  >
+                    {lang === 'fa' ? cat.name_fa : cat.name_en}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => setCurrentRoute('analytics')}
+                  className="text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold whitespace-nowrap"
+                >
+                  <i data-lucide="shield-check" className="w-3.5 h-3.5"></i>
+                  <span>{lang === 'fa' ? 'مانیتورینگ و امنیت' : 'Security Audit'}</span>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          {/* MAIN CONTENT AREA BY ROUTE */}
+          <main className="flex-1">
+            {currentRoute === 'home' && (
+              <HomePage
+                products={products}
+                vendors={vendors}
+                lang={lang}
+                onSelectProduct={(id) => { setSelectedProductId(id); setCurrentRoute('product-detail'); }}
+                onSelectVendor={(id) => { setSelectedVendorId(id); setCurrentRoute('vendor-store'); }}
+                onAddToCart={addToCart}
+                onToggleWishlist={toggleWishlist}
+                wishlist={wishlist}
+                onGoCatalog={() => setCurrentRoute('catalog')}
+              />
+            )}
+
+            {currentRoute === 'catalog' && (
+              <CatalogPage
+                products={products}
+                categories={categories}
+                vendors={vendors}
+                lang={lang}
+                onSelectProduct={(id) => { setSelectedProductId(id); setCurrentRoute('product-detail'); }}
+                onAddToCart={addToCart}
+                onToggleWishlist={toggleWishlist}
+                wishlist={wishlist}
+              />
+            )}
+
+            {currentRoute === 'product-detail' && (
+              <ProductDetailPage
+                productId={selectedProductId}
+                lang={lang}
+                onAddToCart={addToCart}
+                onToggleWishlist={toggleWishlist}
+                wishlist={wishlist}
+                onSelectVendor={(id) => { setSelectedVendorId(id); setCurrentRoute('vendor-store'); }}
+              />
+            )}
+
+            {currentRoute === 'checkout' && (
+              <CheckoutPage
+                cart={cart}
+                lang={lang}
+                onOrderComplete={() => {
+                  setCart([]);
+                  setCurrentRoute('orders');
+                }}
+              />
+            )}
+
+            {currentRoute === 'orders' && (
+              <OrdersPage lang={lang} />
+            )}
+
+            {currentRoute === 'vendor-dashboard' && (
+              <VendorDashboardPage lang={lang} onRefreshProducts={loadProducts} />
+            )}
+
+            {currentRoute === 'vendor-store' && (
+              <VendorStorePage
+                vendorId={selectedVendorId}
+                lang={lang}
+                onSelectProduct={(id) => { setSelectedProductId(id); setCurrentRoute('product-detail'); }}
+                onAddToCart={addToCart}
+              />
+            )}
+
+            {currentRoute === 'wishlist' && (
+              <WishlistPage
+                wishlistIds={wishlist}
+                products={products}
+                lang={lang}
+                onSelectProduct={(id) => { setSelectedProductId(id); setCurrentRoute('product-detail'); }}
+                onAddToCart={addToCart}
+                onRemoveFromWishlist={toggleWishlist}
+              />
+            )}
+
+            {currentRoute === 'analytics' && (
+              <AnalyticsAuditPage lang={lang} />
+            )}
+          </main>
+
+          {/* CART DRAWER */}
+          {isCartOpen && (
+            <CartDrawer
+              cart={cart}
+              products={products}
+              lang={lang}
+              onClose={() => setIsCartOpen(false)}
+              onUpdateQuantity={(pid, vid, qty) => {
+                if (qty <= 0) {
+                  setCart(prev => prev.filter(i => !(i.productId === pid && i.variantId === vid)));
+                } else {
+                  setCart(prev => prev.map(i => (i.productId === pid && i.variantId === vid) ? { ...i, quantity: qty } : i));
+                }
+              }}
+              onProceedCheckout={() => {
+                setIsCartOpen(false);
+                setCurrentRoute('checkout');
+              }}
+            />
+          )}
+
+          {/* AI FLOATING ASSISTANT DRAWER */}
+          {isAiOpen && (
+            <AIAssistantDrawer
+              lang={lang}
+              onClose={() => setIsAiOpen(false)}
+              onSelectProduct={(id) => {
+                setSelectedProductId(id);
+                setCurrentRoute('product-detail');
+                setIsAiOpen(false);
+              }}
+            />
+          )}
+
+          {/* FOOTER */}
+          <footer className="bg-slate-950 border-t border-slate-800 mt-20 text-slate-400 text-xs">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-teal-500/20 border border-teal-500/40 flex items-center justify-center font-bold text-teal-300">
+                      شـ
+                    </div>
+                    <span className="text-lg font-black text-white">بازار بزرگ شاهکار</span>
+                  </div>
+                  <p className="text-slate-400 leading-relaxed text-xs">
+                    {lang === 'fa' 
+                      ? 'پلتفرم تجارت الکترونیک چندفروشندگی بین‌المللی مبتنی بر هوش مصنوعی، زنجیره تامین هوشمند و تاییدیه اصالت اصالت کالا.'
+                      : 'International AI-driven multi-vendor commerce ecosystem engineered for high-scale global trade.'}
+                  </p>
+                  <div className="flex gap-3 text-slate-400">
+                    <span className="p-2 glass-panel rounded-lg hover:text-teal-400 cursor-pointer">Telegram</span>
+                    <span className="p-2 glass-panel rounded-lg hover:text-teal-400 cursor-pointer">Instagram</span>
+                    <span className="p-2 glass-panel rounded-lg hover:text-teal-400 cursor-pointer">LinkedIn</span>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-white font-bold mb-4">{lang === 'fa' ? 'راهنمای مشتریان' : 'Customer Care'}</h4>
+                  <ul className="space-y-2.5">
+                    <li><button onClick={() => setCurrentRoute('orders')} className="hover:text-teal-300">{lang === 'fa' ? 'پیگیری سفارش و پست' : 'Order Tracking'}</button></li>
+                    <li><button onClick={() => setCurrentRoute('catalog')} className="hover:text-teal-300">{lang === 'fa' ? 'ضمانت اصالت و بازگشت' : 'Authenticity Guarantee'}</button></li>
+                    <li><button onClick={() => setCurrentRoute('analytics')} className="hover:text-teal-300">{lang === 'fa' ? 'گزارش شفافیت و امنیت' : 'Security & Trust'}</button></li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-white font-bold mb-4">{lang === 'fa' ? 'فرصت‌های همکاری' : 'Vendors & Partners'}</h4>
+                  <ul className="space-y-2.5">
+                    <li><button onClick={() => setCurrentRoute('vendor-dashboard')} className="hover:text-amber-300">{lang === 'fa' ? 'ثبت‌نام فروشنده جدید' : 'Become a Seller'}</button></li>
+                    <li><button onClick={() => setCurrentRoute('vendor-dashboard')} className="hover:text-amber-300">{lang === 'fa' ? 'ماشین حساب تسویه حساب' : 'Settlement Calculator'}</button></li>
+                    <li><button onClick={() => setCurrentRoute('analytics')} className="hover:text-amber-300">{lang === 'fa' ? 'مستندات API شاهکار' : 'Developer API'}</button></li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-white font-bold mb-4">{lang === 'fa' ? 'نمادهای اعتماد و اعتبار' : 'Trust Certificates'}</h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="glass-panel p-3 rounded-xl text-center border-slate-800 text-[10px]">
+                      <div className="font-bold text-teal-400 mb-1">eNamad ★★★★★</div>
+                      <span className="text-slate-400">اینماد ۵ ستاره</span>
+                    </div>
+                    <div className="glass-panel p-3 rounded-xl text-center border-slate-800 text-[10px]">
+                      <div className="font-bold text-amber-400 mb-1">ISO 27001</div>
+                      <span className="text-slate-400">امنیت اطلاعات</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-900 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-500 gap-4">
+                <p>© ۲۰۲۶ بازار بزرگ بین‌المللی شاهکار. کلیه حقوق محفوظ است.</p>
+                <p className="font-mono text-teal-400/80">Engineered with Next.js, Cloudflare Durable Objects & Hono Engine</p>
+              </div>
+            </div>
+          </footer>
+        </div>
+      );
+    };
+
+    // --- HOME PAGE COMPONENT ---
+    const HomePage = ({ products, vendors, lang, onSelectProduct, onSelectVendor, onAddToCart, onToggleWishlist, wishlist, onGoCatalog }) => {
+      const featuredProducts = useMemo(() => products.filter(p => p.featured), [products]);
+
+      return (
+        <div className="space-y-16">
+          {/* HERO SECTION WITH 3D INTERACTIVE STAGE */}
+          <section className="relative overflow-hidden pt-8 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              
+              {/* Text Info Column */}
+              <div className="lg:col-span-7 space-y-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-semibold">
+                  <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
+                  {lang === 'fa' ? 'نسل جدید تجارت الکترونیک هوشمند ایران' : 'Next-Gen Global AI-Powered Commerce'}
+                </div>
+
+                <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">
+                  {lang === 'fa' ? (
+                    <>
+                      خرید اصیل‌ترین <span className="gold-gradient-text">کالاهای لوکس</span> و دیجیتال
+                    </>
+                  ) : (
+                    <>
+                      Discover Premium <span className="gold-gradient-text">Luxury & Digital</span> Products
+                    </>
+                  )}
+                </h2>
+
+                <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+                  {lang === 'fa' 
+                    ? 'تجربه‌ای بی‌نظیر از خرید مستقیم از اصیل‌ترین برندها، هنرمندان و فروشندگان تاییدشده با دستیار هوش مصنوعی و پیش‌نمایش سه بعدی واقعی کالا.'
+                    : 'Experience verified direct trading from top global brands, artisan masters, and tech flagships backed by real 3D previews.'}
+                </p>
+
+                <div className="flex flex-wrap items-center gap-4 pt-2">
+                  <button
+                    onClick={onGoCatalog}
+                    className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-extrabold text-sm px-7 py-3.5 rounded-2xl shadow-xl shadow-teal-500/25 transition flex items-center gap-2"
+                  >
+                    <span>{lang === 'fa' ? 'ورود به ویترین کالاها' : 'Explore Catalog'}</span>
+                    <i data-lucide="arrow-left" className="w-4 h-4"></i>
+                  </button>
+
+                  <button
+                    onClick={() => onSelectProduct('prd_2')}
+                    className="glass-panel hover:bg-slate-800 text-slate-200 text-sm font-semibold px-6 py-3.5 rounded-2xl border-slate-700 transition flex items-center gap-2"
+                  >
+                    <i data-lucide="eye" className="w-4 h-4 text-amber-400"></i>
+                    <span>{lang === 'fa' ? 'نمایش ۳ بعدی ساعت شاهکار' : 'View 3D Tourbillon'}</span>
+                  </button>
+                </div>
+
+                {/* Quick Trust Metrics */}
+                <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800/80">
+                  <div>
+                    <span className="text-xl sm:text-2xl font-black text-white font-mono">100%</span>
+                    <p className="text-[11px] text-slate-400">{lang === 'fa' ? 'تضمین اصالت کالا' : 'Verified Authenticity'}</p>
+                  </div>
+                  <div>
+                    <span className="text-xl sm:text-2xl font-black text-teal-400 font-mono">۴ ساعت</span>
+                    <p className="text-[11px] text-slate-400">{lang === 'fa' ? 'تحویل اکسپرس تهران' : 'Express Delivery'}</p>
+                  </div>
+                  <div>
+                    <span className="text-xl sm:text-2xl font-black text-amber-400 font-mono">★ ۴.۹</span>
+                    <p className="text-[11px] text-slate-400">{lang === 'fa' ? 'رضایت خریداران' : 'User Rating'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3D WebGL Feature Stage */}
+              <div className="lg:col-span-5 h-[340px] sm:h-[400px] relative">
+                <Three3DViewer modelType="watch" isInteractive={true} />
+              </div>
+
+            </div>
+          </section>
+
+          {/* FEATURED PRODUCTS CAROUSEL / GRID */}
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-end mb-8">
+              <div>
+                <span className="text-amber-400 text-xs font-bold tracking-wider uppercase">{lang === 'fa' ? 'ویترین برتر' : 'CURATED SELECTION'}</span>
+                <h3 className="text-2xl font-extrabold text-white mt-1">{lang === 'fa' ? 'محصولات ویژه شاهکار' : 'Featured Marketplace Goods'}</h3>
+              </div>
+
+              <button onClick={onGoCatalog} className="text-teal-400 hover:text-teal-300 text-xs font-bold flex items-center gap-1">
+                <span>{lang === 'fa' ? 'مشاهده همه' : 'View All'}</span>
+                <i data-lucide="chevron-left" className="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredProducts.map(p => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  lang={lang}
+                  onSelectProduct={onSelectProduct}
+                  onAddToCart={onAddToCart}
+                  onToggleWishlist={onToggleWishlist}
+                  isWishlisted={wishlist.includes(p.id)}
+                />
+              ))}
+            </div>
+          </section>
+
+          {/* VERIFIED VENDORS BANNER */}
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="glass-panel rounded-3xl p-8 border-slate-800 bg-gradient-to-br from-slate-900/80 via-slate-900/40 to-teal-950/30 relative overflow-hidden">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="award" className="w-5 h-5 text-amber-400"></i>
+                    {lang === 'fa' ? 'فروشگاه‌ها و تامین‌کنندگان برتر' : 'Official Verified Stores'}
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1">
+                    {lang === 'fa' ? 'خرید مستقیم و بی‌واسطه از برترین برندها و استادکاران ایرانی' : 'Direct certified trading with top Iranian artisans and tech suppliers'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {vendors.map(v => (
+                  <div
+                    key={v.id}
+                    onClick={() => onSelectVendor(v.id)}
+                    className="glass-card p-5 rounded-2xl cursor-pointer flex items-center gap-4 hover:border-amber-500/40"
+                  >
+                    <img src={v.logo_url} alt={v.store_name} className="w-14 h-14 object-cover rounded-xl border border-slate-700" />
+                    <div>
+                      <h4 className="text-sm font-bold text-white">{v.store_name}</h4>
+                      <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full inline-block mt-1">
+                        {v.badge}
+                      </span>
+                      <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-2">
+                        <span>★ {v.rating}</span>
+                        <span>•</span>
+                        <span>{toPersianDigits(v.total_sales)} فروش موفق</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </div>
+      );
+    };
+
+    // --- PRODUCT CARD COMPONENT ---
+    const ProductCard = ({ product, lang, onSelectProduct, onAddToCart, onToggleWishlist, isWishlisted }) => {
+      return (
+        <div className="glass-card rounded-2xl overflow-hidden flex flex-col group relative">
+          {/* Discount Badge */}
+          {product.discount_percent > 0 && (
+            <div className="absolute top-3 right-3 z-10 bg-rose-500 text-white font-extrabold text-[11px] px-2.5 py-1 rounded-lg shadow-lg">
+              ٪{toPersianDigits(product.discount_percent)} تخفیف
+            </div>
+          )}
+
+          {/* Wishlist Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleWishlist(product.id);
+            }}
+            className={`absolute top-3 left-3 z-10 p-2 rounded-xl backdrop-blur-md transition ${
+              isWishlisted ? 'bg-rose-500 text-white' : 'bg-slate-900/60 text-slate-300 hover:text-white'
+            }`}
+          >
+            <i data-lucide="heart" className="w-4 h-4"></i>
+          </button>
+
+          {/* Product Image */}
+          <div
+            onClick={() => onSelectProduct(product.id)}
+            className="relative h-56 bg-slate-900/80 overflow-hidden cursor-pointer"
+          >
+            <img
+              src={product.images[0]}
+              alt={product.title_fa}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
+          </div>
+
+          {/* Product Body */}
+          <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+            <div>
+              <div className="flex justify-between items-center text-[11px] text-slate-400 mb-1">
+                <span className="text-teal-400 font-medium">{product.vendor_badge || 'فروشنده معتبر'}</span>
+                <span className="flex items-center gap-1 font-mono text-amber-400">
+                  ★ {product.rating} ({toPersianDigits(product.review_count)})
+                </span>
+              </div>
+
+              <h3
+                onClick={() => onSelectProduct(product.id)}
+                className="text-sm font-bold text-slate-100 hover:text-teal-300 line-clamp-2 cursor-pointer transition leading-snug"
+              >
+                {lang === 'fa' ? product.title_fa : product.title_en}
+              </h3>
+            </div>
+
+            <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] text-slate-400 block">{lang === 'fa' ? 'قیمت نهایی:' : 'Price:'}</span>
+                <span className="text-sm font-extrabold text-amber-400 font-mono">
+                  {formatTomans(product.final_price_tomans, lang)}
+                </span>
+              </div>
+
+              <button
+                onClick={() => onAddToCart(product.id)}
+                className="bg-teal-500/20 hover:bg-teal-500 text-teal-300 hover:text-slate-950 border border-teal-500/30 p-2.5 rounded-xl transition shadow-lg"
+                title={lang === 'fa' ? 'افزودن به سبد' : 'Add to Cart'}
+              >
+                <i data-lucide="plus" className="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- CATALOG PAGE COMPONENT ---
+    const CatalogPage = ({ products, categories, vendors, lang, onSelectProduct, onAddToCart, onToggleWishlist, wishlist }) => {
+      const [selectedCategory, setSelectedCategory] = useState('');
+      const [sortBy, setSortBy] = useState('featured');
+      const [minPrice, setMinPrice] = useState(0);
+
+      const filtered = useMemo(() => {
+        return products.filter(p => {
+          if (selectedCategory && p.category_id !== selectedCategory) return false;
+          if (p.final_price_tomans < minPrice) return false;
+          return true;
+        }).sort((a, b) => {
+          if (sortBy === 'price_asc') return a.final_price_tomans - b.final_price_tomans;
+          if (sortBy === 'price_desc') return b.final_price_tomans - a.final_price_tomans;
+          if (sortBy === 'rating') return b.rating - a.rating;
+          return b.featured - a.featured;
+        });
+      }, [products, selectedCategory, sortBy, minPrice]);
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="mb-8">
+            <h2 className="text-2xl font-black text-white">{lang === 'fa' ? 'کاتالوگ جامع کالاها' : 'Complete Marketplace Catalog'}</h2>
+            <p className="text-xs text-slate-400 mt-1">{lang === 'fa' ? 'فیلتر هوشمند بر اساس دسته‌بندی، قیمت و امتیاز فروشگاه' : 'Smart filtering across all categories'}</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Filter Sidebar */}
+            <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-6 h-fit">
+              <div>
+                <h3 className="text-sm font-bold text-white mb-3">{lang === 'fa' ? 'دسته‌بندی‌ها' : 'Categories'}</h3>
+                <div className="space-y-1.5">
+                  <button
+                    onClick={() => setSelectedCategory('')}
+                    className={`w-full text-right text-xs px-3 py-2 rounded-xl transition ${
+                      selectedCategory === '' ? 'bg-teal-500/20 text-teal-300 font-bold border border-teal-500/30' : 'text-slate-400 hover:bg-slate-800'
+                    }`}
+                  >
+                    {lang === 'fa' ? 'همه دسته‌ها' : 'All Categories'}
+                  </button>
+                  {categories.map(c => (
+                    <button
+                      key={c.id}
+                      onClick={() => setSelectedCategory(c.id)}
+                      className={`w-full text-right text-xs px-3 py-2 rounded-xl transition ${
+                        selectedCategory === c.id ? 'bg-teal-500/20 text-teal-300 font-bold border border-teal-500/30' : 'text-slate-400 hover:bg-slate-800'
+                      }`}
+                    >
+                      {lang === 'fa' ? c.name_fa : c.name_en}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t border-slate-800 pt-4">
+                <h3 className="text-sm font-bold text-white mb-3">{lang === 'fa' ? 'مرتب‌سازی' : 'Sort By'}</h3>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none"
+                >
+                  <option value="featured">{lang === 'fa' ? 'پیش‌فرض (برترین‌ها)' : 'Featured'}</option>
+                  <option value="price_asc">{lang === 'fa' ? 'ارزان‌ترین' : 'Price: Low to High'}</option>
+                  <option value="price_desc">{lang === 'fa' ? 'گران‌ترین' : 'Price: High to Low'}</option>
+                  <option value="rating">{lang === 'fa' ? 'بالاترین امتیاز' : 'Top Rated'}</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Products Grid */}
+            <div className="lg:col-span-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filtered.map(p => (
+                  <ProductCard
+                    key={p.id}
+                    product={p}
+                    lang={lang}
+                    onSelectProduct={onSelectProduct}
+                    onAddToCart={onAddToCart}
+                    onToggleWishlist={onToggleWishlist}
+                    isWishlisted={wishlist.includes(p.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- PRODUCT DETAIL PAGE WITH 3D CANVAS & REVIEWS ---
+    const ProductDetailPage = ({ productId, lang, onAddToCart, onToggleWishlist, wishlist, onSelectVendor }) => {
+      const [product, setProduct] = useState(null);
+      const [selectedVariant, setSelectedVariant] = useState(null);
+      const [activeImage, setActiveImage] = useState(0);
+      const [newRating, setNewRating] = useState(5);
+      const [newComment, setNewComment] = useState('');
+
+      useEffect(() => {
+        fetch(`./api/products/${productId}`)
+          .then(r => r.json())
+          .then(data => {
+            setProduct(data);
+            if (data.variants && data.variants.length > 0) {
+              setSelectedVariant(data.variants[0]);
+            }
+          });
+      }, [productId]);
+
+      if (!product) return <div className="p-20 text-center text-slate-400">در حال بارگذاری مشخصات کالا...</div>;
+
+      const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+        if (!newComment.trim()) return;
+
+        await fetch('./api/reviews', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            productId: product.id,
+            rating: newRating,
+            comment: newComment
+          })
+        });
+
+        setNewComment('');
+        // Reload detail
+        const updated = await fetch(`./api/products/${productId}`).then(r => r.json());
+        setProduct(updated);
+      };
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+          
+          {/* Main Detail Header */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            {/* Left 3D Stage & Media Viewer */}
+            <div className="lg:col-span-6 space-y-4">
+              <div className="h-[380px] w-full relative">
+                <Three3DViewer modelType={product.model_type} isInteractive={true} />
+              </div>
+
+              {/* Thumbnails */}
+              <div className="flex gap-3 overflow-x-auto pb-2">
+                {product.images?.map((img, idx) => (
+                  <img
+                    key={idx}
+                    src={img}
+                    alt="thumb"
+                    onClick={() => setActiveImage(idx)}
+                    className={`w-16 h-16 object-cover rounded-xl border-2 cursor-pointer ${
+                      activeImage === idx ? 'border-teal-400' : 'border-slate-800'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Right Product Specifications & Purchase Box */}
+            <div className="lg:col-span-6 space-y-6">
+              <div>
+                <div
+                  onClick={() => onSelectVendor(product.vendor_id)}
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-xs text-amber-400 cursor-pointer hover:border-amber-400 mb-3"
+                >
+                  <i data-lucide="store" className="w-3.5 h-3.5"></i>
+                  <span>فروشنده: {product.store_name} ({product.vendor_badge})</span>
+                </div>
+
+                <h1 className="text-2xl font-black text-white leading-snug">
+                  {lang === 'fa' ? product.title_fa : product.title_en}
+                </h1>
+              </div>
+
+              {/* Price Matrix */}
+              <div className="glass-panel p-5 rounded-2xl border-slate-800 flex justify-between items-center">
+                <div>
+                  <span className="text-xs text-slate-400 block">{lang === 'fa' ? 'قیمت برای خریدار:' : 'Your Price:'}</span>
+                  <span className="text-2xl font-extrabold text-amber-400 font-mono">
+                    {formatTomans(selectedVariant ? selectedVariant.price_tomans : product.final_price_tomans, lang)}
+                  </span>
+                </div>
+
+                <div className="text-left text-xs text-slate-400">
+                  <span className="text-teal-400 font-bold block">موجود در انبار ({toPersianDigits(product.stock)} عدد)</span>
+                  <span>ارسال فوری با تیپاکس</span>
+                </div>
+              </div>
+
+              {/* Variants Selector */}
+              {product.variants && product.variants.length > 0 && (
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-2">{lang === 'fa' ? 'انتخاب تنوع / رنگ:' : 'Select Variant:'}</label>
+                  <div className="flex flex-wrap gap-3">
+                    {product.variants.map(v => (
+                      <button
+                        key={v.id}
+                        onClick={() => setSelectedVariant(v)}
+                        className={`px-4 py-2.5 rounded-xl text-xs font-semibold border transition ${
+                          selectedVariant?.id === v.id ? 'bg-teal-500/20 border-teal-400 text-teal-300' : 'bg-slate-900 border-slate-800 text-slate-400'
+                        }`}
+                      >
+                        {v.title_fa}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex gap-4 pt-4">
+                <button
+                  onClick={() => onAddToCart(product.id, selectedVariant?.id)}
+                  className="flex-1 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-extrabold py-3.5 rounded-2xl shadow-xl shadow-teal-500/20 transition flex justify-center items-center gap-2"
+                >
+                  <i data-lucide="shopping-bag" className="w-5 h-5"></i>
+                  <span>{lang === 'fa' ? 'افزودن به سبد خرید' : 'Add to Shopping Cart'}</span>
+                </button>
+
+                <button
+                  onClick={() => onToggleWishlist(product.id)}
+                  className={`p-3.5 rounded-2xl border transition ${
+                    wishlist.includes(product.id) ? 'bg-rose-500 text-white border-rose-500' : 'glass-panel text-slate-300 border-slate-700'
+                  }`}
+                >
+                  <i data-lucide="heart" className="w-5 h-5"></i>
+                </button>
+              </div>
+
+              {/* Tech Specs */}
+              <div className="border-t border-slate-800 pt-6">
+                <h3 className="text-sm font-bold text-white mb-3">{lang === 'fa' ? 'مشخصات فنی کلیدی:' : 'Key Specifications:'}</h3>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  {Object.entries(product.specifications || {}).map(([key, val]) => (
+                    <div key={key} className="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/60">
+                      <span className="text-slate-400 block">{key}:</span>
+                      <strong className="text-slate-200 mt-0.5 block">{val}</strong>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* REVIEWS SECTION */}
+          <div className="glass-panel rounded-3xl p-8 border-slate-800 space-y-8">
+            <h3 className="text-xl font-extrabold text-white">{lang === 'fa' ? 'دیدگاه‌ها و امتیاز خریداران واقعی' : 'Verified Customer Reviews'}</h3>
+
+            {/* Review Submission Form */}
+            <form onSubmit={handleReviewSubmit} className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4">
+              <span className="text-xs font-bold text-slate-300 block">{lang === 'fa' ? 'ثبت تجربه و نظرات شما:' : 'Submit Your Review:'}</span>
+              <div className="flex gap-2">
+                {[1,2,3,4,5].map(star => (
+                  <button
+                    type="button"
+                    key={star}
+                    onClick={() => setNewRating(star)}
+                    className={`text-lg ${star <= newRating ? 'text-amber-400' : 'text-slate-700'}`}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder={lang === 'fa' ? 'نظر خود را در مورد کیفیت ساخت، بسته‌بندی و ارسال بنویسید...' : 'Write your review...'}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 focus:outline-none focus:border-teal-400"
+                rows={3}
+              />
+              <button type="submit" className="bg-teal-500 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl hover:bg-teal-400">
+                {lang === 'fa' ? 'ثبت دیدگاه' : 'Submit Review'}
+              </button>
+            </form>
+
+            {/* Existing Reviews List */}
+            <div className="space-y-4">
+              {product.reviews?.map(r => (
+                <div key={r.id} className="p-4 bg-slate-900/40 rounded-2xl border border-slate-800/80 space-y-2">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="font-bold text-slate-200">{r.user_name}</span>
+                    <span className="text-amber-400 font-mono">★ {r.rating}</span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">{r.comment}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      );
+    };
+
+    // --- CHECKOUT PAGE WITH IDEMPOTENCY & ADDRESS MAP ---
+    const CheckoutPage = ({ cart, lang, onOrderComplete }) => {
+      const [address, setAddress] = useState({
+        city: 'تهران',
+        address: 'خیابان ولیعصر، نرسیده به میدان ونک، برج نگار، طبقه ۱۲',
+        postal_code: '1991811111',
+        recipient_name: 'نوید رضایی',
+        phone: '09124444444'
+      });
+      const [paymentMethod, setPaymentMethod] = useState('زرین‌پال / درگاه مستقیم شتاب');
+      const [isSubmitting, setIsSubmitting] = useState(false);
+
+      const handlePay = async () => {
+        setIsSubmitting(true);
+        const idempotencyKey = `idemp_${Date.now()}`;
+
+        try {
+          const res = await fetch('./api/checkout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Idempotency-Key': idempotencyKey
+            },
+            body: JSON.stringify({
+              userId: 'usr_customer1',
+              items: cart,
+              paymentMethod,
+              shippingAddress: address
+            })
+          }).then(r => r.json());
+
+          if (res.success) {
+            window.confetti && window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            onOrderComplete();
+          }
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setIsSubmitting(false);
+        }
+      };
+
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
+          <h2 className="text-2xl font-black text-white">{lang === 'fa' ? 'تکمیل سفارش و درگاه پرداخت' : 'Secure Checkout & Payment'}</h2>
+
+          <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
+            <h3 className="text-sm font-bold text-teal-300">{lang === 'fa' ? '۱. آدرس گیرنده و تحویل' : '1. Shipping Address'}</h3>
+            <input
+              type="text"
+              value={address.address}
+              onChange={(e) => setAddress({ ...address, address: e.target.value })}
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-100"
+            />
+          </div>
+
+          <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
+            <h3 className="text-sm font-bold text-amber-300">{lang === 'fa' ? '۲. انتخاب درگاه پرداخت ایمن' : '2. Payment Method'}</h3>
+            <div className="space-y-2">
+              {['زرین‌پال / درگاه مستقیم شتاب', 'بانک ملت (سپهر)', 'رمز ارز USDT (تتر شبکه TRC20)'].map((method, idx) => (
+                <label key={idx} className="flex items-center gap-3 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="pay"
+                    checked={paymentMethod === method}
+                    onChange={() => setPaymentMethod(method)}
+                  />
+                  <span className="text-xs font-semibold text-slate-200">{method}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={handlePay}
+            disabled={isSubmitting}
+            className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-black text-base py-4 rounded-2xl shadow-xl shadow-teal-500/25 transition"
+          >
+            {isSubmitting ? 'در حال پرداخت و صدور فاکتور...' : 'پرداخت نهایی و ثبت سفارش'}
+          </button>
+        </div>
+      );
+    };
+
+    // --- ORDERS TRACKING PAGE ---
+    const OrdersPage = ({ lang }) => {
+      const [orders, setOrders] = useState([]);
+
+      useEffect(() => {
+        fetch('./api/orders?userId=usr_customer1')
+          .then(r => r.json())
+          .then(setOrders);
+      }, []);
+
+      return (
+        <div className="max-w-5xl mx-auto px-4 py-10 space-y-8">
+          <h2 className="text-2xl font-black text-white">{lang === 'fa' ? 'سفارش‌های من و پیگیری مرسوله' : 'My Orders & Real-time Tracking'}</h2>
+
+          <div className="space-y-6">
+            {orders.map(o => (
+              <div key={o.id} className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
+                <div className="flex justify-between items-center text-xs border-b border-slate-800 pb-3">
+                  <div>
+                    <span className="text-slate-400">{lang === 'fa' ? 'شماره سفارش:' : 'Order No:'}</span>
+                    <strong className="text-teal-400 font-mono font-bold mr-2">{o.order_number}</strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-400">{lang === 'fa' ? 'کد رهگیری پست/تیپاکس:' : 'Tracking Code:'}</span>
+                    <strong className="text-amber-400 font-mono font-bold mr-2">{o.tracking_code}</strong>
+                  </div>
+                </div>
+
+                {/* Milestone Visual Progress */}
+                <div className="grid grid-cols-4 gap-2 text-center text-[10px] pt-2">
+                  <div className="bg-teal-500/20 text-teal-300 p-2 rounded-xl font-bold">ثبت سفارش</div>
+                  <div className="bg-teal-500/20 text-teal-300 p-2 rounded-xl font-bold">تایید فروشنده</div>
+                  <div className="bg-teal-500/20 text-teal-300 p-2 rounded-xl font-bold">تحویل به پست</div>
+                  <div className="bg-amber-500/20 text-amber-300 p-2 rounded-xl font-bold">تحویل داده شد</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    // --- VENDOR DASHBOARD PAGE ---
+    const VendorDashboardPage = ({ lang, onRefreshProducts }) => {
+      const [data, setData] = useState(null);
+      const [settlementAmount, setSettlementAmount] = useState('');
+
+      const loadDashboard = async () => {
+        const res = await fetch('./api/vendor/dashboard?vendorId=vnd_1').then(r => r.json());
+        setData(res);
+      };
+
+      useEffect(() => {
+        loadDashboard();
+      }, []);
+
+      const handleSettlement = async () => {
+        if (!settlementAmount) return;
+        await fetch('./api/vendor/settlements', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            vendorId: 'vnd_1',
+            amountTomans: parseInt(settlementAmount, 10),
+            iban: 'IR980120000000012345678901'
+          })
+        });
+        setSettlementAmount('');
+        loadDashboard();
+      };
+
+      if (!data) return <div className="p-20 text-center text-slate-400">در حال بارگذاری داشبورد فروشنده...</div>;
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-black text-white">{data.vendor.store_name}</h2>
+              <span className="text-xs text-amber-400 font-bold">{data.vendor.badge}</span>
+            </div>
+            <div className="text-left">
+              <span className="text-xs text-slate-400 block">{lang === 'fa' ? 'موجودی قابل تسویه:' : 'Available Balance:'}</span>
+              <strong className="text-xl font-mono text-teal-400">{formatTomans(data.balanceTomans, lang)}</strong>
+            </div>
+          </div>
+
+          {/* KPI Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="glass-panel p-5 rounded-2xl border-slate-800">
+              <span className="text-xs text-slate-400 block">تعداد محصولات فعال</span>
+              <strong className="text-2xl text-white font-mono">{toPersianDigits(data.productsCount)}</strong>
+            </div>
+            <div className="glass-panel p-5 rounded-2xl border-slate-800">
+              <span className="text-xs text-slate-400 block">کل فروش‌های ثبت شده</span>
+              <strong className="text-2xl text-amber-400 font-mono">{toPersianDigits(data.totalSalesCount)}</strong>
+            </div>
+            <div className="glass-panel p-5 rounded-2xl border-slate-800">
+              <span className="text-xs text-slate-400 block">امتیاز رضایت مشتریان</span>
+              <strong className="text-2xl text-teal-400 font-mono">★ {data.vendor.rating}</strong>
+            </div>
+          </div>
+
+          {/* Settlement Request Box */}
+          <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
+            <h3 className="text-sm font-bold text-white">{lang === 'fa' ? 'درخواست تسویه حساب به شبا' : 'Payout Settlement Request'}</h3>
+            <div className="flex gap-4">
+              <input
+                type="number"
+                value={settlementAmount}
+                onChange={(e) => setSettlementAmount(e.target.value)}
+                placeholder="مبلغ به تومان..."
+                className="bg-slate-900 border border-slate-700 rounded-xl px-4 text-xs text-slate-100 flex-1"
+              />
+              <button
+                onClick={handleSettlement}
+                className="bg-teal-500 text-slate-950 font-bold text-xs px-6 py-3 rounded-xl hover:bg-teal-400"
+              >
+                ثبت درخواست تسویه
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- VENDOR STORE PAGE ---
+    const VendorStorePage = ({ vendorId, lang, onSelectProduct, onAddToCart }) => {
+      const [vendorData, setVendorData] = useState(null);
+
+      useEffect(() => {
+        fetch(`./api/vendors/${vendorId}`)
+          .then(r => r.json())
+          .then(setVendorData);
+      }, [vendorId]);
+
+      if (!vendorData) return <div className="p-20 text-center text-slate-400">در حال بارگذاری غرفه فروشگاه...</div>;
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+          <div className="relative h-48 rounded-3xl overflow-hidden glass-panel border-slate-800">
+            <img src={vendorData.banner_url} alt="cover" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-slate-950/60"></div>
+            <div className="absolute bottom-6 right-6 flex items-center gap-4">
+              <img src={vendorData.logo_url} alt="logo" className="w-16 h-16 rounded-2xl object-cover border-2 border-amber-400" />
+              <div>
+                <h1 className="text-2xl font-black text-white">{vendorData.store_name}</h1>
+                <span className="text-xs text-amber-300 font-bold">{vendorData.badge}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {vendorData.products?.map(p => (
+              <ProductCard
+                key={p.id}
+                product={{ ...p, images: JSON.parse(p.images_json || "[]"), final_price_tomans: Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100) }}
+                lang={lang}
+                onSelectProduct={onSelectProduct}
+                onAddToCart={onAddToCart}
+                onToggleWishlist={() => {}}
+                isWishlisted={false}
+              />
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    // --- WISHLIST PAGE ---
+    const WishlistPage = ({ wishlistIds, products, lang, onSelectProduct, onAddToCart, onRemoveFromWishlist }) => {
+      const list = useMemo(() => products.filter(p => wishlistIds.includes(p.id)), [products, wishlistIds]);
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+          <h2 className="text-2xl font-black text-white">{lang === 'fa' ? 'لیست علاقه‌مندی‌های من' : 'My Wishlist'}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {list.map(p => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                lang={lang}
+                onSelectProduct={onSelectProduct}
+                onAddToCart={onAddToCart}
+                onToggleWishlist={onRemoveFromWishlist}
+                isWishlisted={true}
+              />
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    // --- ANALYTICS AUDIT PAGE ---
+    const AnalyticsAuditPage = ({ lang }) => {
+      const [analytics, setAnalytics] = useState(null);
+
+      useEffect(() => {
+        fetch('./api/analytics')
+          .then(r => r.json())
+          .then(setAnalytics);
+      }, []);
+
+      if (!analytics) return <div className="p-20 text-center text-slate-400">در حال دریافت داده‌های مانیتورینگ...</div>;
+
+      return (
+        <div className="max-w-6xl mx-auto px-4 py-10 space-y-8">
+          <h2 className="text-2xl font-black text-white">{lang === 'fa' ? 'مانیتورینگ و ممیزی امنیت بستر' : 'Platform Security & Audit Trail'}</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
+              <h3 className="text-sm font-bold text-teal-300">آخرین لاگ‌های ممیزی سیستم (Audit Trail)</h3>
+              <div className="space-y-2 text-xs font-mono">
+                {analytics.recentLogs?.map(l => (
+                  <div key={l.id} className="p-2 bg-slate-900 rounded-lg border border-slate-800 flex justify-between">
+                    <span className="text-amber-400">{l.action}</span>
+                    <span className="text-slate-400">{l.resource}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
+              <h3 className="text-sm font-bold text-rose-400">سیستم پایش آنومالی و تقلب (Fraud Monitoring)</h3>
+              <div className="space-y-2 text-xs">
+                {analytics.fraudAlerts?.map(f => (
+                  <div key={f.id} className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-200">
+                    <span className="font-bold block">ریسک: {f.risk_score}٪</span>
+                    <p className="mt-1">{f.reason}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- CART DRAWER COMPONENT ---
+    const CartDrawer = ({ cart, products, lang, onClose, onUpdateQuantity, onProceedCheckout }) => {
+      const cartItems = useMemo(() => {
+        return cart.map(item => {
+          const p = products.find(prod => prod.id === item.productId);
+          return { ...item, product: p };
+        }).filter(i => i.product);
+      }, [cart, products]);
+
+      const totalAmount = useMemo(() => {
+        return cartItems.reduce((acc, item) => acc + (item.product.final_price_tomans * item.quantity), 0);
+      }, [cartItems]);
+
+      return (
+        <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/80 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-slate-900 border-r border-slate-800 h-full p-6 flex flex-col justify-between shadow-2xl">
+            <div>
+              <div className="flex justify-between items-center pb-4 border-b border-slate-800">
+                <h3 className="text-lg font-bold text-white">{lang === 'fa' ? 'سبد خرید شما' : 'Your Shopping Cart'}</h3>
+                <button onClick={onClose} className="text-slate-400 hover:text-white">
+                  <i data-lucide="x" className="w-5 h-5"></i>
+                </button>
+              </div>
+
+              <div className="space-y-4 mt-6 overflow-y-auto max-h-[60vh]">
+                {cartItems.map(item => (
+                  <div key={`${item.productId}_${item.variantId}`} className="flex items-center justify-between p-3 bg-slate-950/60 rounded-xl border border-slate-800">
+                    <div className="flex items-center gap-3">
+                      <img src={item.product.images[0]} alt="p" className="w-12 h-12 object-cover rounded-lg" />
+                      <div>
+                        <h4 className="text-xs font-bold text-white line-clamp-1">{item.product.title_fa}</h4>
+                        <span className="text-[10px] text-amber-400 font-mono">{formatTomans(item.product.final_price_tomans, lang)}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => onUpdateQuantity(item.productId, item.variantId, item.quantity - 1)} className="p-1 bg-slate-800 rounded-md text-xs">-</button>
+                      <span className="text-xs font-bold font-mono">{toPersianDigits(item.quantity)}</span>
+                      <button onClick={() => onUpdateQuantity(item.productId, item.variantId, item.quantity + 1)} className="p-1 bg-slate-800 rounded-md text-xs">+</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-800 space-y-4">
+              <div className="flex justify-between items-center text-sm font-bold">
+                <span className="text-slate-400">{lang === 'fa' ? 'جمع کل خرید:' : 'Total:'}</span>
+                <span className="text-amber-400 font-mono">{formatTomans(totalAmount, lang)}</span>
+              </div>
+
+              <button
+                onClick={onProceedCheckout}
+                className="w-full bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold py-3 rounded-xl transition"
+              >
+                {lang === 'fa' ? 'تکمیل سفارش و پرداخت' : 'Checkout Now'}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- AI ASSISTANT DRAWER COMPONENT ---
+    const AIAssistantDrawer = ({ lang, onClose, onSelectProduct }) => {
+      const [messages, setMessages] = useState([
+        { sender: 'ai', text: lang === 'fa' ? 'درود! من دستیار هوشمند خریدهای فاخر «شاهکار» هستم. چطور می‌توانم راهنماییتان کنم؟' : 'Greetings! How can I assist your shopping today?' }
+      ]);
+      const [input, setInput] = useState('');
+      const [isTyping, setIsTyping] = useState(false);
+
+      const handleSend = async () => {
+        if (!input.trim()) return;
+        const userMsg = input;
+        setInput('');
+        setMessages(prev => [...prev, { sender: 'user', text: userMsg }]);
+        setIsTyping(true);
+
+        try {
+          const res = await fetch('./api/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: userMsg, lang })
+          }).then(r => r.json());
+
+          setMessages(prev => [...prev, { sender: 'ai', text: res.reply, products: res.suggestedProducts }]);
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setIsTyping(false);
+        }
+      };
+
+      return (
+        <div className="fixed inset-0 z-50 flex justify-start bg-slate-950/80 backdrop-blur-sm">
+          <div className="w-full max-w-lg bg-slate-900 border-l border-slate-800 h-full p-6 flex flex-col justify-between shadow-2xl">
+            <div>
+              <div className="flex justify-between items-center pb-4 border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <i data-lucide="sparkles" className="w-5 h-5 text-amber-400"></i>
+                  <h3 className="text-base font-bold text-white">{lang === 'fa' ? 'دستیار هوش مصنوعی شاهکار' : 'Shahkar AI Shopping Advisor'}</h3>
+                </div>
+                <button onClick={onClose} className="text-slate-400 hover:text-white">
+                  <i data-lucide="x" className="w-5 h-5"></i>
+                </button>
+              </div>
+
+              <div className="space-y-4 mt-6 overflow-y-auto max-h-[65vh] p-2">
+                {messages.map((m, idx) => (
+                  <div key={idx} className={`p-4 rounded-2xl text-xs leading-relaxed ${
+                    m.sender === 'user' ? 'bg-teal-500/20 border border-teal-500/30 text-teal-200 ml-8' : 'bg-slate-950/80 border border-slate-800 text-slate-200 mr-8'
+                  }`}>
+                    {m.text}
+
+                    {m.products && m.products.length > 0 && (
+                      <div className="mt-3 space-y-2 border-t border-slate-800 pt-3">
+                        {m.products.map(p => (
+                          <div
+                            key={p.id}
+                            onClick={() => onSelectProduct(p.id)}
+                            className="flex items-center gap-3 p-2 bg-slate-900 rounded-xl cursor-pointer hover:border-teal-400 border border-slate-800"
+                          >
+                            <img src={p.images[0]} alt="p" className="w-10 h-10 object-cover rounded-lg" />
+                            <div>
+                              <strong className="block text-white line-clamp-1">{p.title_fa}</strong>
+                              <span className="text-amber-400 font-mono">{formatTomans(p.final_price_tomans, lang)}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {isTyping && <div className="text-xs text-teal-400 animate-pulse">شاهکار AI در حال تحلیل بازار...</div>}
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-800 flex gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                placeholder={lang === 'fa' ? 'مثال: یک هدفون نویزکنسلینگ با شارژ بالا پیشنهاد بده...' : 'Ask AI anything...'}
+                className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none"
+              />
+              <button onClick={handleSend} className="bg-amber-400 text-slate-950 font-bold px-4 rounded-xl">
+                ارسال
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // Render Root
+    const root = createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
