@@ -1581,10 +1581,319 @@
       );
     };
 
+    // --- LOGISTICS TRACKING MODAL WITH GPS MAP ROUTE & COLD CHAIN STATS ---
+    const LogisticsTrackingModal = ({ trackingCode, lang, onClose }) => {
+      const [data, setData] = useState(null);
+
+      useEffect(() => {
+        fetch(`./api/logistics/track/${trackingCode}`)
+          .then(r => r.json())
+          .then(setData);
+      }, [trackingCode]);
+
+      if (!data) return null;
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+          <div className="glass-panel p-6 rounded-3xl border-slate-700 max-w-2xl w-full space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+              <div>
+                <span className="text-xs text-amber-400 font-bold block">{data.carrier}</span>
+                <h3 className="text-base font-black text-white">رهگیری زنده موقعیت مرسوله • کد: {data.trackingCode}</h3>
+              </div>
+              <button onClick={onClose} className="text-slate-400 hover:text-white">
+                <i data-lucide="x" className="w-5 h-5"></i>
+              </button>
+            </div>
+
+            {/* GPS Route Map Simulation */}
+            <div className="relative h-64 rounded-2xl bg-slate-950 overflow-hidden border border-slate-800 flex items-center justify-center">
+              <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#14b8a6_1px,transparent_1px)] [background-size:16px_16px]"></div>
+              
+              {/* Route Line Canvas Graphics */}
+              <svg className="absolute inset-0 w-full h-full stroke-teal-500/40" strokeWidth="3" strokeDasharray="6 6">
+                <path d="M 50 180 Q 200 60 380 120" fill="none" />
+              </svg>
+
+              {/* Origin Marker */}
+              <div className="absolute top-36 left-12 flex items-center gap-2 bg-slate-900/90 p-2 rounded-xl border border-slate-700 text-[11px]">
+                <span className="w-3 h-3 rounded-full bg-teal-400"></span>
+                <span>مبدا: {data.origin}</span>
+              </div>
+
+              {/* Vehicle Live Marker */}
+              <div className="absolute top-20 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-amber-500 text-slate-950 px-3 py-1.5 rounded-full font-bold text-xs shadow-lg animate-bounce">
+                <i data-lucide="truck" className="w-4 h-4"></i>
+                <span>خودروی حمل اکسپرس در موقعیت میدان ونک</span>
+              </div>
+
+              {/* Destination Marker */}
+              <div className="absolute top-24 right-12 flex items-center gap-2 bg-slate-900/90 p-2 rounded-xl border border-slate-700 text-[11px]">
+                <span className="w-3 h-3 rounded-full bg-amber-400"></span>
+                <span>مقصد: {data.destination}</span>
+              </div>
+
+              {/* Cold-Chain Telemetry Widget */}
+              <div className="absolute bottom-3 left-3 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-teal-500/30 text-[10px] text-teal-300 flex items-center gap-3">
+                <div className="flex items-center gap-1 font-mono">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                  دمای محفظه: +۴°C (استاندارد زنجیره سرد)
+                </div>
+                <span>•</span>
+                <span>زمان تحویل تخمینی: {data.estimatedDelivery}</span>
+              </div>
+            </div>
+
+            {/* Timeline Milestones */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-slate-300">مراحل توزیع مرسوله:</h4>
+              <div className="space-y-2">
+                {data.timeline.map((step, idx) => (
+                  <div key={idx} className={`p-3 rounded-xl border flex justify-between items-center text-xs ${
+                    step.current ? 'bg-teal-500/10 border-teal-400 text-teal-200' : 'bg-slate-900/60 border-slate-800 text-slate-400'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <span className={`w-2 h-2 rounded-full ${step.completed ? 'bg-teal-400' : 'bg-slate-700'}`}></span>
+                      <strong className="text-white">{step.title_fa}</strong>
+                    </div>
+                    <span className="font-mono text-[11px]">{step.time}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- OFFICIAL TAX INVOICE MODAL ---
+    const OfficialTaxInvoiceModal = ({ order, lang, onClose }) => {
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-md p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-8 max-w-3xl w-full text-slate-100 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto print:bg-white print:text-black">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-4">
+              <div>
+                <h2 className="text-xl font-black text-amber-400">صورتحساب الکترونیکی فروش کالا و خدمات</h2>
+                <span className="text-xs text-slate-400">مطابق قوانین سازمان امور مالیاتی کشور • شماره فاکتور: {order.order_number}</span>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => window.print()} className="bg-teal-500 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl">
+                  چاپ / دانلود PDF
+                </button>
+                <button onClick={onClose} className="text-slate-400 hover:text-white">
+                  <i data-lucide="x" className="w-5 h-5"></i>
+                </button>
+              </div>
+            </div>
+
+            {/* Seller & Buyer Details Table */}
+            <div className="grid grid-cols-2 gap-4 text-xs bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+              <div className="space-y-1">
+                <span className="text-teal-400 font-bold block mb-1">مشخصات فروشنده (بازار بزرگ شاهکار):</span>
+                <div>نام شرکت: توسعه تجارت هوشمند شاهکار آریانا</div>
+                <div>شناسه ملی / کد اقتصادی: ۱۰۱۰۳۵۲۹۸۴۱</div>
+                <div>نشانی: تهران، خیابان ولیعصر، برج نگار، طبقه ۱۲</div>
+              </div>
+              <div className="space-y-1 border-r border-slate-800 pr-4">
+                <span className="text-amber-400 font-bold block mb-1">مشخصات خریدار:</span>
+                <div>نام خریدار: {order.shipping_address?.recipient_name || 'نوید رضایی'}</div>
+                <div>کد پستی: {order.shipping_address?.postal_code || '۱۹۹۱OD1111'}</div>
+                <div>نشانی تحویل: {order.shipping_address?.address}</div>
+              </div>
+            </div>
+
+            {/* Items Table */}
+            <table className="w-full text-xs text-right border-collapse">
+              <thead>
+                <tr className="bg-slate-800 text-slate-300">
+                  <th className="p-3">ردیف</th>
+                  <th className="p-3">شرح کالا / خدمت</th>
+                  <th className="p-3">تعداد</th>
+                  <th className="p-3">مبلغ واحد (تومان)</th>
+                  <th className="p-3">مبلغ کل (تومان)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/60">
+                {order.items?.map((it, idx) => (
+                  <tr key={it.id}>
+                    <td className="p-3 font-mono">{idx + 1}</td>
+                    <td className="p-3 font-bold text-white">{it.product_title}</td>
+                    <td className="p-3 font-mono">{it.quantity}</td>
+                    <td className="p-3 font-mono">{formatTomans(it.unit_price_tomans, lang)}</td>
+                    <td className="p-3 font-mono text-amber-400">{formatTomans(it.unit_price_tomans * it.quantity, lang)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Tax Totals Breakdown */}
+            <div className="border-t border-slate-800 pt-4 flex justify-between items-center text-xs">
+              <div className="space-y-1 text-slate-400">
+                <div>روش پرداخت: {order.payment_method}</div>
+                <div>شناسه یکتای مالیاتی (Tax ID): SHK-2026-8891024</div>
+              </div>
+
+              <div className="text-left space-y-1">
+                <div>جمع کل فاکتور: <strong className="text-slate-100 font-mono">{formatTomans(order.total_tomans, lang)}</strong></div>
+                <div>مالیات بر ارزش افزوده (۱۰٪): <strong className="text-teal-400 font-mono">محاسبه و لحاظ شده</strong></div>
+                <div className="text-base font-extrabold text-amber-400 mt-2">مبلغ پرداختی نهایی: {formatTomans(order.total_tomans, lang)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- B2B WHOLESALE QUOTE MODAL ---
+    const B2BWholesaleQuoteModal = ({ product, lang, onClose, onSuccess }) => {
+      const [form, setForm] = useState({
+        companyName: '',
+        email: '',
+        phone: '',
+        targetQuantity: 100,
+        destinationCountry: 'ایران (تهران)',
+        notes: ''
+      });
+      const [submitting, setSubmitting] = useState(false);
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+
+        try {
+          const res = await fetch('./api/b2b/quote', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              companyName: form.companyName,
+              email: form.email,
+              phone: form.phone,
+              productId: product.id,
+              targetQuantity: Number(form.targetQuantity),
+              destinationCountry: form.destinationCountry,
+              notes: form.notes
+            })
+          }).then(r => r.json());
+
+          if (res.success) {
+            onSuccess(res.message_fa);
+            onClose();
+          }
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setSubmitting(false);
+        }
+      };
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+          <div className="glass-panel p-6 rounded-3xl border-slate-700 max-w-lg w-full space-y-4 shadow-2xl">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+              <div>
+                <span className="text-xs text-amber-400 font-bold">Alibaba B2B Wholesale Trading</span>
+                <h3 className="text-base font-bold text-white">استعلام قیمت عمده و سفارش B2B</h3>
+              </div>
+              <button onClick={onClose} className="text-slate-400 hover:text-white">
+                <i data-lucide="x" className="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-300">
+              ثبت درخواست قیمت عمده مستقیم از تولیدکننده برای کالا: <strong className="text-teal-300">{product.title_fa}</strong>
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-3 text-xs">
+              <div>
+                <label className="text-slate-300 block mb-1">نام شرکت / بازرگانی:</label>
+                <input
+                  type="text"
+                  required
+                  value={form.companyName}
+                  onChange={(e) => setForm({ ...form, companyName: e.target.value })}
+                  placeholder="مثال: بازرگانی آریا پارس..."
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-slate-100"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-slate-300 block mb-1">ایمیل تجاری:</label>
+                  <input
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    placeholder="b2b@company.com"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-slate-100"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-300 block mb-1">شماره واتساپ/موبایل:</label>
+                  <input
+                    type="text"
+                    required
+                    value={form.phone}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    placeholder="09121111111"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-slate-100"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-slate-300 block mb-1">تیراژ مورد درخواست (عدد):</label>
+                  <input
+                    type="number"
+                    min="10"
+                    required
+                    value={form.targetQuantity}
+                    onChange={(e) => setForm({ ...form, targetQuantity: e.target.value })}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-slate-100"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-300 block mb-1">کشور / شهر مقصد تحویل:</label>
+                  <input
+                    type="text"
+                    required
+                    value={form.destinationCountry}
+                    onChange={(e) => setForm({ ...form, destinationCountry: e.target.value })}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-slate-100"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-slate-300 block mb-1">توضیحات و مشخصات سفارشی کالا:</label>
+                <textarea
+                  value={form.notes}
+                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                  rows={2}
+                  placeholder="درخواست حک لوگو، بسته‌بندی صادراتی یا بسته‌بندی اختصاصی..."
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-slate-100"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-black py-3 rounded-xl mt-2 shadow-lg"
+              >
+                {submitting ? 'در حال ارسال درخواست B2B...' : 'ثبت استعلام و دریافت پروفرما'}
+              </button>
+            </form>
+          </div>
+        </div>
+      );
+    };
+
     // --- ORDERS TRACKING PAGE ---
     const OrdersPage = ({ lang }) => {
       const [orders, setOrders] = useState([]);
-      const [selectedOrder, setSelectedOrder] = useState(null);
+      const [trackingCodeModal, setTrackingCodeModal] = useState(null);
+      const [selectedOrderInvoice, setSelectedOrderInvoice] = useState(null);
 
       useEffect(() => {
         fetch('./api/orders?userId=usr_customer1')
@@ -1599,14 +1908,30 @@
           <div className="space-y-6">
             {orders.map(o => (
               <div key={o.id} className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
-                <div className="flex justify-between items-center text-xs border-b border-slate-800 pb-3">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs border-b border-slate-800 pb-3 gap-2">
                   <div>
                     <span className="text-slate-400">{lang === 'fa' ? 'شماره سفارش:' : 'Order No:'}</span>
                     <strong className="text-teal-400 font-mono font-bold mr-2">{o.order_number}</strong>
                   </div>
-                  <div>
+                  <div className="flex items-center gap-3">
                     <span className="text-slate-400">{lang === 'fa' ? 'کد رهگیری پست/تیپاکس:' : 'Tracking Code:'}</span>
-                    <strong className="text-amber-400 font-mono font-bold mr-2">{o.tracking_code}</strong>
+                    <strong className="text-amber-400 font-mono font-bold">{o.tracking_code}</strong>
+                    
+                    <button
+                      onClick={() => setTrackingCodeModal(o.tracking_code)}
+                      className="bg-teal-500/20 text-teal-300 border border-teal-500/40 px-3 py-1 rounded-lg text-[11px] hover:bg-teal-500 hover:text-slate-950 font-bold transition flex items-center gap-1"
+                    >
+                      <i data-lucide="map-pin" className="w-3.5 h-3.5"></i>
+                      <span>نقشه زنده GPS</span>
+                    </button>
+
+                    <button
+                      onClick={() => setSelectedOrderInvoice(o)}
+                      className="bg-amber-500/20 text-amber-300 border border-amber-500/40 px-3 py-1 rounded-lg text-[11px] hover:bg-amber-500 hover:text-slate-950 font-bold transition flex items-center gap-1"
+                    >
+                      <i data-lucide="file-text" className="w-3.5 h-3.5"></i>
+                      <span>فاکتور رسمی</span>
+                    </button>
                   </div>
                 </div>
 
@@ -1630,15 +1955,41 @@
               </div>
             ))}
           </div>
+
+          {/* Logistics Tracking Modal */}
+          {trackingCodeModal && (
+            <LogisticsTrackingModal
+              trackingCode={trackingCodeModal}
+              lang={lang}
+              onClose={() => setTrackingCodeModal(null)}
+            />
+          )}
+
+          {/* Official Tax Invoice Modal */}
+          {selectedOrderInvoice && (
+            <OfficialTaxInvoiceModal
+              order={selectedOrderInvoice}
+              lang={lang}
+              onClose={() => setSelectedOrderInvoice(null)}
+            />
+          )}
         </div>
       );
     };
 
-    // --- VENDOR DASHBOARD PAGE WITH PRODUCT MANAGEMENT MODAL ---
+    // --- VENDOR DASHBOARD PAGE WITH PRODUCT MANAGEMENT & B2B QUOTES HUB ---
     const VendorDashboardPage = ({ lang, onRefreshProducts }) => {
       const [data, setData] = useState(null);
+      const [b2bQuotes, setB2bQuotes] = useState([]);
       const [settlementAmount, setSettlementAmount] = useState('');
       const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+      const [activeTab, setActiveTab] = useState('products'); // 'products' | 'b2b' | 'settlements'
+
+      // B2B response state
+      const [replyQuoteId, setReplyQuoteId] = useState(null);
+      const [replyUnitPrice, setReplyUnitPrice] = useState('');
+      const [replyDays, setReplyDays] = useState('7');
+      const [replyNote, setReplyNote] = useState('');
 
       // New product form
       const [newProd, setNewProd] = useState({
@@ -1651,8 +2002,12 @@
       });
 
       const loadDashboard = async () => {
-        const res = await fetch('./api/vendor/dashboard?vendorId=vnd_1').then(r => r.json());
+        const [res, quotes] = await Promise.all([
+          fetch('./api/vendor/dashboard?vendorId=vnd_1').then(r => r.json()),
+          fetch('./api/b2b/quotes').then(r => r.json())
+        ]);
         setData(res);
+        setB2bQuotes(quotes);
       };
 
       useEffect(() => {
@@ -1671,6 +2026,27 @@
           })
         });
         setSettlementAmount('');
+        loadDashboard();
+      };
+
+      const handleRespondB2bQuote = async (e) => {
+        e.preventDefault();
+        if (!replyQuoteId || !replyUnitPrice) return;
+
+        await fetch('./api/b2b/quote/respond', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            quoteId: replyQuoteId,
+            quotedUnitPriceTomans: Number(replyUnitPrice),
+            estimatedDays: Number(replyDays),
+            vendorNote: replyNote || 'تامین و ارسال مستقیم با گواهی بازرسی کیفی صادراتی'
+          })
+        });
+
+        setReplyQuoteId(null);
+        setReplyUnitPrice('');
+        setReplyNote('');
         loadDashboard();
       };
 
@@ -1710,7 +2086,7 @@
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setIsAddProductOpen(true)}
-                className="bg-teal-500 text-slate-950 font-extrabold text-xs px-5 py-2.5 rounded-xl hover:bg-teal-400 transition flex items-center gap-2"
+                className="bg-teal-500 text-slate-950 font-extrabold text-xs px-5 py-2.5 rounded-xl hover:bg-teal-400 transition flex items-center gap-2 shadow-lg"
               >
                 <i data-lucide="plus" className="w-4 h-4"></i>
                 <span>{lang === 'fa' ? 'افزودن محصول جدید' : 'Add New Product'}</span>
@@ -1739,25 +2115,148 @@
             </div>
           </div>
 
-          {/* Settlement Request Box */}
-          <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
-            <h3 className="text-sm font-bold text-white">{lang === 'fa' ? 'درخواست تسویه حساب به شبا' : 'Payout Settlement Request'}</h3>
-            <div className="flex gap-4">
-              <input
-                type="number"
-                value={settlementAmount}
-                onChange={(e) => setSettlementAmount(e.target.value)}
-                placeholder="مبلغ به تومان..."
-                className="bg-slate-900 border border-slate-700 rounded-xl px-4 text-xs text-slate-100 flex-1"
-              />
-              <button
-                onClick={handleSettlement}
-                className="bg-teal-500 text-slate-950 font-bold text-xs px-6 py-3 rounded-xl hover:bg-teal-400"
-              >
-                ثبت درخواست تسویه
-              </button>
-            </div>
+          {/* Navigation Tabs */}
+          <div className="flex border-b border-slate-800 text-xs font-bold gap-6">
+            <button
+              onClick={() => setActiveTab('products')}
+              className={`pb-3 border-b-2 transition ${activeTab === 'products' ? 'border-teal-400 text-teal-300' : 'border-transparent text-slate-400 hover:text-white'}`}
+            >
+              مدیریت محصولات ({data.products.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('b2b')}
+              className={`pb-3 border-b-2 transition ${activeTab === 'b2b' ? 'border-teal-400 text-teal-300' : 'border-transparent text-slate-400 hover:text-white'}`}
+            >
+              استعلام‌های عمده B2B ({b2bQuotes.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('settlements')}
+              className={`pb-3 border-b-2 transition ${activeTab === 'settlements' ? 'border-teal-400 text-teal-300' : 'border-transparent text-slate-400 hover:text-white'}`}
+            >
+              تسویه حساب و مالی
+            </button>
           </div>
+
+          {/* Tab Content 1: Products */}
+          {activeTab === 'products' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {data.products.map(p => (
+                <div key={p.id} className="glass-panel p-4 rounded-2xl border-slate-800 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <img src={p.images[0]} alt="p" className="w-12 h-12 object-cover rounded-xl" />
+                    <div>
+                      <h4 className="text-xs font-bold text-white line-clamp-1">{p.title_fa}</h4>
+                      <span className="text-amber-400 font-mono text-xs">{formatTomans(p.base_price_tomans, lang)}</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] bg-slate-800 px-2 py-1 rounded-lg text-slate-300 font-mono">
+                    موجودی: {p.stock}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Tab Content 2: B2B Wholesale Quotes */}
+          {activeTab === 'b2b' && (
+            <div className="space-y-4">
+              {b2bQuotes.length === 0 ? (
+                <div className="p-8 text-center text-xs text-slate-400 glass-panel rounded-2xl">
+                  هنوز استعلام عمده جدیدی ثبت نشده است.
+                </div>
+              ) : (
+                b2bQuotes.map(q => (
+                  <div key={q.id} className="glass-panel p-6 rounded-2xl border-slate-800 space-y-3">
+                    <div className="flex justify-between items-center text-xs">
+                      <div>
+                        <strong className="text-white text-sm">{q.company_name}</strong>
+                        <span className="text-slate-400 block mt-0.5">محصول: {q.product_title_fa || 'کالای سفارشی'}</span>
+                      </div>
+                      <div className="text-left">
+                        <span className="text-amber-400 font-bold font-mono text-sm block">تیراژ: {toPersianDigits(q.target_quantity)} عدد</span>
+                        <span className="text-[10px] text-slate-400">مقصد: {q.destination_country}</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-950 p-3 rounded-xl text-xs text-slate-300 border border-slate-800">
+                      <strong>اطلاعات تماس و درخواست:</strong> {q.email} • {q.phone}
+                      {q.notes && <p className="mt-1 text-slate-400">{q.notes}</p>}
+                    </div>
+
+                    <div className="flex justify-between items-center pt-2">
+                      <span className={`text-[11px] px-2.5 py-0.5 rounded-full ${q.status === 'quoted' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}`}>
+                        وضعیت: {q.status === 'quoted' ? 'پاسخ داده شده' : 'در انتظار پیشنهاد قیمت'}
+                      </span>
+
+                      {replyQuoteId === q.id ? (
+                        <form onSubmit={handleRespondB2bQuote} className="flex gap-2 text-xs">
+                          <input
+                            type="number"
+                            required
+                            value={replyUnitPrice}
+                            onChange={(e) => setReplyUnitPrice(e.target.value)}
+                            placeholder="قیمت عمده هر واحد (تومان)..."
+                            className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-white"
+                          />
+                          <input
+                            type="number"
+                            required
+                            value={replyDays}
+                            onChange={(e) => setReplyDays(e.target.value)}
+                            placeholder="روز تحویل..."
+                            className="w-20 bg-slate-900 border border-slate-700 rounded-xl px-2 py-1.5 text-white"
+                          />
+                          <button type="submit" className="bg-teal-500 text-slate-950 font-bold px-4 py-1.5 rounded-xl">
+                            ارسال پروفرما
+                          </button>
+                        </form>
+                      ) : (
+                        <button
+                          onClick={() => setReplyQuoteId(q.id)}
+                          className="bg-teal-500/20 text-teal-300 border border-teal-500/30 text-xs px-4 py-1.5 rounded-xl font-bold hover:bg-teal-500 hover:text-slate-950 transition"
+                        >
+                          ثبت پیشنهاد قیمت صادراتی / عمده
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {/* Tab Content 3: Settlements */}
+          {activeTab === 'settlements' && (
+            <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
+              <h3 className="text-sm font-bold text-white">{lang === 'fa' ? 'درخواست تسویه حساب به شبا' : 'Payout Settlement Request'}</h3>
+              <div className="flex gap-4">
+                <input
+                  type="number"
+                  value={settlementAmount}
+                  onChange={(e) => setSettlementAmount(e.target.value)}
+                  placeholder="مبلغ به تومان..."
+                  className="bg-slate-900 border border-slate-700 rounded-xl px-4 text-xs text-slate-100 flex-1"
+                />
+                <button
+                  onClick={handleSettlement}
+                  className="bg-teal-500 text-slate-950 font-bold text-xs px-6 py-3 rounded-xl hover:bg-teal-400"
+                >
+                  ثبت درخواست تسویه
+                </button>
+              </div>
+
+              <div className="pt-4 space-y-2">
+                <h4 className="text-xs font-bold text-slate-300">سوابق تسویه‌حساب‌های اخیر:</h4>
+                {data.settlements?.map(s => (
+                  <div key={s.id} className="flex justify-between items-center text-xs p-3 bg-slate-950 rounded-xl border border-slate-800 font-mono">
+                    <span className="text-teal-400">{formatTomans(s.amount_tomans, lang)}</span>
+                    <span className="text-slate-400">شبا: {s.iban}</span>
+                    <span className="text-emerald-400 font-bold">واریز شده</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Add Product Modal */}
           {isAddProductOpen && (

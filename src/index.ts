@@ -1196,6 +1196,16 @@ export class App extends DurableObject {
     });
 
     // Alibaba B2B Wholesale Request for Quote (RFQ)
+    this.app.get("/api/b2b/quotes", (c) => {
+      const rows = this.ctx.storage.sql.exec(`
+        SELECT b.*, p.title_fa as product_title_fa, p.title_en as product_title_en, p.base_price_tomans
+        FROM b2b_quotes b
+        LEFT JOIN products p ON b.product_id = p.id
+        ORDER BY b.created_at DESC
+      `).toArray();
+      return c.json(rows);
+    });
+
     this.app.post("/api/b2b/quote", async (c) => {
       const body = await c.req.json<{
         companyName: string;
@@ -1224,6 +1234,28 @@ export class App extends DurableObject {
         message_fa: 'استعلام قیمت عمده B2B با موفقیت ثبت شد. تیم بازرگانی بین‌المللی شاهکار ظرف ۲۴ ساعت پیشنهاد قیمتی را صادر خواهد کرد.',
         message_en: 'B2B Wholesale Request for Quote submitted successfully. International trade team will issue quote within 24 hours.'
       });
+    });
+
+    this.app.post("/api/b2b/quote/respond", async (c) => {
+      const body = await c.req.json<{
+        quoteId: string;
+        quotedUnitPriceTomans: number;
+        estimatedDays: number;
+        vendorNote: string;
+      }>();
+
+      const { quoteId, quotedUnitPriceTomans, estimatedDays, vendorNote } = body;
+
+      this.ctx.storage.sql.exec(`
+        UPDATE b2b_quotes 
+        SET status = 'quoted', 
+            notes = COALESCE(notes, '') || ' | پاسخ فروشنده: ' || ? || ' (قیمت هر واحد: ' || ? || ' تومان، زمان تحویل: ' || ? || ' روز)'
+        WHERE id = ?
+      `, vendorNote, quotedUnitPriceTomans, estimatedDays, quoteId);
+
+      logAudit('usr_vendor1', 'B2B_RFQ_QUOTED', quoteId, { quotedUnitPriceTomans, estimatedDays });
+
+      return c.json({ success: true, message: 'پیشنهاد قیمت با موفقیت برای خریدار عمده ارسال گردید.' });
     });
 
     // Shahkar VIP / Plus Membership API
