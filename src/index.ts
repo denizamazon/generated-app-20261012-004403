@@ -159,6 +159,26 @@ export class App extends DurableObject {
         min_order_tomans INTEGER NOT NULL,
         uses_left INTEGER NOT NULL
       );
+
+      CREATE TABLE IF NOT EXISTS b2b_quotes (
+        id TEXT PRIMARY KEY,
+        company_name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        product_id TEXT NOT NULL,
+        target_quantity INTEGER NOT NULL,
+        destination_country TEXT NOT NULL,
+        notes TEXT,
+        status TEXT DEFAULT 'pending',
+        created_at INTEGER NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS vip_memberships (
+        user_id TEXT PRIMARY KEY,
+        plan_name TEXT NOT NULL,
+        is_active INTEGER DEFAULT 1,
+        expires_at INTEGER NOT NULL
+      );
     `);
 
     // Check if seeded
@@ -1151,6 +1171,116 @@ export class App extends DurableObject {
         totalRevenueTomans,
         recentLogs: recentLogs.map((l: any) => ({ ...l, details: JSON.parse(l.details_json || "{}") })),
         fraudAlerts
+      });
+    });
+
+    // Amazon Lightning Flash Deals API
+    this.app.get("/api/flash-deals", (c) => {
+      const deals = this.ctx.storage.sql.exec(`
+        SELECT p.*, v.store_name, v.badge as vendor_badge
+        FROM products p
+        JOIN vendors v ON p.vendor_id = v.id
+        WHERE p.discount_percent >= 10
+        ORDER BY p.discount_percent DESC
+        LIMIT 4
+      `).toArray().map((p: any, idx: number) => ({
+        ...p,
+        images: JSON.parse(p.images_json || "[]"),
+        final_price_tomans: Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100),
+        claimed_percent: 65 + (idx * 8), // Dynamic claimed bar like Amazon Lightning Deals
+        stock_remaining: Math.max(2, p.stock - 10),
+        ends_in_seconds: 14400 + (idx * 3600) // 4 hours countdown
+      }));
+
+      return c.json(deals);
+    });
+
+    // Alibaba B2B Wholesale Request for Quote (RFQ)
+    this.app.post("/api/b2b/quote", async (c) => {
+      const body = await c.req.json<{
+        companyName: string;
+        email: string;
+        phone: string;
+        productId: string;
+        targetQuantity: number;
+        destinationCountry: string;
+        notes?: string;
+      }>();
+
+      const { companyName, email, phone, productId, targetQuantity, destinationCountry, notes } = body;
+      const quoteId = `rfq_${Date.now()}`;
+      const now = Date.now();
+
+      this.ctx.storage.sql.exec(`
+        INSERT INTO b2b_quotes (id, company_name, email, phone, product_id, target_quantity, destination_country, notes, status, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
+      `, quoteId, companyName, email, phone, productId, targetQuantity, destinationCountry, notes || '', now);
+
+      logAudit('usr_customer1', 'B2B_RFQ_SUBMITTED', quoteId, { companyName, targetQuantity, destinationCountry });
+
+      return c.json({
+        success: true,
+        quoteId,
+        message_fa: 'استعلام قیمت عمده B2B با موفقیت ثبت شد. تیم بازرگانی بین‌المللی شاهکار ظرف ۲۴ ساعت پیشنهاد قیمتی را صادر خواهد کرد.',
+        message_en: 'B2B Wholesale Request for Quote submitted successfully. International trade team will issue quote within 24 hours.'
+      });
+    });
+
+    // Shahkar VIP / Plus Membership API
+    this.app.get("/api/vip/status", (c) => {
+      const userId = c.req.query("userId") || "usr_customer1";
+      const rows = this.ctx.storage.sql.exec(`SELECT * FROM vip_memberships WHERE user_id = ?`, userId).toArray();
+      const isVip = rows.length > 0 && (rows[0] as any).is_active === 1;
+
+      return c.json({
+        isVip,
+        planName: isVip ? (rows[0] as any).plan_name : "Shahkar Plus VIP Free Trial Available",
+        expiresAt: isVip ? (rows[0] as any).expires_at : null,
+        perks: [
+          "ارسال رایگان و بدون محدودیت روی کلیه سفارش‌ها",
+          "دسترسی اختصاصی ۳۰ دقیقه زودتر به حراج‌های لحظه‌ای (Flash Deals)",
+          "بازگشت ۵٪ از مبلغ خرید به صورت کیف پول نقدی (Cashback)",
+          "دستیار VIP هوش مصنوعی با اولویت پاسخگویی اختصاصی"
+        ]
+      });
+    });
+
+    this.app.post("/api/vip/activate", async (c) => {
+      const body = await c.req.json<{ userId: string }>();
+      const userId = body.userId || "usr_customer1";
+      const expiresAt = Date.now() + (365 * 86400000);
+
+      this.ctx.storage.sql.exec(`
+        INSERT OR REPLACE INTO vip_memberships (user_id, plan_name, is_active, expires_at)
+        VALUES (?, 'Shahkar VIP Gold Membership', 1, ?)
+      `, userId, expiresAt);
+
+      logAudit(userId, 'VIP_ACTIVATED', 'SHAHKAR_PLUS', { plan: 'VIP Gold' });
+
+      return c.json({ success: true, isVip: true, planName: 'Shahkar VIP Gold Membership', expiresAt });
+    });
+
+    // Real-time Logistics Tracker & Map Nodes
+    this.app.get("/api/logistics/track/:code", (c) => {
+      const code = c.req.param("code");
+      const now = Date.now();
+
+      return c.json({
+        trackingCode: code,
+        carrier: "Shahkar Express Cold-Chain Logistics",
+        estimatedDelivery: new Date(now + 86400000).toLocaleDateString('fa-IR'),
+        origin: "مرکز لجستیک فرودگاهی امام خمینی (ره)",
+        destination: "تهران - برج نگار ونک",
+        currentStatus: "in_transit",
+        statusText_fa: "مرسوله در خودروی یخچالی توزیع منطقه‌ای قرار دارد و تا ۳ ساعت دیگر تحویل می‌گردد.",
+        statusText_en: "Shipment in climate-controlled delivery vehicle, ETA 3 hours.",
+        coordinates: { lat: 35.7575, lng: 51.4099 }, // Vanak Square, Tehran
+        timeline: [
+          { status: "placed", title_fa: "ثبت سفارش و پرداخت موفق", title_en: "Order Placed", time: "۱۰:۱۵ - دیروز", completed: true },
+          { status: "confirmed", title_fa: "بسته‌بندی و صدور بارنامه شاهکار", title_en: "Vendor Packaged & Sealed", time: "۱۴:۳۰ - دیروز", completed: true },
+          { status: "in_transit", title_fa: "ورود به مرکز توزیع مکانیزه و حرکت پیک", title_en: "In Express Transit", time: "۰۸:۴۵ - امروز", completed: true, current: true },
+          { status: "delivered", title_fa: "تحویل به گیرنده نهایی", title_en: "Final Delivery", time: "تخمین: ۱۶:۰۰ - امروز", completed: false }
+        ]
       });
     });
   }
