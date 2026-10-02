@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>بازار بزرگ بین‌المللی شاهکار | Shahkar Global AI Marketplace</title>
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -570,7 +570,7 @@
                               className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-800/60 cursor-pointer transition"
                             >
                               <div className="flex items-center gap-3">
-                                <img src={p.images[0]} alt={p.title_fa} className="w-10 h-10 object-cover rounded-lg" />
+                                <img src={p.images?.[0] || ''} alt={p.title_fa} className="w-10 h-10 object-cover rounded-lg" />
                                 <div>
                                   <h4 className="text-xs font-semibold text-slate-200">{lang === 'fa' ? p.title_fa : p.title_en}</h4>
                                   <span className="text-[10px] text-amber-400 font-mono">{formatTomans(p.final_price_tomans, lang)}</span>
@@ -969,7 +969,7 @@
                   {flashDeals.map(fd => (
                     <div key={fd.id} className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-rose-500/50 transition">
                       <div className="relative mb-3 cursor-pointer" onClick={() => onSelectProduct(fd.id)}>
-                        <img src={fd.images[0]} alt={fd.title_fa} className="w-full h-36 object-cover rounded-xl" />
+                        <img src={fd.images?.[0] || ''} alt={fd.title_fa} className="w-full h-36 object-cover rounded-xl" />
                         <span className="absolute top-2 right-2 bg-rose-500 text-white text-[11px] font-black px-2 py-0.5 rounded-lg shadow">
                           ٪{toPersianDigits(fd.discount_percent)} تخفیف
                         </span>
@@ -1111,7 +1111,7 @@
             className="relative h-56 bg-slate-900/80 overflow-hidden cursor-pointer"
           >
             <img
-              src={product.images[0]}
+              src={product.images?.[0] || ''}
               alt={product.title_fa}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
@@ -2239,7 +2239,7 @@
               {data.products.map(p => (
                 <div key={p.id} className="glass-panel p-4 rounded-2xl border-slate-800 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <img src={p.images[0]} alt="p" className="w-12 h-12 object-cover rounded-xl" />
+                    <img src={p.images?.[0] || ''} alt="p" className="w-12 h-12 object-cover rounded-xl" />
                     <div>
                       <h4 className="text-xs font-bold text-white line-clamp-1">{p.title_fa}</h4>
                       <span className="text-amber-400 font-mono text-xs">{formatTomans(p.base_price_tomans, lang)}</span>
@@ -2560,7 +2560,7 @@
                 {cartItems.map(item => (
                   <div key={`${item.productId}_${item.variantId}`} className="flex items-center justify-between p-3 bg-slate-950/60 rounded-xl border border-slate-800">
                     <div className="flex items-center gap-3">
-                      <img src={item.product.images[0]} alt="p" className="w-12 h-12 object-cover rounded-lg" />
+                      <img src={item.product.images?.[0] || ''} alt="p" className="w-12 h-12 object-cover rounded-lg" />
                       <div>
                         <h4 className="text-xs font-bold text-white line-clamp-1">{item.product.title_fa}</h4>
                         <span className="text-[10px] text-amber-400 font-mono">{formatTomans(item.product.final_price_tomans, lang)}</span>
@@ -2675,7 +2675,7 @@
                             onClick={() => onSelectProduct(p.id)}
                             className="flex items-center gap-3 p-2 bg-slate-900 rounded-xl cursor-pointer hover:border-teal-400 border border-slate-800"
                           >
-                            <img src={p.images[0]} alt="p" className="w-10 h-10 object-cover rounded-lg" />
+                            <img src={p.images?.[0] || ''} alt="p" className="w-10 h-10 object-cover rounded-lg" />
                             <div>
                               <strong className="block text-white line-clamp-1">{p.title_fa}</strong>
                               <span className="text-amber-400 font-mono">{formatTomans(p.final_price_tomans, lang)}</span>

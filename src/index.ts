@@ -831,103 +831,108 @@ export class App extends DurableObject {
 
     // Checkout Endpoint with Idempotency and Stock Lock
     this.app.post("/api/checkout", async (c) => {
-      const idempotencyKey = c.req.header("X-Idempotency-Key") || `idemp_${Date.now()}`;
+      try {
+        const idempotencyKey = c.req.header("X-Idempotency-Key") || `idemp_${Date.now()}`;
 
-      // Check existing order with same idempotency key
-      const existing = this.ctx.storage.sql.exec(`SELECT * FROM orders WHERE idempotency_key = ?`, idempotencyKey).toArray();
-      if (existing.length > 0) {
-        return c.json({ success: true, duplicated: true, order: existing[0] });
+        // Check existing order with same idempotency key
+        const existing = this.ctx.storage.sql.exec(`SELECT * FROM orders WHERE idempotency_key = ?`, idempotencyKey).toArray();
+        if (existing.length > 0) {
+          return c.json({ success: true, duplicated: true, order: existing[0] });
+        }
+
+        const body = await c.req.json<{
+          userId: string;
+          items: { productId: string; variantId?: string; quantity: number }[];
+          paymentMethod: string;
+          shippingAddress: { city: string; address: string; postal_code: string; recipient_name: string; phone: string };
+          couponCode?: string;
+        }>();
+
+        const { userId = 'usr_customer1', items = [], paymentMethod = 'Zarinpal Shetab Gateway', shippingAddress, couponCode } = body;
+
+        if (items.length === 0) return c.json({ error: "Cart is empty" }, 400);
+
+        const orderId = `ord_${Date.now()}`;
+        const orderNumber = `SHK-${Math.floor(100000 + Math.random() * 900000)}`;
+        const trackingCode = `TPX-${Math.floor(1000000000 + Math.random() * 9000000000)}`;
+        const now = Date.now();
+
+        let orderTotal = 0;
+        const createdItems: any[] = [];
+
+        // Process items and check/deduct inventory atomically
+        this.ctx.storage.transactionSync(() => {
+          for (const item of items) {
+            const pRows = this.ctx.storage.sql.exec(`SELECT * FROM products WHERE id = ?`, item.productId).toArray();
+            if (pRows.length === 0) continue;
+            const p: any = pRows[0];
+
+            if (p.stock < item.quantity) {
+              throw new Error(`Stock unavailable for product ${p.title_fa}`);
+            }
+
+            let unitPrice = Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100);
+            if (item.variantId) {
+              const vRows = this.ctx.storage.sql.exec(`SELECT * FROM product_variants WHERE id = ?`, item.variantId).toArray();
+              if (vRows.length > 0) unitPrice = (vRows[0] as any).price_tomans;
+            }
+
+            const lineTotal = unitPrice * item.quantity;
+            const commissionRate = 0.08;
+            const commission = Math.round(lineTotal * commissionRate);
+            const vendorPayout = lineTotal - commission;
+
+            orderTotal += lineTotal;
+
+            // Deduct stock
+            this.ctx.storage.sql.exec(`UPDATE products SET stock = stock - ? WHERE id = ?`, item.quantity, p.id);
+            this.ctx.storage.sql.exec(`UPDATE vendors SET total_sales = total_sales + 1, balance_tomans = balance_tomans + ? WHERE id = ?`, vendorPayout, p.vendor_id);
+
+            const itemId = `ori_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`;
+            this.ctx.storage.sql.exec(`
+              INSERT INTO order_items (id, order_id, vendor_id, product_id, variant_id, product_title, quantity, unit_price_tomans, commission_tomans, vendor_payout_tomans, status)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'processing')
+            `, itemId, orderId, p.vendor_id, p.id, item.variantId || null, p.title_fa, item.quantity, unitPrice, commission, vendorPayout);
+
+            createdItems.push({ id: itemId, product_title: p.title_fa, quantity: item.quantity, unitPrice });
+          }
+
+          // Add 10% tax + shipping flat 65000
+          const grandTotal = Math.round(orderTotal * 1.10) + 65000;
+
+          // Insert Order
+          this.ctx.storage.sql.exec(`
+            INSERT INTO orders (id, order_number, user_id, total_tomans, status, payment_method, shipping_address_json, tracking_code, idempotency_key, created_at)
+            VALUES (?, ?, ?, ?, 'paid', ?, ?, ?, ?, ?)
+          `, orderId, orderNumber, userId, grandTotal, paymentMethod, JSON.stringify(shippingAddress), trackingCode, idempotencyKey, now);
+
+          // Fraud anomaly check: high velocity or large amount trigger alert
+          if (grandTotal > 200000000) {
+            this.ctx.storage.sql.exec(`
+              INSERT INTO fraud_alerts (id, order_id, user_id, risk_score, reason, status, created_at)
+              VALUES (?, ?, ?, 85, 'High value transaction exceeding threshold requiring manual verification', 'flagged', ?)
+            `, `frd_${now}`, orderId, userId, now);
+          }
+        });
+
+        logAudit(userId, "CHECKOUT_SUCCESS", orderId, { orderNumber, total: orderTotal, paymentMethod });
+
+        return c.json({
+          success: true,
+          order: {
+            id: orderId,
+            orderNumber,
+            trackingCode,
+            totalTomans: orderTotal,
+            status: "paid",
+            items: createdItems,
+            created_at: now
+          }
+        });
+      } catch (err: any) {
+        console.error("Checkout error:", err);
+        return c.json({ success: false, error: err.message || "Checkout failed" }, 400);
       }
-
-      const body = await c.req.json<{
-        userId: string;
-        items: { productId: string; variantId?: string; quantity: number }[];
-        paymentMethod: string;
-        shippingAddress: { city: string; address: string; postal_code: string; recipient_name: string; phone: string };
-        couponCode?: string;
-      }>();
-
-      const { userId = 'usr_customer1', items = [], paymentMethod = 'Zarinpal Shetab Gateway', shippingAddress, couponCode } = body;
-
-      if (items.length === 0) return c.json({ error: "Cart is empty" }, 400);
-
-      const orderId = `ord_${Date.now()}`;
-      const orderNumber = `SHK-${Math.floor(100000 + Math.random() * 900000)}`;
-      const trackingCode = `TPX-${Math.floor(1000000000 + Math.random() * 9000000000)}`;
-      const now = Date.now();
-
-      let orderTotal = 0;
-      const createdItems: any[] = [];
-
-      // Process items and check/deduct inventory atomically
-      this.ctx.storage.transactionSync(() => {
-        for (const item of items) {
-          const pRows = this.ctx.storage.sql.exec(`SELECT * FROM products WHERE id = ?`, item.productId).toArray();
-          if (pRows.length === 0) continue;
-          const p: any = pRows[0];
-
-          if (p.stock < item.quantity) {
-            throw new Error(`Stock unavailable for product ${p.title_fa}`);
-          }
-
-          let unitPrice = Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100);
-          if (item.variantId) {
-            const vRows = this.ctx.storage.sql.exec(`SELECT * FROM product_variants WHERE id = ?`, item.variantId).toArray();
-            if (vRows.length > 0) unitPrice = (vRows[0] as any).price_tomans;
-          }
-
-          const lineTotal = unitPrice * item.quantity;
-          const commissionRate = 0.08;
-          const commission = Math.round(lineTotal * commissionRate);
-          const vendorPayout = lineTotal - commission;
-
-          orderTotal += lineTotal;
-
-          // Deduct stock
-          this.ctx.storage.sql.exec(`UPDATE products SET stock = stock - ? WHERE id = ?`, item.quantity, p.id);
-          this.ctx.storage.sql.exec(`UPDATE vendors SET total_sales = total_sales + 1, balance_tomans = balance_tomans + ? WHERE id = ?`, vendorPayout, p.vendor_id);
-
-          const itemId = `ori_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`;
-          this.ctx.storage.sql.exec(`
-            INSERT INTO order_items (id, order_id, vendor_id, product_id, variant_id, product_title, quantity, unit_price_tomans, commission_tomans, vendor_payout_tomans, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'processing')
-          `, itemId, orderId, p.vendor_id, p.id, item.variantId || null, p.title_fa, item.quantity, unitPrice, commission, vendorPayout);
-
-          createdItems.push({ id: itemId, product_title: p.title_fa, quantity: item.quantity, unitPrice });
-        }
-
-        // Add 10% tax + shipping flat 65000
-        const grandTotal = Math.round(orderTotal * 1.10) + 65000;
-
-        // Insert Order
-        this.ctx.storage.sql.exec(`
-          INSERT INTO orders (id, order_number, user_id, total_tomans, status, payment_method, shipping_address_json, tracking_code, idempotency_key, created_at)
-          VALUES (?, ?, ?, ?, 'paid', ?, ?, ?, ?, ?)
-        `, orderId, orderNumber, userId, grandTotal, paymentMethod, JSON.stringify(shippingAddress), trackingCode, idempotencyKey, now);
-
-        // Fraud anomaly check: high velocity or large amount trigger alert
-        if (grandTotal > 200000000) {
-          this.ctx.storage.sql.exec(`
-            INSERT INTO fraud_alerts (id, order_id, user_id, risk_score, reason, status, created_at)
-            VALUES (?, ?, ?, 85, 'High value transaction exceeding threshold requiring manual verification', 'flagged', ?)
-          `, `frd_${now}`, orderId, userId, now);
-        }
-      });
-
-      logAudit(userId, "CHECKOUT_SUCCESS", orderId, { orderNumber, total: orderTotal, paymentMethod });
-
-      return c.json({
-        success: true,
-        order: {
-          id: orderId,
-          orderNumber,
-          trackingCode,
-          totalTomans: orderTotal,
-          status: "paid",
-          items: createdItems,
-          created_at: now
-        }
-      });
     });
 
     // Orders History & Tracking
