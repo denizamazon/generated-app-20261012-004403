@@ -330,13 +330,23 @@
       const [vendors, setVendors] = useState([]);
       const [loading, setLoading] = useState(true);
 
-      // Cart & Wishlist States
-      const [cart, setCart] = useState([
-        { productId: 'prd_1', variantId: 'prd_1_v1', quantity: 1 }
-      ]);
-      const [wishlist, setWishlist] = useState(['prd_2', 'prd_8']);
-      const [isCartOpen, setIsCartOpen] = useState(false);
-      const [isAiOpen, setIsAiOpen] = useState(false);
+	      // Cart & Wishlist States
+	      const [cart, setCart] = useState([
+	        { productId: 'prd_1', variantId: 'prd_1_v1', quantity: 1 }
+	      ]);
+	      const [wishlist, setWishlist] = useState(['prd_2', 'prd_8']);
+	      const [isCartOpen, setIsCartOpen] = useState(false);
+	      const [isAiOpen, setIsAiOpen] = useState(false);
+	      const [isAuthOpen, setIsAuthOpen] = useState(false);
+	      const [isAppInstallOpen, setIsAppInstallOpen] = useState(false);
+	      const [user, setUser] = useState({
+	        id: 'usr_customer1',
+	        name: 'نوید رضایی',
+	        email: 'navid@gmail.com',
+	        phone: '09124444444',
+	        role: 'customer',
+	        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80'
+	      });
 
       // Search & Autocomplete
       const [searchQuery, setSearchQuery] = useState('');
@@ -465,6 +475,14 @@
             </div>
 
             <div className="flex items-center gap-4">
+              {/* Install App Quick Action */}
+              <button onClick={() => setIsAppInstallOpen(true)} className="text-teal-300 hover:text-teal-200 font-bold flex items-center gap-1 bg-teal-500/20 border border-teal-500/30 px-2.5 py-0.5 rounded-full text-[11px] transition">
+                <i data-lucide="smartphone" className="w-3.5 h-3.5 text-teal-400"></i>
+                <span>{lang === 'fa' ? 'نصب اپلیکیشن' : 'Install App'}</span>
+              </button>
+
+              <span className="text-slate-700">|</span>
+
               {/* Language Switcher */}
               <button onClick={toggleLanguage} className="flex items-center gap-1.5 hover:text-teal-400 transition">
                 <i data-lucide="globe" className="w-3.5 h-3.5"></i>
@@ -586,38 +604,68 @@
                 )}
               </div>
 
-              {/* Action Navigation Buttons */}
-              <div className="flex items-center gap-3">
-                {/* AI Assistant Floating Trigger */}
-                <button
-                  onClick={() => setIsAiOpen(true)}
-                  className="relative group bg-gradient-to-r from-teal-500/20 to-amber-500/20 hover:from-teal-500/30 hover:to-amber-500/30 border border-teal-500/40 text-teal-300 text-xs font-bold px-3.5 py-2.5 rounded-2xl flex items-center gap-2 transition shadow-lg shadow-teal-500/10"
-                >
-                  <i data-lucide="sparkles" className="w-4 h-4 text-amber-400 animate-spin"></i>
-                  <span className="hidden sm:inline">{lang === 'fa' ? 'دستیار AI شاهکار' : 'AI Advisor'}</span>
-                </button>
+	              {/* Action Navigation Buttons */}
+	              <div className="flex items-center gap-2.5">
+	                {/* User Login / Account Registration Button */}
+	                <button
+	                  onClick={() => setIsAuthOpen(true)}
+	                  className="relative p-2.5 bg-slate-900 border border-slate-700/80 rounded-2xl hover:bg-slate-800 text-slate-200 hover:text-white flex items-center gap-2 text-xs font-bold transition shadow-md"
+	                  title={user ? user.name : (lang === 'fa' ? 'ورود / ثبت‌نام کاربر' : 'User Sign In')}
+	                >
+	                  {user ? (
+	                    <>
+	                      <img src={user.avatar} alt={user.name} className="w-5 h-5 rounded-full object-cover border border-teal-400" />
+	                      <span className="hidden lg:inline text-teal-300 max-w-[100px] truncate">{user.name}</span>
+	                    </>
+	                  ) : (
+	                    <>
+	                      <i data-lucide="user" className="w-5 h-5 text-teal-400"></i>
+	                      <span className="hidden lg:inline">{lang === 'fa' ? 'ورود / ثبت‌نام' : 'Sign In'}</span>
+	                    </>
+	                  )}
+	                </button>
 
-                {/* Wishlist Button */}
-                <button
-                  onClick={() => setCurrentRoute('wishlist')}
-                  className="relative p-2.5 bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 text-slate-300 hover:text-white transition"
-                >
-                  <i data-lucide="heart" className="w-5 h-5"></i>
-                  {wishlist.length > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-amber-500 text-slate-950 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
-                      {wishlist.length}
-                    </span>
-                  )}
-                </button>
+	                {/* Mobile App Install Button */}
+	                <button
+	                  onClick={() => setIsAppInstallOpen(true)}
+	                  className="p-2.5 bg-slate-900/90 border border-teal-500/30 text-teal-300 hover:bg-teal-500/10 rounded-2xl flex items-center gap-1.5 text-xs font-bold transition shadow-md"
+	                  title={lang === 'fa' ? 'نصب اپلیکیشن موبایل' : 'Install Mobile App'}
+	                >
+	                  <i data-lucide="smartphone" className="w-5 h-5 text-amber-400"></i>
+	                  <span className="hidden md:inline">{lang === 'fa' ? 'اپلیکیشن' : 'App'}</span>
+	                </button>
 
-                {/* Orders History Button */}
-                <button
-                  onClick={() => setCurrentRoute('orders')}
-                  className="p-2.5 bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 text-slate-300 hover:text-white transition hidden sm:flex"
-                  title={lang === 'fa' ? 'سفارش‌های من' : 'My Orders'}
-                >
-                  <i data-lucide="package" className="w-5 h-5"></i>
-                </button>
+	                {/* AI Assistant Floating Trigger */}
+	                <button
+	                  onClick={() => setIsAiOpen(true)}
+	                  className="relative group bg-gradient-to-r from-teal-500/20 to-amber-500/20 hover:from-teal-500/30 hover:to-amber-500/30 border border-teal-500/40 text-teal-300 text-xs font-bold px-3 py-2.5 rounded-2xl flex items-center gap-2 transition shadow-lg shadow-teal-500/10"
+	                >
+	                  <i data-lucide="sparkles" className="w-4 h-4 text-amber-400 animate-spin"></i>
+	                  <span className="hidden xl:inline">{lang === 'fa' ? 'دستیار AI' : 'AI Advisor'}</span>
+	                </button>
+
+	                {/* Wishlist Button */}
+	                <button
+	                  onClick={() => setCurrentRoute('wishlist')}
+	                  className="relative p-2.5 bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 text-slate-300 hover:text-white transition"
+	                  title={lang === 'fa' ? 'علاقه‌مندی‌ها' : 'Wishlist'}
+	                >
+	                  <i data-lucide="heart" className="w-5 h-5"></i>
+	                  {wishlist.length > 0 && (
+	                    <span className="absolute -top-1 -right-1 bg-amber-500 text-slate-950 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+	                      {wishlist.length}
+	                    </span>
+	                  )}
+	                </button>
+
+	                {/* Orders History Button */}
+	                <button
+	                  onClick={() => setCurrentRoute('orders')}
+	                  className="p-2.5 bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 text-slate-300 hover:text-white transition hidden sm:flex"
+	                  title={lang === 'fa' ? 'سفارش‌های من' : 'My Orders'}
+	                >
+	                  <i data-lucide="package" className="w-5 h-5"></i>
+	                </button>
 
                 {/* Cart Drawer Trigger */}
                 <button
@@ -754,39 +802,59 @@
             )}
           </main>
 
-          {/* CART DRAWER */}
-          {isCartOpen && (
-            <CartDrawer
-              cart={cart}
-              products={products}
-              lang={lang}
-              onClose={() => setIsCartOpen(false)}
-              onUpdateQuantity={(pid, vid, qty) => {
-                if (qty <= 0) {
-                  setCart(prev => prev.filter(i => !(i.productId === pid && i.variantId === vid)));
-                } else {
-                  setCart(prev => prev.map(i => (i.productId === pid && i.variantId === vid) ? { ...i, quantity: qty } : i));
-                }
-              }}
-              onProceedCheckout={() => {
-                setIsCartOpen(false);
-                setCurrentRoute('checkout');
-              }}
-            />
-          )}
+	          {/* CART DRAWER */}
+	          {isCartOpen && (
+	            <CartDrawer
+	              cart={cart}
+	              products={products}
+	              lang={lang}
+	              onClose={() => setIsCartOpen(false)}
+	              onUpdateQuantity={(pid, vid, qty) => {
+	                if (qty <= 0) {
+	                  setCart(prev => prev.filter(i => !(i.productId === pid && i.variantId === vid)));
+	                } else {
+	                  setCart(prev => prev.map(i => (i.productId === pid && i.variantId === vid) ? { ...i, quantity: qty } : i));
+	                }
+	              }}
+	              onProceedCheckout={() => {
+	                setIsCartOpen(false);
+	                setCurrentRoute('checkout');
+	              }}
+	            />
+	          )}
 
-          {/* AI FLOATING ASSISTANT DRAWER */}
-          {isAiOpen && (
-            <AIAssistantDrawer
-              lang={lang}
-              onClose={() => setIsAiOpen(false)}
-              onSelectProduct={(id) => {
-                setSelectedProductId(id);
-                setCurrentRoute('product-detail');
-                setIsAiOpen(false);
-              }}
-            />
-          )}
+	          {/* AI FLOATING ASSISTANT DRAWER */}
+	          {isAiOpen && (
+	            <AIAssistantDrawer
+	              lang={lang}
+	              onClose={() => setIsAiOpen(false)}
+	              onSelectProduct={(id) => {
+	                setSelectedProductId(id);
+	                setCurrentRoute('product-detail');
+	                setIsAiOpen(false);
+	              }}
+	            />
+	          )}
+
+	          {/* AUTHENTICATION / LOGIN & REGISTER MODAL */}
+	          {isAuthOpen && (
+	            <AuthModal
+	              lang={lang}
+	              user={user}
+	              setUser={setUser}
+	              onClose={() => setIsAuthOpen(false)}
+	              onShowToast={showToast}
+	            />
+	          )}
+
+	          {/* APP INSTALL PWA MODAL */}
+	          {isAppInstallOpen && (
+	            <AppInstallModal
+	              lang={lang}
+	              onClose={() => setIsAppInstallOpen(false)}
+	              onShowToast={showToast}
+	            />
+	          )}
 
           {/* FOOTER */}
           <footer className="bg-slate-950 border-t border-slate-800 mt-20 text-slate-400 text-xs">
