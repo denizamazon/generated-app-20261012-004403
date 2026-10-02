@@ -857,6 +857,13 @@
     // --- HOME PAGE COMPONENT ---
     const HomePage = ({ products, vendors, lang, onSelectProduct, onSelectVendor, onAddToCart, onToggleWishlist, wishlist, onGoCatalog }) => {
       const featuredProducts = useMemo(() => products.filter(p => p.featured), [products]);
+      const [flashDeals, setFlashDeals] = useState([]);
+
+      useEffect(() => {
+        fetch('./api/flash-deals')
+          .then(r => r.json())
+          .then(setFlashDeals);
+      }, []);
 
       return (
         <div className="space-y-16">
@@ -931,6 +938,76 @@
 
             </div>
           </section>
+
+          {/* AMAZON LIGHTNING FLASH DEALS SECTION */}
+          {flashDeals.length > 0 && (
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="bg-gradient-to-r from-rose-950/80 via-slate-900 to-amber-950/80 rounded-3xl p-6 border border-rose-500/30 shadow-2xl relative overflow-hidden">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 bg-rose-500 text-white rounded-2xl animate-pulse">
+                      <i data-lucide="zap" className="w-6 h-6"></i>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-black text-white flex items-center gap-2">
+                        {lang === 'fa' ? 'حراج صاعقه‌ای شاهکار (Lightning Flash Deals)' : 'Shahkar Lightning Flash Deals'}
+                        <span className="text-[10px] bg-rose-500/30 text-rose-300 border border-rose-500/40 px-2 py-0.5 rounded-full font-bold">زنده</span>
+                      </h3>
+                      <p className="text-xs text-slate-300 mt-0.5">
+                        {lang === 'fa' ? 'تخفیف‌های ویژه لحظه‌ای با ظرفیت محدود' : 'Limited inventory deals updating every hour'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-950/80 border border-slate-800 px-4 py-2 rounded-2xl flex items-center gap-2 text-xs font-mono font-bold text-amber-400">
+                    <i data-lucide="clock" className="w-4 h-4 text-rose-400"></i>
+                    <span>زمان باقی‌مانده: ۰۳:۴۲:۱۹</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {flashDeals.map(fd => (
+                    <div key={fd.id} className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-rose-500/50 transition">
+                      <div className="relative mb-3 cursor-pointer" onClick={() => onSelectProduct(fd.id)}>
+                        <img src={fd.images[0]} alt={fd.title_fa} className="w-full h-36 object-cover rounded-xl" />
+                        <span className="absolute top-2 right-2 bg-rose-500 text-white text-[11px] font-black px-2 py-0.5 rounded-lg shadow">
+                          ٪{toPersianDigits(fd.discount_percent)} تخفیف
+                        </span>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h4 onClick={() => onSelectProduct(fd.id)} className="text-xs font-bold text-white line-clamp-1 cursor-pointer hover:text-teal-300">
+                          {lang === 'fa' ? fd.title_fa : fd.title_en}
+                        </h4>
+                        <div className="flex justify-between items-baseline">
+                          <span className="text-xs text-amber-400 font-mono font-bold">{formatTomans(fd.final_price_tomans, lang)}</span>
+                          <span className="text-[10px] text-slate-500 line-through font-mono">{formatTomans(fd.base_price_tomans, lang)}</span>
+                        </div>
+
+                        {/* Claimed progress bar */}
+                        <div>
+                          <div className="flex justify-between text-[10px] text-slate-400 mb-1">
+                            <span>{toPersianDigits(fd.claimed_percent)}٪ رزرو شده</span>
+                            <span className="text-rose-400 font-bold">{toPersianDigits(fd.stock_remaining)} عدد باقیمانده</span>
+                          </div>
+                          <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                            <div className="h-full bg-gradient-to-r from-amber-400 to-rose-500 rounded-full" style={{ width: `${fd.claimed_percent}%` }}></div>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => onAddToCart(fd.id)}
+                          className="w-full mt-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-slate-950 font-black text-xs py-2 rounded-xl transition"
+                        >
+                          خرید با تخفیف صاعقه‌ای
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
 
           {/* FEATURED PRODUCTS CAROUSEL / GRID */}
           <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1176,6 +1253,7 @@
       const [active3DModel, setActive3DModel] = useState('watch');
       const [newRating, setNewRating] = useState(5);
       const [newComment, setNewComment] = useState('');
+      const [isB2BOpen, setIsB2BOpen] = useState(false);
 
       useEffect(() => {
         fetch(`./api/products/${productId}`)
@@ -1305,13 +1383,21 @@
               )}
 
               {/* Action Buttons */}
-              <div className="flex gap-4 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <button
                   onClick={() => onAddToCart(product.id, selectedVariant?.id)}
                   className="flex-1 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-extrabold py-3.5 rounded-2xl shadow-xl shadow-teal-500/20 transition flex justify-center items-center gap-2"
                 >
                   <i data-lucide="shopping-bag" className="w-5 h-5"></i>
                   <span>{lang === 'fa' ? 'افزودن به سبد خرید' : 'Add to Shopping Cart'}</span>
+                </button>
+
+                <button
+                  onClick={() => setIsB2BOpen(true)}
+                  className="bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500 hover:text-slate-950 font-bold px-4 py-3.5 rounded-2xl transition flex items-center justify-center gap-1.5 text-xs"
+                >
+                  <i data-lucide="briefcase" className="w-4 h-4"></i>
+                  <span>{lang === 'fa' ? 'استعلام قیمت عمده B2B' : 'B2B Wholesale Quote'}</span>
                 </button>
 
                 <button
@@ -1323,6 +1409,16 @@
                   <i data-lucide="heart" className="w-5 h-5"></i>
                 </button>
               </div>
+
+              {/* B2B Wholesale Modal */}
+              {isB2BOpen && (
+                <B2BWholesaleQuoteModal
+                  product={product}
+                  lang={lang}
+                  onClose={() => setIsB2BOpen(false)}
+                  onSuccess={(msg) => alert(msg)}
+                />
+              )}
 
               {/* Tech Specs */}
               <div className="border-t border-slate-800 pt-6">

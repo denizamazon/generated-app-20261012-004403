@@ -1331,3 +1331,20 @@ export class App extends DurableObject {
     return this.app.fetch(request);
   }
 }
+
+export default {
+  async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
+    const url = new URL(request.url);
+    if (url.pathname.includes("/api/")) {
+      if (env.APP) {
+        const id = env.APP.idFromName("global_shahkar_store");
+        const stub = env.APP.get(id);
+        return stub.fetch(request);
+      }
+    }
+    if (env.ASSETS) {
+      return env.ASSETS.fetch(request);
+    }
+    return new Response("Not Found", { status: 404 });
+  }
+};
