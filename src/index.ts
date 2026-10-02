@@ -543,6 +543,10 @@ export class App extends DurableObject {
       return c.json({ status: "ok", system: "Shahkar Commerce Engine", timestamp: new Date().toISOString() });
     });
 
+    this.app.get("/favicon.ico", (c) => {
+      return c.redirect("/favicon.svg");
+    });
+
     // Reset Seed
     this.app.post("/api/seed/reset", (c) => {
       this.ctx.storage.sql.exec(`
@@ -1318,6 +1322,12 @@ export class App extends DurableObject {
   }
 
   async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    const apiIndex = url.pathname.indexOf("/api/");
+    if (apiIndex !== -1) {
+      url.pathname = url.pathname.substring(apiIndex);
+      return this.app.fetch(new Request(url.toString(), request));
+    }
     return this.app.fetch(request);
   }
 }
