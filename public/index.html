@@ -2776,6 +2776,296 @@
       );
     };
 
+    // --- AUTHENTICATION / LOGIN & REGISTER MODAL ---
+    const AuthModal = ({ lang, user, setUser, onClose, onShowToast }) => {
+      const [step, setStep] = useState('phone'); // 'phone' | 'otp'
+      const [phoneOrEmail, setPhoneOrEmail] = useState(user ? user.phone : '09124444444');
+      const [otpCode, setOtpCode] = useState('');
+      const [selectedRole, setSelectedRole] = useState(user ? user.role : 'customer');
+      const [userName, setUserName] = useState(user ? user.name : 'نوید رضایی');
+
+      const handleSendOtp = (e) => {
+        e.preventDefault();
+        if (!phoneOrEmail.trim()) return;
+        setStep('otp');
+        onShowToast(lang === 'fa' ? 'کد تایید ۴ رقمی ارسال گردید (کد تست: ۱۲۳۴)' : '4-digit OTP sent (Test Code: 1234)');
+      };
+
+      const handleVerifyOtp = (e) => {
+        e.preventDefault();
+        const newUser = {
+          id: selectedRole === 'vendor' ? 'usr_vendor1' : selectedRole === 'admin' ? 'usr_admin' : 'usr_customer1',
+          name: userName || (selectedRole === 'vendor' ? 'کوروش هخامنش' : selectedRole === 'admin' ? 'سروش علوی' : 'نوید رضایی'),
+          email: phoneOrEmail.includes('@') ? phoneOrEmail : 'navid@gmail.com',
+          phone: phoneOrEmail,
+          role: selectedRole,
+          avatar: selectedRole === 'vendor' 
+            ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
+            : selectedRole === 'admin' 
+            ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
+            : 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80'
+        };
+        setUser(newUser);
+        onShowToast(lang === 'fa' ? `ورود با موفقیت انجام شد. خوش آمدید ${newUser.name}` : `Welcome back ${newUser.name}`);
+        onClose();
+      };
+
+      const switchDemoUser = (role) => {
+        setSelectedRole(role);
+        if (role === 'admin') {
+          setUserName('سروش علوی (مدیر ارشد شاهکار)');
+          setPhoneOrEmail('09121111111');
+        } else if (role === 'vendor') {
+          setUserName('کوروش هخامنش (مدیر آریا تک)');
+          setPhoneOrEmail('09122222222');
+        } else {
+          setUserName('نوید رضایی (خریدار ویژه)');
+          setPhoneOrEmail('09124444444');
+        }
+      };
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+          <div className="glass-panel p-6 rounded-3xl border-slate-700 max-w-md w-full space-y-6 shadow-2xl relative">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-teal-500/20 border border-teal-500/40 flex items-center justify-center font-bold text-teal-300">
+                  <i data-lucide="user-check" className="w-4 h-4 text-teal-400"></i>
+                </div>
+                <h3 className="text-base font-bold text-white">
+                  {user ? (lang === 'fa' ? 'حساب کاربری شاهکار' : 'Shahkar Account') : (lang === 'fa' ? 'ورود / ثبت‌نام در شاهکار' : 'Sign In / Register')}
+                </h3>
+              </div>
+              <button onClick={onClose} className="text-slate-400 hover:text-white">
+                <i data-lucide="x" className="w-5 h-5"></i>
+              </button>
+            </div>
+
+            {/* Quick Role Switcher */}
+            <div className="bg-slate-900 p-2 rounded-2xl border border-slate-800 space-y-2">
+              <span className="text-[11px] text-slate-400 font-bold block px-2">
+                {lang === 'fa' ? 'سوییچ سریع نقش کاربری (RBAC):' : 'Quick Role Switch (RBAC):'}
+              </span>
+              <div className="grid grid-cols-3 gap-1.5 text-xs">
+                <button
+                  onClick={() => switchDemoUser('customer')}
+                  className={`py-1.5 px-2 rounded-xl text-[11px] font-bold transition border ${
+                    selectedRole === 'customer' ? 'bg-teal-500/20 text-teal-300 border-teal-500/40' : 'bg-slate-950 text-slate-400 border-transparent'
+                  }`}
+                >
+                  {lang === 'fa' ? 'خریدار' : 'Customer'}
+                </button>
+                <button
+                  onClick={() => switchDemoUser('vendor')}
+                  className={`py-1.5 px-2 rounded-xl text-[11px] font-bold transition border ${
+                    selectedRole === 'vendor' ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-slate-950 text-slate-400 border-transparent'
+                  }`}
+                >
+                  {lang === 'fa' ? 'فروشنده' : 'Vendor'}
+                </button>
+                <button
+                  onClick={() => switchDemoUser('admin')}
+                  className={`py-1.5 px-2 rounded-xl text-[11px] font-bold transition border ${
+                    selectedRole === 'admin' ? 'bg-rose-500/20 text-rose-300 border-rose-500/40' : 'bg-slate-950 text-slate-400 border-transparent'
+                  }`}
+                >
+                  {lang === 'fa' ? 'مدیر کل' : 'Admin'}
+                </button>
+              </div>
+            </div>
+
+            {step === 'phone' ? (
+              <form onSubmit={handleSendOtp} className="space-y-4 text-xs">
+                <div>
+                  <label className="text-slate-300 block mb-1 font-medium">
+                    {lang === 'fa' ? 'شماره موبایل یا ایمیل:' : 'Mobile Number or Email:'}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={phoneOrEmail}
+                    onChange={(e) => setPhoneOrEmail(e.target.value)}
+                    placeholder="09121111111 or user@domain.com"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-teal-400 font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-300 block mb-1 font-medium">
+                    {lang === 'fa' ? 'نام و نام خانوادگی:' : 'Full Name:'}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-teal-400"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-black py-3.5 rounded-xl shadow-lg transition"
+                >
+                  {lang === 'fa' ? 'دریافت کد یک‌بار مصرف (OTP)' : 'Send Verification OTP'}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyOtp} className="space-y-4 text-xs">
+                <div className="bg-teal-500/10 p-3 rounded-xl border border-teal-500/30 text-teal-300 text-[11px]">
+                  کد تایید ۴ رقمی به شماره <strong className="font-mono">{phoneOrEmail}</strong> ارسال شد. (کد تست: ۱۲۳۴)
+                </div>
+
+                <div>
+                  <label className="text-slate-300 block mb-1 font-medium">کد تایید (OTP):</label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={4}
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value)}
+                    placeholder="1234"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-center text-lg tracking-widest text-teal-400 font-mono focus:outline-none focus:border-teal-400"
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setStep('phone')}
+                    className="px-4 py-3 bg-slate-800 text-slate-300 rounded-xl font-bold"
+                  >
+                    اصلاح شماره
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 bg-gradient-to-r from-teal-500 to-teal-600 text-slate-950 font-black py-3 rounded-xl shadow-lg"
+                  >
+                    تایید و ورود به سیستم
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {user && (
+              <div className="border-t border-slate-800 pt-4 flex justify-between items-center text-xs">
+                <div className="flex items-center gap-3">
+                  <img src={user.avatar} alt="u" className="w-9 h-9 rounded-full object-cover border border-teal-400" />
+                  <div>
+                    <span className="font-bold text-white block">{user.name}</span>
+                    <span className="text-[10px] text-teal-400 font-mono">نقش: {user.role}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setUser(null);
+                    onShowToast(lang === 'fa' ? 'از حساب کاربری خارج شدید' : 'Signed out successfully', 'info');
+                    onClose();
+                  }}
+                  className="text-rose-400 hover:text-rose-300 font-bold border border-rose-500/30 bg-rose-500/10 px-3 py-1.5 rounded-xl"
+                >
+                  خروج
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    // --- APP INSTALL PWA MODAL ---
+    const AppInstallModal = ({ lang, onClose, onShowToast }) => {
+      const handleInstallClick = () => {
+        onShowToast(lang === 'fa' ? 'اپلیکیشن شاهکار با موفقیت به صفحه اصلی اضافه گردید!' : 'Shahkar App installed to Home Screen!');
+        onClose();
+      };
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+          <div className="glass-panel p-6 rounded-3xl border-slate-700 max-w-lg w-full space-y-6 shadow-2xl relative">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-teal-500 via-amber-400 to-teal-300 p-[2px]">
+                  <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                    <span className="text-lg font-black gold-gradient-text">شـ</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-white">
+                    {lang === 'fa' ? 'نصب اپلیکیشن هوشمند شاهکار' : 'Install Shahkar Mobile App'}
+                  </h3>
+                  <span className="text-[10px] text-teal-400 font-mono">PWA Native Web App • iOS & Android</span>
+                </div>
+              </div>
+              <button onClick={onClose} className="text-slate-400 hover:text-white">
+                <i data-lucide="x" className="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              {/* Feature Highlights Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 space-y-1">
+                  <div className="flex items-center gap-1.5 text-teal-300 font-bold">
+                    <i data-lucide="zap" className="w-4 h-4 text-amber-400"></i>
+                    <span>سرعت ۱۰ برابری</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">بارگذاری آنی صفحات حتی در سرعت اینترنت پایین.</p>
+                </div>
+
+                <div className="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 space-y-1">
+                  <div className="flex items-center gap-1.5 text-teal-300 font-bold">
+                    <i data-lucide="map-pin" className="w-4 h-4 text-teal-400"></i>
+                    <span>ردیابی زنده GPS</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">مشاهده لحظه‌ای موقعیت پیک و سفیر توزیع.</p>
+                </div>
+
+                <div className="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 space-y-1">
+                  <div className="flex items-center gap-1.5 text-teal-300 font-bold">
+                    <i data-lucide="bell" className="w-4 h-4 text-rose-400"></i>
+                    <span>نوتیفیکیشن حراج</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">اطلاع آنی از حراج‌های صاعقه‌ای ۵۰ درصدی.</p>
+                </div>
+
+                <div className="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 space-y-1">
+                  <div className="flex items-center gap-1.5 text-teal-300 font-bold">
+                    <i data-lucide="wifi-off" className="w-4 h-4 text-indigo-400"></i>
+                    <span>عملکرد آفلاین</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">دسترسی به کاتالوگ و فاکتورها بدون اینترنت.</p>
+                </div>
+              </div>
+
+              {/* Install Step Instructions */}
+              <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                <h4 className="font-bold text-amber-300 text-xs">راهنمای نصب سریع روی گوشی:</h4>
+                <div className="space-y-2 text-[11px] text-slate-300">
+                  <div className="flex items-start gap-2">
+                    <span className="bg-teal-500/20 text-teal-300 rounded-full w-4 h-4 flex items-center justify-center font-bold text-[10px] mt-0.5">۱</span>
+                    <span><strong>در اندروید (Chrome):</strong> روی منوی سه نقطه دکمه بالای مرورگر کلیک کرده و گزینه <strong>«Add to Home screen»</strong> یا <strong>«نصب اپلیکیشن»</strong> را انتخاب کنید.</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="bg-teal-500/20 text-teal-300 rounded-full w-4 h-4 flex items-center justify-center font-bold text-[10px] mt-0.5">۲</span>
+                    <span><strong>در آیفون (Safari):</strong> روی آیکون <strong>Share</strong> (کادر با فلش رو به بالا) کلیک کرده و گزینه <strong>«Add to Home Screen»</strong> را بزنید.</span>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={handleInstallClick}
+                className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-black py-3.5 rounded-2xl shadow-xl shadow-teal-500/20 transition flex items-center justify-center gap-2"
+              >
+                <i data-lucide="download" className="w-4 h-4"></i>
+                <span>{lang === 'fa' ? 'افزودن مستقیم اپلیکیشن به صفحه اصلی' : 'Add App to Home Screen'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
     // Render Root
     const root = createRoot(document.getElementById("root"));
     root.render(<App />);
