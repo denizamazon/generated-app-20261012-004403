@@ -1329,6 +1329,10 @@ export class App extends DurableObject {
 
   async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
+    if (url.pathname.endsWith("/favicon.ico") || url.pathname.endsWith("/favicon.svg")) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="25" fill="#0d9488"/><text x="50" y="65" font-size="55" font-weight="bold" fill="#facc15" text-anchor="middle" font-family="sans-serif">شـ</text></svg>`;
+      return new Response(svg, { headers: { "Content-Type": "image/svg+xml" } });
+    }
     const apiIndex = url.pathname.indexOf("/api/");
     if (apiIndex !== -1) {
       url.pathname = url.pathname.substring(apiIndex);
