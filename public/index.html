@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>بازار بزرگ بین‌المللی شاهکار | Shahkar Global AI Marketplace</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%230d9488'/><text x='50' y='65' font-size='55' font-weight='bold' fill='%23facc15' text-anchor='middle' font-family='sans-serif'>شـ</text></svg>">
+  <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%230d9488'/><text x='50' y='65' font-size='55' font-weight='bold' fill='%23facc15' text-anchor='middle' font-family='sans-serif'>شـ</text></svg>">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -376,6 +377,22 @@
       if (str === null || str === undefined) return '';
       const persianDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
       return str.toString().replace(/[0-9]/g, w => persianDigits[parseInt(w)]);
+    };
+
+    // Safe Lucide Icon Wrapper Component
+    const Icon = ({ name, className = "w-5 h-5", ...props }) => {
+      const containerRef = useRef(null);
+
+      useEffect(() => {
+        if (containerRef.current && window.lucide) {
+          containerRef.current.innerHTML = `<i data-lucide="${name}" class="${className}"></i>`;
+          window.lucide.createIcons({
+            targets: [containerRef.current]
+          });
+        }
+      }, [name, className]);
+
+      return <span ref={containerRef} className="inline-flex items-center justify-center shrink-0" {...props} />;
     };
 
     // --- 3D THREE.JS CANVAS COMPONENT ---
@@ -752,17 +769,23 @@
               {/* Search Bar with Live Autocomplete Trigger */}
               <div className="flex-1 max-w-2xl relative hidden md:block">
                 <div className="relative">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      setIsSearchOpen(true);
-                    }}
-                    onFocus={() => setIsSearchOpen(true)}
-                    placeholder={lang === 'fa' ? 'جستجوی هوشمند در میلیون‌ها کالای فاخر و فروشندگان برتر...' : 'Search millions of verified products, brands and artisan stores...'}
-                    className="w-full bg-slate-900/90 border border-slate-700/60 rounded-2xl py-2.5 px-10 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 transition-all shadow-inner"
-                  />
+	                  <input
+	                    type="text"
+	                    value={searchQuery}
+	                    onChange={(e) => {
+	                      setSearchQuery(e.target.value);
+	                      setIsSearchOpen(true);
+	                    }}
+	                    onFocus={() => setIsSearchOpen(true)}
+	                    onKeyDown={(e) => {
+	                      if (e.key === 'Enter') {
+	                        setCurrentRoute('catalog');
+	                        setIsSearchOpen(false);
+	                      }
+	                    }}
+	                    placeholder={lang === 'fa' ? 'جستجوی هوشمند در میلیون‌ها کالای فاخر و فروشندگان برتر...' : 'Search millions of verified products, brands and artisan stores...'}
+	                    className="w-full bg-slate-900/90 border border-slate-700/60 rounded-2xl py-2.5 px-10 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 transition-all shadow-inner"
+	                  />
                   <i data-lucide="search" className="w-4 h-4 text-slate-400 absolute right-3.5 top-3"></i>
                   {searchQuery && (
                     <button onClick={() => setSearchQuery('')} className="absolute left-3 top-3 text-slate-500 hover:text-slate-300">
