@@ -100,7 +100,6 @@ let dbReviews: Review[] = [];
 let dbOrders: Order[] = [];
 let dbAuditLogs: AuditLog[] = [];
 let dbSettlements: any[] = [];
-let dbB2bQuotes: any[] = [];
 
 function seedDatabase() {
   if (seeded) return;
@@ -785,26 +784,37 @@ app.post('/api/vendor/products', async (c) => {
   return c.json({ success: true, productId: newId });
 });
 
-// Primary Worker Handler with static asset bypass for /api/
+// Normalized Worker Handler
 export default {
   async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
-    const url = new URL(request.url);
+    const originalUrl = new URL(request.url);
+
+    // Normalize path from preview proxy
+    let path = originalUrl.pathname;
+    const previewIdx = path.indexOf('/preview/');
+    if (previewIdx !== -1) {
+      const parts = path.substring(previewIdx + 9).split('/');
+      parts.shift(); // remove branch
+      path = '/' + parts.join('/');
+    }
 
     // Favicon handling
-    if (url.pathname.endsWith("/favicon.ico") || url.pathname.endsWith("/favicon.svg")) {
+    if (path === "/favicon.ico" || path === "/favicon.svg") {
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="25" fill="#0d9488"/><text x="50" y="65" font-size="55" font-weight="bold" fill="#facc15" text-anchor="middle" font-family="sans-serif">شـ</text></svg>`;
       return new Response(svg, { headers: { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=86400" } });
     }
 
-    // Direct API route matching
-    if (url.pathname.includes("/api/")) {
-      return app.fetch(request, env, ctx);
+    // Handle API requests via Hono
+    if (path.startsWith("/api/")) {
+      const apiReq = new Request(new URL(path + originalUrl.search, originalUrl.origin), request);
+      return app.fetch(apiReq, env, ctx);
     }
 
-    // Static Assets serving
+    // Handle Static Assets
     if (env.ASSETS) {
       try {
-        const assetRes = await env.ASSETS.fetch(request);
+        const assetReq = new Request(new URL(path === "" ? "/" : path, originalUrl.origin), request);
+        const assetRes = await env.ASSETS.fetch(assetReq);
         if (assetRes.status !== 404) {
           return assetRes;
         }
@@ -813,7 +823,16 @@ export default {
       }
     }
 
-    // Fallback API or HTML
-    return app.fetch(request, env, ctx);
+    // Fallback: serve index.html via asset fetcher
+    if (env.ASSETS) {
+      try {
+        const indexReq = new Request(new URL("/index.html", originalUrl.origin), request);
+        return await env.ASSETS.fetch(indexReq);
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    return new Response("Shahkar Marketplace Ready", { status: 200 });
   }
 };
