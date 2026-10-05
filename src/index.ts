@@ -1328,6 +1328,11 @@ export class App extends DurableObject {
   }
 
   async fetch(request: Request): Promise<Response> {
+    try {
+      this.initDatabase();
+    } catch (e) {
+      // Table creation errors ignored if already existing
+    }
     const url = new URL(request.url);
     if (url.pathname.endsWith("/favicon.ico") || url.pathname.endsWith("/favicon.svg")) {
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="25" fill="#0d9488"/><text x="50" y="65" font-size="55" font-weight="bold" fill="#facc15" text-anchor="middle" font-family="sans-serif">شـ</text></svg>`;
@@ -1339,10 +1344,30 @@ export class App extends DurableObject {
       return this.app.fetch(new Request(url.toString(), request));
     }
     if (this.env && (this.env as any).ASSETS) {
-      return (this.env as any).ASSETS.fetch(request);
+      const assetRes = await (this.env as any).ASSETS.fetch(request);
+      if (assetRes.status !== 404) {
+        return assetRes;
+      }
     }
     return this.app.fetch(request);
   }
 }
+
+export default {
+  async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
+    const url = new URL(request.url);
+    if (url.pathname.endsWith("/favicon.ico") || url.pathname.endsWith("/favicon.svg")) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="25" fill="#0d9488"/><text x="50" y="65" font-size="55" font-weight="bold" fill="#facc15" text-anchor="middle" font-family="sans-serif">شـ</text></svg>`;
+      return new Response(svg, { headers: { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=86400" } });
+    }
+    if (env.ASSETS) {
+      const assetRes = await env.ASSETS.fetch(request);
+      if (assetRes.status !== 404) {
+        return assetRes;
+      }
+    }
+    return new Response("Shahkar Platform Ready", { status: 200 });
+  }
+};
 
 

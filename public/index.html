@@ -552,12 +552,337 @@
       );
     };
 
+    // --- 3-LINE HAMBURGER DRAWER MENU COMPONENT ---
+    const HamburgerDrawerMenu = ({
+      isOpen,
+      onClose,
+      lang,
+      onSelectLang,
+      themeMode,
+      onToggleTheme,
+      currency,
+      onToggleCurrency,
+      currentRoute,
+      onNavigate,
+      user,
+      onOpenAuth,
+      onOpenInstallApp,
+      onOpenAi,
+      showToast
+    }) => {
+      if (!isOpen) return null;
+
+      const languages = [
+        { code: 'fa', name: 'فارسی', flag: '🇮🇷' },
+        { code: 'en', name: 'English', flag: '🇬🇧' },
+        { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+        { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+        { code: 'ur', name: 'اردو', flag: '🇵🇰' },
+      ];
+
+      const dict = {
+        menuTitle: { fa: 'منوی اصلی و تنظیمات', en: 'Main Menu & Settings', ar: 'القائمة الرئيسية والإعدادات', tr: 'Ana Menü ve Ayarlar', ur: 'مرکزی مینو اور ترتیبات' },
+        home: { fa: 'صفحه اصلی', en: 'Home', ar: 'الصفحة الرئيسية', tr: 'Ana Sayfa', ur: 'ہوم پیج' },
+        catalog: { fa: 'کاتالوگ و ویترین کالاها', en: 'Product Catalog', ar: 'كتالوج المنتجات', tr: 'Ürün Kataloğu', ur: 'مصنوعات کا کیٹلاگ' },
+        flashDeals: { fa: 'حراج‌های صاعقه‌ای', en: 'Lightning Deals', ar: 'التخفيضات السريعة', tr: 'Flaş İndirimler', ur: 'فلیش ڈیلز' },
+        sellerHub: { fa: 'پنل فروشندگان', en: 'Seller Hub', ar: 'لوحة البائعين', tr: 'Satıcı Paneli', ur: 'بائع کا ڈیش بورڈ' },
+        wishlist: { fa: 'لیست علاقه‌مندی‌ها', en: 'Wishlist', ar: 'قائمة الرغبات', tr: 'Favorilerim', ur: 'خواہشات کی فہرست' },
+        myOrders: { fa: 'سفارش‌های من', en: 'My Orders', ar: 'طلباتي', tr: 'Siparişlerim', ur: 'میرے آرڈرز' },
+        aiAdvisor: { fa: 'دستیار هوشمند خرید AI', en: 'AI Advisor', ar: 'مساعد الذكاء الاصطناعي', tr: 'Yapay Zeka Asistanı', ur: 'مصنوعی ذہانت معاون' },
+        settings: { fa: 'تنظیمات سامانه', en: 'System Settings', ar: 'إعدادات النظام', tr: 'Sistem Ayarları', ur: 'سسٹم کی ترتیبات' },
+        selectLang: { fa: 'تغییر زبان (Select Language)', en: 'Select Language', ar: 'اختر اللغة', tr: 'Dil Seçimi', ur: 'زبان منتخب کریں' },
+        colorTheme: { fa: 'حالت نمایش (Theme)', en: 'Color Theme', ar: 'مظهر الصفحة', tr: 'Tema Seçimi', ur: 'تھیم کا انتخاب' },
+        currency: { fa: 'واحد پول (Currency)', en: 'Currency', ar: 'العملة', tr: 'Para Birimi', ur: 'کرنسی' },
+        helpAndSupport: { fa: 'راهنما و پشتیبانی مشتریان', en: 'Help & Support', ar: 'المساعدة والدعم', tr: 'Yardım ve Destek', ur: 'مدد اور سپورٹ' },
+        logistics: { fa: 'پیگیری زنده مرسولات', en: 'Live Tracking', ar: 'تتبع الشحنات', tr: 'Kargo Takip', ur: 'لائیو ٹریکنگ' },
+        guarantee: { fa: 'ضمانت اصالت و بازگشت', en: 'Authenticity Guarantee', ar: 'ضمان الأصالة', tr: 'Orijinallik Garantisi', ur: 'اصلیت کی ضمانت' },
+        contact: { fa: 'تماس با پشتیبانی ۲۴/۷', en: '24/7 Support', ar: 'الدعم ٢٤/٧', tr: '7/24 Destek', ur: '24/7 سپورٹ' },
+        darkMode: { fa: 'حالت تاریک (شب)', en: 'Dark Mode', ar: 'الوضع الداكن', tr: 'Karanlık Mod', ur: 'ڈارک موڈ' },
+        lightMode: { fa: 'حالت روشن (روز)', en: 'Light Mode', ar: 'الوضع الفاتح', tr: 'Aydınlık Mod', ur: 'لائٹ موڈ' },
+        installApp: { fa: 'نصب اپلیکیشن موبایل', en: 'Install Mobile App', ar: 'تثبيت التطبيق', tr: 'Uygulamayı Yükle', ur: 'ایپ انسٹال کریں' },
+        securityAudit: { fa: 'مانیتورینگ و امنیت', en: 'Security Audit', ar: 'الرصد والأمان', tr: 'Güvenlik Denetimi', ur: 'سیکیورٹی آڈٹ' },
+      };
+
+      const t = (key) => dict[key]?.[lang] || dict[key]?.fa || key;
+
+      return (
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          {/* Backdrop overlay */}
+          <div
+            onClick={onClose}
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity duration-300"
+          />
+
+          {/* Slide-out drawer panel */}
+          <div className={`fixed top-0 bottom-0 ${['en', 'tr'].includes(lang) ? 'left-0 border-r' : 'right-0 border-l'} w-88 max-w-[88vw] bg-slate-950 border-slate-800 p-6 z-50 flex flex-col justify-between overflow-y-auto shadow-2xl transition-transform duration-300`}>
+            
+            <div className="space-y-6">
+              {/* Header Bar */}
+              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-teal-500/20 border border-teal-500/40 flex items-center justify-center font-bold text-teal-300">
+                    <i data-lucide="menu" className="w-5 h-5 text-teal-400"></i>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-white">{t('menuTitle')}</h3>
+                    <span className="text-[10px] text-teal-400 font-mono">Shahkar Global System</span>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={onClose}
+                  className="p-2 rounded-xl bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition"
+                >
+                  <i data-lucide="x" className="w-5 h-5"></i>
+                </button>
+              </div>
+
+              {/* User Profile Card */}
+              <div className="glass-panel p-4 rounded-2xl border-slate-800 flex items-center justify-between">
+                {user ? (
+                  <div className="flex items-center gap-3">
+                    <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-xl object-cover border border-teal-400" />
+                    <div>
+                      <h4 className="text-xs font-bold text-white">{user.name}</h4>
+                      <span className="text-[10px] text-teal-400 bg-teal-500/10 border border-teal-500/20 px-2 py-0.5 rounded-md font-mono">
+                        {user.role === 'customer' ? 'خریدار ویژه' : 'فروشنده معتبر'}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-2">
+                      <i data-lucide="user" className="w-5 h-5 text-teal-400"></i>
+                      <span className="text-xs font-bold text-slate-300">ورود / ثبت‌نام کاربر</span>
+                    </div>
+                    <button
+                      onClick={() => { onClose(); onOpenAuth(); }}
+                      className="bg-teal-500 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-xl hover:bg-teal-400 transition"
+                    >
+                      ورود
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Navigation Items */}
+              <div className="space-y-1.5">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block px-2 mb-1">
+                  {lang === 'fa' ? 'بخش‌های اصلی' : 'Main Navigation'}
+                </span>
+
+                <button
+                  onClick={() => { onNavigate('home'); onClose(); }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
+                    currentRoute === 'home' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'
+                  }`}
+                >
+                  <i data-lucide="home" className="w-4 h-4 text-teal-400"></i>
+                  <span>{t('home')}</span>
+                </button>
+
+                <button
+                  onClick={() => { onNavigate('catalog'); onClose(); }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
+                    currentRoute === 'catalog' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'
+                  }`}
+                >
+                  <i data-lucide="grid" className="w-4 h-4 text-amber-400"></i>
+                  <span>{t('catalog')}</span>
+                </button>
+
+                <button
+                  onClick={() => { onNavigate('home'); onClose(); }}
+                  className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-300 hover:bg-slate-900 transition"
+                >
+                  <div className="flex items-center gap-3">
+                    <i data-lucide="zap" className="w-4 h-4 text-rose-400"></i>
+                    <span>{t('flashDeals')}</span>
+                  </div>
+                  <span className="bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md animate-pulse">زنده</span>
+                </button>
+
+                <button
+                  onClick={() => { onNavigate('vendor-dashboard'); onClose(); }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
+                    currentRoute === 'vendor-dashboard' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'
+                  }`}
+                >
+                  <i data-lucide="store" className="w-4 h-4 text-teal-400"></i>
+                  <span>{t('sellerHub')}</span>
+                </button>
+
+                <button
+                  onClick={() => { onNavigate('wishlist'); onClose(); }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
+                    currentRoute === 'wishlist' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'
+                  }`}
+                >
+                  <i data-lucide="heart" className="w-4 h-4 text-rose-400"></i>
+                  <span>{t('wishlist')}</span>
+                </button>
+
+                <button
+                  onClick={() => { onNavigate('orders'); onClose(); }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
+                    currentRoute === 'orders' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'
+                  }`}
+                >
+                  <i data-lucide="package" className="w-4 h-4 text-amber-400"></i>
+                  <span>{t('myOrders')}</span>
+                </button>
+
+                <button
+                  onClick={() => { onClose(); onOpenAi(); }}
+                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-teal-300 hover:bg-slate-900 transition"
+                >
+                  <i data-lucide="sparkles" className="w-4 h-4 text-teal-400 animate-spin"></i>
+                  <span>{t('aiAdvisor')}</span>
+                </button>
+              </div>
+
+              {/* SETTINGS SECTION (زبان، درون‌مایه شب/روز، واحد پول) */}
+              <div className="space-y-3 pt-4 border-t border-slate-800">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block px-2">
+                  {t('settings')}
+                </span>
+
+                {/* Language Selector in 3-Line Menu */}
+                <div className="glass-panel p-3.5 rounded-2xl border-slate-800 space-y-2.5">
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-200">
+                    <i data-lucide="globe" className="w-4 h-4 text-teal-400"></i>
+                    <span>{t('selectLang')}</span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    {languages.map(l => (
+                      <button
+                        key={l.code}
+                        onClick={() => onSelectLang(l.code)}
+                        className={`flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-medium border transition ${
+                          lang === l.code
+                            ? 'bg-teal-500/20 border-teal-400 text-teal-300 font-bold shadow-md shadow-teal-500/10'
+                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                        }`}
+                      >
+                        <span className="text-base">{l.flag}</span>
+                        <span>{l.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Dark / Light Theme Mode Toggle */}
+                <div className="glass-panel p-3.5 rounded-2xl border-slate-800 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5 text-xs font-bold text-slate-200">
+                    <i data-lucide={themeMode === 'dark' ? 'moon' : 'sun'} className={`w-4 h-4 ${themeMode === 'dark' ? 'text-indigo-400' : 'text-amber-400'}`}></i>
+                    <span>{t('colorTheme')}</span>
+                  </div>
+
+                  <button
+                    onClick={onToggleTheme}
+                    className="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs font-bold hover:border-slate-700 transition"
+                  >
+                    {themeMode === 'dark' ? (
+                      <>
+                        <i data-lucide="moon" className="w-3.5 h-3.5 text-indigo-400"></i>
+                        <span className="text-indigo-300">{t('darkMode')}</span>
+                      </>
+                    ) : (
+                      <>
+                        <i data-lucide="sun" className="w-3.5 h-3.5 text-amber-400"></i>
+                        <span className="text-amber-300">{t('lightMode')}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Currency Selector */}
+                <div className="glass-panel p-3.5 rounded-2xl border-slate-800 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5 text-xs font-bold text-slate-200">
+                    <i data-lucide="coins" className="w-4 h-4 text-amber-400"></i>
+                    <span>{t('currency')}</span>
+                  </div>
+
+                  <button
+                    onClick={onToggleCurrency}
+                    className="bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs font-bold font-mono text-amber-300 hover:border-slate-700 transition"
+                  >
+                    {currency === 'TOMAN' ? 'تومان (IRR)' : 'USD ($)'}
+                  </button>
+                </div>
+              </div>
+
+              {/* HELP & SUPPORT SECTION (راهنما، پیگیری، ضمانت، درباره، تماس) */}
+              <div className="space-y-1.5 pt-4 border-t border-slate-800">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block px-2">
+                  {t('helpAndSupport')}
+                </span>
+
+                <button
+                  onClick={() => { onNavigate('orders'); onClose(); }}
+                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-900 transition"
+                >
+                  <i data-lucide="truck" className="w-4 h-4 text-teal-400"></i>
+                  <span>{t('logistics')}</span>
+                </button>
+
+                <button
+                  onClick={() => { showToast(lang === 'fa' ? 'تمامی کالاهای بازار شاهکار دارای ۷ روز ضمانت اصالت و بازگشت وجه هستند.' : '7 Days Authenticity Guarantee', 'info'); }}
+                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-900 transition"
+                >
+                  <i data-lucide="shield-check" className="w-4 h-4 text-amber-400"></i>
+                  <span>{t('guarantee')}</span>
+                </button>
+
+                <button
+                  onClick={() => { showToast(lang === 'fa' ? 'پشتیبانی ۲۴ ساعته: ۰۲۱-۸۸۸۸۹۹۹۹ | support@shahkar.ir' : 'Call 24/7 Support: +982188889999', 'info'); }}
+                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-900 transition"
+                >
+                  <i data-lucide="headphones" className="w-4 h-4 text-indigo-400"></i>
+                  <span>{t('contact')}</span>
+                </button>
+
+                <button
+                  onClick={() => { onNavigate('analytics'); onClose(); }}
+                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-900 transition"
+                >
+                  <i data-lucide="lock" className="w-4 h-4 text-rose-400"></i>
+                  <span>{t('securityAudit')}</span>
+                </button>
+              </div>
+
+              {/* INSTALL MOBILE APP CTA */}
+              <div className="pt-2">
+                <button
+                  onClick={() => { onClose(); onOpenInstallApp(); }}
+                  className="w-full bg-gradient-to-r from-teal-500/20 to-amber-500/20 border border-teal-500/30 text-teal-300 hover:bg-teal-500/30 font-bold text-xs py-3 rounded-2xl flex items-center justify-center gap-2 transition"
+                >
+                  <i data-lucide="smartphone" className="w-4 h-4 text-amber-400"></i>
+                  <span>{t('installApp')}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Footer info in drawer */}
+            <div className="pt-6 border-t border-slate-800/80 text-[10px] text-slate-500 text-center space-y-1">
+              <p>© 2026 Shahkar Global Commerce</p>
+              <p className="font-mono text-teal-400/60">Cloudflare DO & Next-Gen Engine</p>
+            </div>
+
+          </div>
+        </div>
+      );
+    };
+
     // --- MAIN APP CONTAINER ---
     const App = () => {
       // Global States
-      const [lang, setLang] = useState('fa'); // 'fa' | 'en'
+      const [lang, setLang] = useState('fa'); // 'fa' | 'en' | 'ar' | 'tr' | 'ur'
       const [dir, setDir] = useState('rtl');
       const [currency, setCurrency] = useState('TOMAN'); // 'TOMAN' | 'USD'
+      const [themeMode, setThemeMode] = useState('dark'); // 'dark' | 'light'
+      const [isMenuOpen, setIsMenuOpen] = useState(false);
       const [currentRoute, setCurrentRoute] = useState('home'); // home, catalog, product-detail, cart, checkout, orders, vendor-dashboard, vendor-store, wishlist, analytics
       const [selectedProductId, setSelectedProductId] = useState('prd_1');
       const [selectedVendorId, setSelectedVendorId] = useState('vnd_1');
@@ -568,23 +893,23 @@
       const [vendors, setVendors] = useState([]);
       const [loading, setLoading] = useState(true);
 
-	      // Cart & Wishlist States
-	      const [cart, setCart] = useState([
-	        { productId: 'prd_1', variantId: 'prd_1_v1', quantity: 1 }
-	      ]);
-	      const [wishlist, setWishlist] = useState(['prd_2', 'prd_8']);
-	      const [isCartOpen, setIsCartOpen] = useState(false);
-	      const [isAiOpen, setIsAiOpen] = useState(false);
-	      const [isAuthOpen, setIsAuthOpen] = useState(false);
-	      const [isAppInstallOpen, setIsAppInstallOpen] = useState(false);
-	      const [user, setUser] = useState({
-	        id: 'usr_customer1',
-	        name: 'نوید رضایی',
-	        email: 'navid@gmail.com',
-	        phone: '09124444444',
-	        role: 'customer',
-	        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80'
-	      });
+      // Cart & Wishlist States
+      const [cart, setCart] = useState([
+        { productId: 'prd_1', variantId: 'prd_1_v1', quantity: 1 }
+      ]);
+      const [wishlist, setWishlist] = useState(['prd_2', 'prd_8']);
+      const [isCartOpen, setIsCartOpen] = useState(false);
+      const [isAiOpen, setIsAiOpen] = useState(false);
+      const [isAuthOpen, setIsAuthOpen] = useState(false);
+      const [isAppInstallOpen, setIsAppInstallOpen] = useState(false);
+      const [user, setUser] = useState({
+        id: 'usr_customer1',
+        name: 'نوید رضایی',
+        email: 'navid@gmail.com',
+        phone: '09124444444',
+        role: 'customer',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80'
+      });
 
       // Search & Autocomplete
       const [searchQuery, setSearchQuery] = useState('');
@@ -601,12 +926,38 @@
       };
 
       // Language & Direction Sync
-      const toggleLanguage = () => {
-        const next = lang === 'fa' ? 'en' : 'fa';
-        setLang(next);
-        setDir(next === 'fa' ? 'rtl' : 'ltr');
-        document.documentElement.setAttribute('dir', next === 'fa' ? 'rtl' : 'ltr');
-        document.documentElement.setAttribute('lang', next);
+      const handleSelectLang = (newLang) => {
+        setLang(newLang);
+        const rtlLangs = ['fa', 'ar', 'ur'];
+        const newDir = rtlLangs.includes(newLang) ? 'rtl' : 'ltr';
+        setDir(newDir);
+        document.documentElement.setAttribute('dir', newDir);
+        document.documentElement.setAttribute('lang', newLang);
+        const msgs = {
+          fa: 'زبان سیستم به فارسی تغییر یافت',
+          en: 'Language set to English',
+          ar: 'تم تغییر اللغة إلى العربية',
+          tr: 'Dil Türkçe olarak ayarlandı',
+          ur: 'زبان اردو پر سیٹ کر دی گئی'
+        };
+        showToast(msgs[newLang] || msgs.fa);
+      };
+
+      const handleToggleTheme = () => {
+        const nextTheme = themeMode === 'dark' ? 'light' : 'dark';
+        setThemeMode(nextTheme);
+        if (nextTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        showToast(nextTheme === 'dark' ? (lang === 'fa' ? 'حالت شب (تاریک) فعال شد' : 'Dark Mode Enabled') : (lang === 'fa' ? 'حالت روز (روشن) فعال شد' : 'Light Mode Enabled'));
+      };
+
+      const handleToggleCurrency = () => {
+        const nextCurr = currency === 'TOMAN' ? 'USD' : 'TOMAN';
+        setCurrency(nextCurr);
+        showToast(nextCurr === 'TOMAN' ? 'واحد پول: تومان' : 'Currency: USD ($)');
       };
 
       // Fetch Initial Data
@@ -703,8 +1054,8 @@
           {/* TOP ANNOUNCEMENT BAR */}
           <div className="bg-gradient-to-r from-teal-950 via-slate-900 to-amber-950 text-slate-300 text-xs py-2 px-4 border-b border-slate-800 flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider">
-                {lang === 'fa' ? 'جشنواره نوروز ۱۴۰۵' : 'NOROOZ FESTIVAL'}
+              <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider">
+                {lang === 'fa' ? 'جشنواره بین‌المللی شاهکار' : 'SHAHKAR FESTIVAL'}
               </span>
               <span className="hidden sm:inline text-slate-300">
                 {lang === 'fa' ? 'ارسال رایگان اکسپرس سراسری با کد تخفیف: ' : 'Free Global Express Shipping with Code: '}
@@ -712,57 +1063,43 @@
               </span>
             </div>
 
-            <div className="flex items-center gap-4">
-              {/* Install App Quick Action */}
-              <button onClick={() => setIsAppInstallOpen(true)} className="text-teal-300 hover:text-teal-200 font-bold flex items-center gap-1 bg-teal-500/20 border border-teal-500/30 px-2.5 py-0.5 rounded-full text-[11px] transition">
-                <i data-lucide="smartphone" className="w-3.5 h-3.5 text-teal-400"></i>
-                <span>{lang === 'fa' ? 'نصب اپلیکیشن' : 'Install App'}</span>
-              </button>
-
-              <span className="text-slate-700">|</span>
-
-              {/* Language Switcher */}
-              <button onClick={toggleLanguage} className="flex items-center gap-1.5 hover:text-teal-400 transition">
-                <i data-lucide="globe" className="w-3.5 h-3.5"></i>
-                <span>{lang === 'fa' ? 'English (LTR)' : 'فارسی (RTL)'}</span>
-              </button>
-
-              <span className="text-slate-700">|</span>
-
-              {/* Currency Toggle */}
-              <button onClick={() => setCurrency(c => c === 'TOMAN' ? 'USD' : 'TOMAN')} className="font-mono text-xs hover:text-amber-400 transition">
-                {currency === 'TOMAN' ? 'تومان (IRR)' : 'USD ($)'}
-              </button>
-
-              <span className="text-slate-700">|</span>
-
-              {/* Vendor Portal Quick Access */}
-              <button onClick={() => setCurrentRoute('vendor-dashboard')} className="text-teal-400 hover:text-teal-300 font-medium flex items-center gap-1">
-                <i data-lucide="store" className="w-3.5 h-3.5"></i>
-                <span>{lang === 'fa' ? 'پنل فروشندگان' : 'Seller Hub'}</span>
-              </button>
+            <div className="flex items-center gap-4 text-xs">
+              <span className="text-teal-400/90 font-medium hidden md:inline">
+                {lang === 'fa' ? 'پشتیبانی ۲۴ ساعته: ۰۲۱-۸۸۸۸۹۹۹۹' : '24/7 Support: +982188889999'}
+              </span>
             </div>
           </div>
 
           {/* MAIN HEADER / NAVIGATION */}
           <header className="sticky top-0 z-40 glass-panel border-b border-slate-800/80">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4 sm:gap-6">
               
-              {/* Brand Logo */}
-              <div className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentRoute('home')}>
-                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-500 via-amber-400 to-teal-300 p-[2px] shadow-lg shadow-teal-500/20">
-                  <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-                    <span className="text-xl font-black gold-gradient-text">شـ</span>
+              {/* 3-Line Hamburger Menu & Brand Logo */}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setIsMenuOpen(true)}
+                  className="p-2.5 bg-slate-900 border border-slate-700/80 rounded-2xl hover:bg-slate-800 text-slate-200 hover:text-white flex items-center gap-2 text-xs font-bold transition shadow-md group shrink-0"
+                  title={lang === 'fa' ? 'منوی اصلی و تنظیمات' : 'Main Menu & Settings'}
+                >
+                  <i data-lucide="menu" className="w-5 h-5 text-teal-400 group-hover:scale-110 transition-transform"></i>
+                  <span className="hidden sm:inline">{lang === 'fa' ? 'منو' : 'Menu'}</span>
+                </button>
+
+                <div className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentRoute('home')}>
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-500 via-amber-400 to-teal-300 p-[2px] shadow-lg shadow-teal-500/20">
+                    <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                      <span className="text-xl font-black gold-gradient-text">شـ</span>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <h1 className="text-xl font-black tracking-tight text-white flex items-center gap-2">
-                    {lang === 'fa' ? 'شاهـکــار' : 'SHAHKAR'}
-                    <span className="text-[10px] bg-teal-500/20 text-teal-300 px-1.5 py-0.5 rounded border border-teal-500/30 font-mono">GLOBAL</span>
-                  </h1>
-                  <p className="text-[10px] text-slate-400 tracking-wider">
-                    {lang === 'fa' ? 'اکوسیستم بازار جهانی هوشمند' : 'AI Multi-Vendor Ecosystem'}
-                  </p>
+                  <div className="hidden min-[420px]:block">
+                    <h1 className="text-xl font-black tracking-tight text-white flex items-center gap-2">
+                      {lang === 'fa' ? 'شاهـکــار' : 'SHAHKAR'}
+                      <span className="text-[10px] bg-teal-500/20 text-teal-300 px-1.5 py-0.5 rounded border border-teal-500/30 font-mono">GLOBAL</span>
+                    </h1>
+                    <p className="text-[10px] text-slate-400 tracking-wider">
+                      {lang === 'fa' ? 'اکوسیستم بازار جهانی هوشمند' : 'AI Multi-Vendor Ecosystem'}
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -1046,7 +1383,26 @@
             )}
           </main>
 
-	          {/* CART DRAWER */}
+		          {/* 3-LINE HAMBURGER MENU DRAWER */}
+		          <HamburgerDrawerMenu
+		            isOpen={isMenuOpen}
+		            onClose={() => setIsMenuOpen(false)}
+		            lang={lang}
+		            onSelectLang={handleSelectLang}
+		            themeMode={themeMode}
+		            onToggleTheme={handleToggleTheme}
+		            currency={currency}
+		            onToggleCurrency={handleToggleCurrency}
+		            currentRoute={currentRoute}
+		            onNavigate={(route) => setCurrentRoute(route)}
+		            user={user}
+		            onOpenAuth={() => setIsAuthOpen(true)}
+		            onOpenInstallApp={() => setIsAppInstallOpen(true)}
+		            onOpenAi={() => setIsAiOpen(true)}
+		            showToast={showToast}
+		          />
+
+		          {/* CART DRAWER */}
 	          {isCartOpen && (
 	            <CartDrawer
 	              cart={cart}
