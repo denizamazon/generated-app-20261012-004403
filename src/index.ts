@@ -789,12 +789,15 @@ export default {
   async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
-    // Route /api/* requests to Hono
+    // Route /api/* requests to Hono with stripped path prefix
     if (url.pathname.includes("/api/")) {
-      return app.fetch(request, env, ctx);
+      const apiPath = url.pathname.substring(url.pathname.indexOf("/api/"));
+      const newUrl = new URL(apiPath + url.search, url.origin);
+      const apiRequest = new Request(newUrl.toString(), request);
+      return app.fetch(apiRequest, env, ctx);
     }
 
-    // Serve static assets
+    // Serve static assets from public/ via env.ASSETS
     if (env.ASSETS) {
       return env.ASSETS.fetch(request);
     }
