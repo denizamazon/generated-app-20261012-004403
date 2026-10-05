@@ -789,24 +789,16 @@ export default {
   async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
-    // If request contains /api/, delegate to Hono
+    // Route /api/* requests to Hono
     if (url.pathname.includes("/api/")) {
       return app.fetch(request, env, ctx);
     }
 
-    // Serve static assets from public/ via env.ASSETS
+    // Serve static assets
     if (env.ASSETS) {
-      try {
-        const res = await env.ASSETS.fetch(request);
-        if (res.status !== 404) {
-          return res;
-        }
-      } catch (e) {
-        console.error("ASSETS fetch error:", e);
-      }
+      return env.ASSETS.fetch(request);
     }
 
-    // Fallback response for index or SPA
     return app.fetch(request, env, ctx);
   }
 };
