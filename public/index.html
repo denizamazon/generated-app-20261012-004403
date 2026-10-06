@@ -65,10 +65,99 @@
       background-color: #05070d;
       color: #f1f5f9;
       overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
     
     .latin-font {
       font-family: 'Outfit', sans-serif;
+    }
+
+    /* --- LIGHT MODE / DAY MODE FULL SITE OVERRIDES --- */
+    html:not(.dark) body,
+    html:not(.dark) #root,
+    html:not(.dark) .app-container {
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+    }
+
+    html:not(.dark) .glass-panel {
+      background: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(16px) !important;
+      -webkit-backdrop-filter: blur(16px) !important;
+      border: 1px solid rgba(203, 213, 225, 0.8) !important;
+      color: #0f172a !important;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    html:not(.dark) .glass-card {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(14px) !important;
+      border: 1px solid rgba(226, 232, 240, 0.9) !important;
+      color: #0f172a !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    html:not(.dark) .glass-card:hover {
+      background: #ffffff !important;
+      border-color: #0d9488 !important;
+      box-shadow: 0 12px 32px -8px rgba(13, 148, 136, 0.2) !important;
+    }
+
+    html:not(.dark) header {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border-bottom-color: #e2e8f0 !important;
+    }
+
+    html:not(.dark) footer {
+      background-color: #f1f5f9 !important;
+      border-top-color: #e2e8f0 !important;
+      color: #475569 !important;
+    }
+
+    html:not(.dark) input,
+    html:not(.dark) select,
+    html:not(.dark) textarea {
+      background-color: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+
+    html:not(.dark) input::placeholder,
+    html:not(.dark) textarea::placeholder {
+      color: #64748b !important;
+    }
+
+    html:not(.dark) .text-white {
+      color: #0f172a !important;
+    }
+
+    html:not(.dark) .text-slate-100,
+    html:not(.dark) .text-slate-200,
+    html:not(.dark) .text-slate-300 {
+      color: #1e293b !important;
+    }
+
+    html:not(.dark) .text-slate-400 {
+      color: #475569 !important;
+    }
+
+    html:not(.dark) .bg-slate-900,
+    html:not(.dark) .bg-slate-950,
+    html:not(.dark) .bg-slate-900\/90,
+    html:not(.dark) .bg-slate-900\/80,
+    html:not(.dark) .bg-slate-900\/60,
+    html:not(.dark) .bg-slate-900\/40,
+    html:not(.dark) .bg-slate-950\/80,
+    html:not(.dark) .bg-slate-950\/60 {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+    }
+
+    html:not(.dark) .border-slate-800,
+    html:not(.dark) .border-slate-700,
+    html:not(.dark) .border-slate-800\/80,
+    html:not(.dark) .border-slate-800\/60 {
+      border-color: #e2e8f0 !important;
     }
 
     /* Glassmorphism & 3D Glass Button Styles */
@@ -107,7 +196,6 @@
       transform-style: preserve-3d;
     }
 
-    /* Convex Specular Lens Glare Curve (Top Glass Reflection) */
     button::before {
       content: '';
       position: absolute;
@@ -129,7 +217,6 @@
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.2) 60%, rgba(255, 255, 255, 0) 100%);
     }
 
-    /* Gloss Sheen Light Beam Sweep Effect */
     button::after {
       content: '';
       position: absolute;
@@ -148,7 +235,7 @@
       transform: translateX(380%) rotate(25deg);
     }
 
-    /* --- TEAL / CYAN 3D EMBOSSED GLASS (Primary Actions & CTAs) --- */
+    /* TEAL 3D EMBOSSED GLASS */
     button.bg-teal-500,
     button.bg-teal-600,
     button.bg-gradient-to-r.from-teal-500,
@@ -179,139 +266,14 @@
       box-shadow: 
         0 14px 32px -2px rgba(20, 184, 166, 0.75),
         0 4px 10px 0 rgba(0, 0, 0, 0.35),
-        inset 0 2px 1px 0 rgba(255, 255, 255, 1),
-        inset 0 -4px 10px 0 rgba(4, 47, 46, 0.5) !important;
+        inset 0 2px 1px 0 rgba(255, 255, 255, 1) !important;
     }
 
     button.bg-teal-500:active,
     button.bg-teal-600:active,
-    button.bg-gradient-to-r.from-teal-500:active,
     .btn-3d-teal:active {
       transform: translateY(2.5px) scale(0.985) !important;
       border-bottom-width: 1px !important;
-      box-shadow: 
-        0 2px 6px -1px rgba(20, 184, 166, 0.4),
-        inset 0 3px 6px rgba(0, 0, 0, 0.45) !important;
-    }
-
-    /* --- AMBER / GOLD 3D EMBOSSED GLASS (Flash Deals, B2B, AI) --- */
-    button.bg-amber-400,
-    button.bg-amber-500,
-    button.bg-gradient-to-r.from-amber-400,
-    button.bg-gradient-to-r.from-amber-500,
-    .btn-3d-amber {
-      background: linear-gradient(180deg, #fef08a 0%, #facc15 45%, #ca8a04 100%) !important;
-      border-top: 1.5px solid rgba(255, 255, 255, 0.9) !important;
-      border-left: 1px solid rgba(255, 255, 255, 0.45) !important;
-      border-right: 1px solid rgba(0, 0, 0, 0.25) !important;
-      border-bottom: 4px solid #854d0e !important;
-      box-shadow: 
-        0 8px 24px -2px rgba(234, 179, 8, 0.6),
-        0 2px 6px 0 rgba(0, 0, 0, 0.3),
-        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
-        inset 0 -3px 8px 0 rgba(113, 63, 18, 0.45) !important;
-      color: #1e1b4b !important;
-      font-weight: 800 !important;
-      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-    }
-
-    button.bg-amber-400:hover,
-    button.bg-amber-500:hover,
-    button.bg-gradient-to-r.from-amber-400:hover,
-    .btn-3d-amber:hover {
-      background: linear-gradient(180deg, #fef9c3 0%, #fde047 45%, #a16207 100%) !important;
-      transform: translateY(-3px) scale(1.015);
-      border-bottom-color: #713f12 !important;
-      border-bottom-width: 5px !important;
-      box-shadow: 
-        0 14px 32px -2px rgba(234, 179, 8, 0.8),
-        0 4px 10px 0 rgba(0, 0, 0, 0.35),
-        inset 0 2px 1px 0 rgba(255, 255, 255, 1) !important;
-    }
-
-    button.bg-amber-400:active,
-    button.bg-amber-500:active,
-    .btn-3d-amber:active {
-      transform: translateY(2.5px) scale(0.985) !important;
-      border-bottom-width: 1px !important;
-      box-shadow: 
-        0 2px 6px -1px rgba(234, 179, 8, 0.4),
-        inset 0 3px 6px rgba(0, 0, 0, 0.45) !important;
-    }
-
-    /* --- ROSE / RUBY 3D EMBOSSED GLASS (Discounts & Alerts) --- */
-    button.bg-rose-500,
-    button.bg-gradient-to-r.from-rose-500,
-    .btn-3d-rose {
-      background: linear-gradient(180deg, #fb7185 0%, #f43f5e 45%, #be123c 100%) !important;
-      border-top: 1.5px solid rgba(255, 255, 255, 0.8) !important;
-      border-left: 1px solid rgba(255, 255, 255, 0.35) !important;
-      border-bottom: 4px solid #881337 !important;
-      box-shadow: 
-        0 8px 24px -2px rgba(244, 63, 94, 0.6),
-        0 2px 6px 0 rgba(0, 0, 0, 0.35),
-        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.85),
-        inset 0 -3px 8px 0 rgba(76, 5, 25, 0.5) !important;
-      color: #ffffff !important;
-      font-weight: 800 !important;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-    }
-
-    button.bg-rose-500:hover,
-    button.bg-gradient-to-r.from-rose-500:hover,
-    .btn-3d-rose:hover {
-      background: linear-gradient(180deg, #fca5a5 0%, #fb7185 45%, #9f1239 100%) !important;
-      transform: translateY(-3px) scale(1.015);
-      border-bottom-width: 5px !important;
-      box-shadow: 
-        0 14px 32px -2px rgba(244, 63, 94, 0.8),
-        0 4px 10px 0 rgba(0, 0, 0, 0.4) !important;
-    }
-
-    button.bg-rose-500:active,
-    .btn-3d-rose:active {
-      transform: translateY(2.5px) scale(0.985) !important;
-      border-bottom-width: 1px !important;
-      box-shadow: 
-        0 2px 6px -1px rgba(244, 63, 94, 0.4),
-        inset 0 3px 6px rgba(0, 0, 0, 0.5) !important;
-    }
-
-    /* --- DARK OBSIDIAN TRANSLUCENT 3D GLASS (All Secondary, Nav, & Icon Buttons) --- */
-    button:not(.bg-teal-500):not(.bg-teal-600):not(.bg-amber-400):not(.bg-amber-500):not(.bg-rose-500) {
-      background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.98) 100%);
-      border-top: 1.5px solid rgba(255, 255, 255, 0.25);
-      border-left: 1px solid rgba(255, 255, 255, 0.15);
-      border-right: 1px solid rgba(0, 0, 0, 0.3);
-      border-bottom: 3.5px solid rgba(2, 6, 23, 0.98);
-      box-shadow: 
-        0 6px 18px -2px rgba(0, 0, 0, 0.7),
-        inset 0 1.5px 0 0 rgba(255, 255, 255, 0.25),
-        inset 0 -3px 6px 0 rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      color: #f1f5f9;
-      font-weight: 700;
-    }
-
-    button:not(.bg-teal-500):not(.bg-teal-600):not(.bg-amber-400):not(.bg-amber-500):not(.bg-rose-500):hover {
-      background: linear-gradient(180deg, rgba(51, 65, 85, 0.95) 0%, rgba(30, 41, 59, 0.99) 100%);
-      border-top-color: rgba(45, 212, 191, 0.6);
-      border-bottom-color: rgba(13, 148, 136, 0.9);
-      border-bottom-width: 4.5px;
-      transform: translateY(-2.5px);
-      box-shadow: 
-        0 10px 24px -2px rgba(20, 184, 166, 0.35),
-        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.4);
-      color: #ffffff;
-    }
-
-    button:not(.bg-teal-500):not(.bg-teal-600):not(.bg-amber-400):not(.bg-amber-500):not(.bg-rose-500):active {
-      transform: translateY(2.5px) !important;
-      border-bottom-width: 1px !important;
-      box-shadow: 
-        0 2px 6px rgba(0, 0, 0, 0.6),
-        inset 0 3px 5px rgba(0, 0, 0, 0.5) !important;
     }
 
     .gold-gradient-text {
@@ -361,16 +323,117 @@
     import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
     import { createRoot } from "react-dom/client";
 
-    // Helper functions
+    // --- MASTER INTERNATIONALIZATION DICTIONARY (FA, EN, AR, TR, UR) ---
+    const I18N_DICTIONARY = {
+      festivalNotice: { fa: 'جشنواره بین‌المللی شاهکار | تخفیف‌های ویژه کالاهای لوکس و دیجیتال', en: 'SHAHKAR FESTIVAL | Special Discounts on Luxury & Digital Goods', ar: 'مهرجان شاهكار الدولي | خصومات خاصة على السلع الفاخرة والرقمية', tr: 'SHAHKAR FESTİVALİ | Lüks ve Dijital Ürünlerde Özel İndirimler', ur: 'شاہکار عالمی میلہ | لگژری اور ڈیجیٹل اشیاء پر خصوصی رعایتیں' },
+      freeShippingNotice: { fa: 'ارسال رایگان اکسپرس سراسری با کد تخفیف: ', en: 'Free Global Express Shipping with Code: ', ar: 'شحن مجاني سريع مع رمز الخصم: ', tr: 'Kupon Kodu ile Ücretsiz Ekspres Kargo: ', ur: 'ڈسکاؤنٹ کوڈ کے ساتھ مفت ایکسپریس ترسیل: ' },
+      support247: { fa: 'پشتیبانی ۲۴ ساعته: ۰۲۱-۸۸۸۸۹۹۹۹', en: '24/7 Support: +982188889999', ar: 'الدعم على مدار الساعة: ٠٢١-٨٨٨٨٩٩٩٩', tr: '7/24 Destek: +982188889999', ur: '24/7 سپورٹ: +982188889999' },
+      menuBtn: { fa: 'منو', en: 'Menu', ar: 'القائمة', tr: 'Menü', ur: 'مینو' },
+      brandName: { fa: 'شاهـکــار', en: 'SHAHKAR', ar: 'شاهكار', tr: 'SHAHKAR', ur: 'شاہکار' },
+      brandTagline: { fa: 'اکوسیستم بازار جهانی هوشمند', en: 'AI Multi-Vendor Ecosystem', ar: 'منظومة السوق العالمي الذكي', tr: 'Yapay Zeka Çoklu Satıcı Ekosistemi', ur: 'مصنوعی ذہانت مارکیٹ پلیس' },
+      searchPlaceholder: { fa: 'جستجوی هوشمند در میلیون‌ها کالای فاخر، برندها و فروشندگان برتر...', en: 'Search millions of verified products, brands and artisan stores...', ar: 'ابحث في ملايين المنتجات الموثوقة والعلامات التجارية والمتاجر...', tr: 'Milyonlarca doğrulanmış ürün, marka ve mağazada arayın...', ur: 'لاکھوں تصدیق شدہ مصنوعات، برانڈز اور اسٹورز میں تلاش کریں...' },
+      suggestedKeywords: { fa: 'کلیدواژه‌های پیشنهادی:', en: 'Suggested Keywords:', ar: 'الكلمات المفتاحية المقترحة:', tr: 'Önerilen Anahtar Kelimeler:', ur: 'تجویز کردہ کلیدی الفاظ:' },
+      matchingProducts: { fa: 'محصولات مرتبط:', en: 'Matching Products:', ar: 'المنتجات المطابقة:', tr: 'Eşleşen Ürünler:', ur: 'متعلقہ مصنوعات:' },
+      signIn: { fa: 'ورود / ثبت‌نام', en: 'Sign In / Register', ar: 'تسجيل الدخول / التسجيل', tr: 'Giriş Yap / Kaydol', ur: 'سائن ان / رجسٹریشن' },
+      mobileApp: { fa: 'اپلیکیشن', en: 'Mobile App', ar: 'التطبيق', tr: 'Mobil Uygulama', ur: 'موبائل ایپ' },
+      aiAdvisor: { fa: 'دستیار AI', en: 'AI Advisor', ar: 'مساعد الذكاء الاصطناعي', tr: 'Yapay Zeka Asistanı', ur: 'مصنوعی ذہانت معاون' },
+      wishlist: { fa: 'علاقه‌مندی‌ها', en: 'Wishlist', ar: 'قائمة الرغبات', tr: 'Favorilerim', ur: 'خواہشات کی فہرست' },
+      myOrders: { fa: 'سفارش‌های من', en: 'My Orders', ar: 'طلباتي', tr: 'Siparişlerim', ur: 'میرے آرڈرز' },
+      cart: { fa: 'سبد خرید', en: 'Cart', ar: 'سلة التسوق', tr: 'Sepetim', ur: 'شاپنگ کارٹ' },
+      allCategories: { fa: 'دسته‌بندی کلیه محصولات', en: 'All Categories', ar: 'جميع الفئات', tr: 'Tüm Kategoriler', ur: 'تمام زمرے' },
+      securityAudit: { fa: 'مانیتورینگ و امنیت', en: 'Security & Audit', ar: 'الرصد والأمان', tr: 'Güvenlik Denetimi', ur: 'سیکیورٹی آڈٹ' },
+      home: { fa: 'صفحه اصلی', en: 'Home', ar: 'الصفحة الرئيسية', tr: 'Ana Sayfa', ur: 'ہوم پیج' },
+      catalog: { fa: 'کاتالوگ کالاها', en: 'Catalog', ar: 'كتالوج المنتجات', tr: 'Ürün Kataloğu', ur: 'کیٹلاگ' },
+      sellerHub: { fa: 'پنل فروشندگان', en: 'Seller Hub', ar: 'لوحة البائعين', tr: 'Satıcı Paneli', ur: 'سیلر ڈیش بورڈ' },
+      flashDeals: { fa: 'حراج صاعقه‌ای', en: 'Flash Deals', ar: 'العروض السريعة', tr: 'Flaş İndirimler', ur: 'فلیش ڈیلز' },
+      buyFlashDealBtn: { fa: 'خرید با تخفیف صاعقه‌ای', en: 'Buy Flash Deal Now', ar: 'اشتر الآن بالخصم السريع', tr: 'Flaş İndirimle Satın Al', ur: 'فلیش رعایت کے ساتھ خریدیں' },
+      timeLeft: { fa: 'زمان باقی‌مانده:', en: 'Time Remaining:', ar: 'الوقت المتبقي:', tr: 'Kalan Süre:', ur: 'باقی وقت:' },
+      reservedPercent: { fa: '٪ رزرو شده', en: '% Claimed', ar: '٪ محجوز', tr: '% Rezerve Edildi', ur: '٪ ریزرو شدہ' },
+      remainingCount: { fa: 'عدد باقیمانده', en: 'items left', ar: 'قطع متبقية', tr: 'ürün kaldı', ur: 'باقی ہیں' },
+      checkoutTitle: { fa: 'تکمیل سفارش و درگاه پرداخت', en: 'Secure Checkout & Payment', ar: 'إتمام الطلب والدفع الآمن', tr: 'Güvenli Ödeme ve Sipariş', ur: 'محفوظ چیک آؤٹ اور ادائیگی' },
+      shippingAddressTitle: { fa: '۱. آدرس گیرنده و استان/شهر تحویل', en: '1. Recipient Address & Province/City', ar: '١. عنوان المستلم والمحافظة والمدينة', tr: '1. Alıcı Adresi, İl ve İlçe', ur: '1. وصول کنندہ کا پتہ اور صوبہ/شہر' },
+      provinceLabel: { fa: 'استان محل سکونت:', en: 'Province / State:', ar: 'المحافظة:', tr: 'İl / Eyalet:', ur: 'صوبہ:' },
+      cityLabel: { fa: 'شهر محل تحویل:', en: 'City:', ar: 'المدينة:', tr: 'İlçe / Şehir:', ur: 'شہر:' },
+      selectProvincePlaceholder: { fa: '-- انتخاب استان --', en: '-- Select Province --', ar: '-- اختر المحافظة --', tr: '-- İl Seçiniz --', ur: '-- صوبہ منتخب کریں --' },
+      selectCityPlaceholder: { fa: '-- انتخاب شهر --', en: '-- Select City --', ar: '-- اختر المدينة --', tr: '-- Şehir Seçiniz --', ur: '-- شہر منتخب کریں --' },
+      recipientNameLabel: { fa: 'نام و نام خانوادگی گیرنده:', en: 'Recipient Full Name:', ar: 'اسم المستلم بالكامل:', tr: 'Alıcının Adı Soyadı:', ur: 'وصول کنندہ کا پورا نام:' },
+      addressLabel: { fa: 'نشانی دقیق پستی (خیابان، پلاک، واحد):', en: 'Detailed Street Address:', ar: 'العنوان التفصيلي:', tr: 'Açık Adres:', ur: 'مکمل پتہ:' },
+      postalCodeLabel: { fa: 'کد پستی ۱۰ رقمی:', en: '10-Digit Postal Code:', ar: 'الرمز البريدي:', tr: 'Posta Kodu:', ur: 'پوسٹل کوڈ:' },
+      phoneLabel: { fa: 'شماره تماس همراه:', en: 'Mobile Phone Number:', ar: 'رقم الهاتف المحمول:', tr: 'Cep Telefonu:', ur: 'موبائل فون:' },
+      paymentMethodTitle: { fa: '۲. انتخاب درگاه پرداخت ایمن', en: '2. Payment Method', ar: '٢. طريقة الدفع الآمنة', tr: '2. Ödeme Yöntemi', ur: '2. ادائیگی کا طریقہ' },
+      couponTitle: { fa: 'کد تخفیف و فاکتور نهایی', en: 'Coupon & Summary', ar: 'رمز الخصم والملخص', tr: 'Kupon ve Özet', ur: 'کوبن اور خلاصہ' },
+      applyCouponBtn: { fa: 'اعمال', en: 'Apply', ar: 'تطبيق', tr: 'Uygula', ur: 'لاگو کریں' },
+      subtotalLabel: { fa: 'جمع اقلام:', en: 'Subtotal:', ar: 'المجموع الفرعي:', tr: 'Ara Toplam:', ur: 'ذیلی کل:' },
+      itemDiscountLabel: { fa: 'تخفیف کالاها:', en: 'Product Savings:', ar: 'خصم المنتجات:', tr: 'Ürün İndirimi:', ur: 'مصنوعات کی رعایت:' },
+      shippingCostLabel: { fa: 'هزینه ارسال اکسپرس:', en: 'Express Shipping:', ar: 'رسوم الشحن السريع:', tr: 'Ekspres Kargo Ücreti:', ur: 'ترسیل کی فیس:' },
+      vatTaxLabel: { fa: 'مالیات بر ارزش افزوده (۱۰٪):', en: 'VAT (10%):', ar: 'ضريبة القيمة المضافة (۱۰٪):', tr: 'KDV (%10):', ur: 'ٹیکس (10%):' },
+      grandTotalLabel: { fa: 'مبلغ قابل پرداخت:', en: 'Grand Total:', ar: 'المبلغ الإجمالي:', tr: 'Toplam Tutar:', ur: 'کل قابل ادا رقم:' },
+      payAndOrderBtn: { fa: 'پرداخت نهایی و ثبت سفارش', en: 'Pay & Complete Order', ar: 'الدفع وتأكيد الطلب', tr: 'Öde و Siparişi Tamamla', ur: 'ادائیگی کریں اور آرڈر دیں' },
+      payingProcess: { fa: 'در حال پرداخت و صدور فاکتور...', en: 'Processing Payment & Invoice...', ar: 'جاري معالجة الدفع والفاتورة...', tr: 'Ödeme و Fatura İşleniyor...', ur: 'ادائیگی جاری ہے...' }
+    };
+
+    const t = (key, lang = 'fa') => {
+      if (I18N_DICTIONARY[key]) {
+        return I18N_DICTIONARY[key][lang] || I18N_DICTIONARY[key]['fa'] || key;
+      }
+      return key;
+    };
+
+    // --- IRAN PROVINCES & CITIES COMPREHENSIVE DATASET ---
+    const IRAN_PROVINCES = [
+      { name: 'تهران', name_en: 'Tehran', cities: ['تهران', 'شهریار', 'اسلام‌شهر', 'ملارد', 'قدس', 'ری', 'ورامین', 'دماوند', 'پردیس', 'فیروزکوه', 'پاکدشت', 'رباط‌کریم'] },
+      { name: 'اصفهان', name_en: 'Isfahan', cities: ['اصفهان', 'کاشان', 'خمینی‌شهر', 'نجف‌آباد', 'شاهین‌شهر', 'شهرضا', 'مبارکه', 'نائین', 'نطنز', 'زرین‌شهر', 'آران و بیدگل'] },
+      { name: 'خراسان رضوی', name_en: 'Khorasan Razavi', cities: ['مشهد', 'نیشابور', 'سبزوار', 'تربت حیدریه', 'قوچان', 'کاشمر', 'گناباد', 'سرخس', 'چناران', 'تایباد', 'خواف'] },
+      { name: 'فارس', name_en: 'Fars', cities: ['شیراز', 'مرودشت', 'کازرون', 'جهرم', 'فسا', 'داراب', 'لارستان', 'آباده', 'اقلید', 'لامرد', 'فیروزآباد'] },
+      { name: 'آذربایجان شرقی', name_en: 'East Azerbaijan', cities: ['تبریز', 'مراغه', 'مرند', 'میانه', 'اهر', 'بناب', 'سراب', 'جلفا', 'شبستر', 'ملکان', 'عجب‌شیر'] },
+      { name: 'خوزستان', name_en: 'Khuzestan', cities: ['اهواز', 'دزفول', 'آبادان', 'خرمشهر', 'ماهشهر', 'بهبهان', 'شوشتر', 'ایذه', 'امیدیه', 'شوش', 'اندیمشک'] },
+      { name: 'گیلان', name_en: 'Gilan', cities: ['رشت', 'انزلی', 'لاهیجان', 'تالش', 'لنگرود', 'رودسر', 'فومن', 'آستارا', 'صومعه‌سرا', 'آستانه اشرفیه'] },
+      { name: 'البرز', name_en: 'Alborz', cities: ['کرج', 'فردیس', 'هشتگرد', 'نظرآباد', 'طالقان', 'اشتهارد', 'چهارباغ', 'کمال‌شهر'] },
+      { name: 'کرمانشاه', name_en: 'Kermanshah', cities: ['کرمانشاه', 'اسلام‌آباد غرب', 'سرپل ذهاب', 'سنقر', 'کنگاور', 'پاوه', 'جوانرود', 'صحنه', 'گیلانغرب'] },
+      { name: 'قم', name_en: 'Qom', cities: ['قم', 'جعفریه', 'قنوات', 'دستجرد', 'کهک'] },
+      { name: 'سیستان و بلوچستان', name_en: 'Sistan and Baluchestan', cities: ['زاهدان', 'چابهار', 'زابل', 'ایرانشهر', 'سراوان', 'خاش', 'کنارک', 'نیک‌شهر', 'راسک'] },
+      { name: 'همدان', name_en: 'Hamedan', cities: ['همدان', 'ملایر', 'نهاوند', 'تویسرکان', 'کبودرآهنگ', 'اسدآباد', 'بهار', 'رزن'] },
+      { name: 'یزد', name_en: 'Yazd', cities: ['یزد', 'میبد', 'اردکان', 'بافق', 'مهریز', 'تفت', 'ابرقو', 'خاتم'] },
+      { name: 'کرمان', name_en: 'Kerman', cities: ['کرمان', 'سیرجان', 'رفسنجان', 'جیرفت', 'بم', 'زرند', 'کهنوج', 'شهربابک', 'بردسیر'] },
+      { name: 'مرکزی', name_en: 'Markazi', cities: ['اراک', 'ساوه', 'خمین', 'محلات', 'دلیجان', 'شازند', 'تفرش', 'آشتیان'] },
+      { name: 'هرمزگان', name_en: 'Hormozgan', cities: ['بندرعباس', 'میناب', 'قشم', 'کیش', 'بندرلنگه', 'حاجی‌آباد', 'رودان', 'جاسک', 'بستک'] },
+      { name: 'زنجان', name_en: 'Zanjan', cities: ['زنجان', 'ابهر', 'خرمدره', 'قیدار', 'طارم', 'ماهneshan'] },
+      { name: 'کردستان', name_en: 'Kurdistan', cities: ['سنندج', 'سقز', 'مریوان', 'بانه', 'قروه', 'بیجار', 'کامیاران', 'دیواندره'] },
+      { name: 'قزوین', name_en: 'Qazvin', cities: ['قزوین', 'تاکستان', 'الوند', 'آبیک', 'بویین‌زهرا', 'محمدیه'] },
+      { name: 'لرستان', name_en: 'Lorestan', cities: ['خرم‌آباد', 'بروجرد', 'دورود', 'کوهدشت', 'الیگودرز', 'نورآباد', 'الشتر', 'پلدختر'] },
+      { name: 'مازندران', name_en: 'Mazandaran', cities: ['ساری', 'بابل', 'آمل', 'قائم‌شهر', 'بهشهر', 'چالوس', 'تنکابن', 'رامسر', 'نوشهر', 'بابلسر', 'محمودآباد'] },
+      { name: 'گلستان', name_en: 'Golestan', cities: ['گرگان', 'گنبد کاووس', 'علی‌آباد کتول', 'بندر ترکمن', 'کردکوی', 'آق‌قلا', 'مینودشت', 'آزادشهر'] },
+      { name: 'آذربایجان غربی', name_en: 'West Azerbaijan', cities: ['ارومیه', 'خوی', 'میاندوآب', 'مهاباد', 'بوکان', 'سلماس', 'پیرانشهر', 'نقده', 'تکاب', 'سردشت'] },
+      { name: 'خراسان شمالی', name_en: 'North Khorasan', cities: ['بجنورد', 'شیروان', 'اسفراین', 'جاجرم', 'مانه و سملقان'] },
+      { name: 'سمنان', name_en: 'Semnan', cities: ['سمنان', 'شاهرود', 'دامغان', 'گرمسار', 'مهدی‌شهر', 'میامی'] },
+      { name: 'بوشهر', name_en: 'Bushehr', cities: ['بوشهر', 'دشتستان (برازجان)', 'گناوه', 'کنگان', 'عسلویه', 'تنگستان', 'جم', 'دیر'] },
+      { name: 'کهگیلویه و بویراحمد', name_en: 'Kohgiluyeh and Boyer-Ahmad', cities: ['یاسوج', 'دوگنبدان (گچساران)', 'دهدشت', 'سی‌سخت', 'لیکک'] },
+      { name: 'خراسان جنوبی', name_en: 'South Khorasan', cities: ['بیرجند', 'قائن', 'طبس', 'فردوس', 'نهبندان', 'سربیشه'] },
+      { name: 'ایلام', name_en: 'Ilam', cities: ['ایلام', 'دهلران', 'ایوان', 'آبدانان', 'مهران', 'چرداول'] },
+      { name: 'چهارمحال و بختیاری', name_en: 'Chaharmahal and Bakhtiari', cities: ['شهرکرد', 'بروجن', 'لردگان', 'فارسان', 'اردل', 'سامان'] },
+      { name: 'اردبیل', name_en: 'Ardabil', cities: ['اردبیل', 'پارس‌آباد', 'مشگین‌شهر', 'خلخال', 'گرمی', 'نمین', 'سرعین'] }
+    ];
+
+    // Helper formatting functions
     const formatTomans = (num, lang = 'fa') => {
-      if (!num) return '۰ تومان';
+      if (!num) return (lang === 'fa' || lang === 'ur' || lang === 'ar') ? '۰ تومان' : '$0 USD';
+      if (lang === 'en' || lang === 'tr') {
+        const usdVal = (num / 600000).toFixed(1);
+        const formatted = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return `$${usdVal} USD (${formatted} Tomans)`;
+      }
       const formatted = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "٫");
-      if (lang === 'fa') {
+      if (lang === 'fa' || lang === 'ur') {
         const persianDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
         const faNum = formatted.replace(/[0-9]/g, w => persianDigits[parseInt(w)]);
         return `${faNum} تومان`;
       }
-      return `${formatted} Tomans (~$${(num / 600000).toFixed(1)} USD)`;
+      if (lang === 'ar') {
+        const arabicDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+        const arNum = formatted.replace(/[0-9]/g, w => arabicDigits[parseInt(w)]);
+        return `${arNum} تومان`;
+      }
+      return `${formatted} Tomans`;
     };
 
     const toPersianDigits = (str) => {
@@ -415,7 +478,6 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // Lighting
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         scene.add(ambientLight);
 
@@ -427,11 +489,9 @@
         dirLight2.position.set(-5, -5, -2);
         scene.add(dirLight2);
 
-        // Create 3D Mesh based on modelType
         const group = new THREE.Group();
 
         if (modelType === 'watch') {
-          // Luxury Tourbillon Watch model primitive
           const ringGeo = new THREE.TorusGeometry(1.2, 0.18, 16, 100);
           const goldMat = new THREE.MeshStandardMaterial({ color: 0xeab308, metalness: 0.9, roughness: 0.1 });
           const ring = new THREE.Mesh(ringGeo, goldMat);
@@ -449,7 +509,6 @@
           hand.position.y = 0.25;
           group.add(hand);
         } else if (modelType === 'headphones') {
-          // Spatial ANC Headphones
           const arcGeo = new THREE.TorusGeometry(1.3, 0.08, 16, 50, Math.PI);
           const arcMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8 });
           const arc = new THREE.Mesh(arcGeo, arcMat);
@@ -468,14 +527,12 @@
           group.add(cupL);
           group.add(cupR);
         } else if (modelType === 'carpet') {
-          // Persian Silk Carpet 3D stage
           const sheetGeo = new THREE.PlaneGeometry(2.4, 3.2, 32, 32);
           const mat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.8, side: THREE.DoubleSide });
           const carpet = new THREE.Mesh(sheetGeo, mat);
           carpet.rotation.x = -Math.PI / 4;
           group.add(carpet);
         } else if (modelType === 'glasses') {
-          // AR Glasses
           const frameGeo = new THREE.TorusGeometry(0.6, 0.06, 16, 50);
           const mat = new THREE.MeshStandardMaterial({ color: 0x2dd4bf, metalness: 0.9, roughness: 0.1 });
           const glassL = new THREE.Mesh(frameGeo, mat);
@@ -490,14 +547,7 @@
           group.add(glassL);
           group.add(glassR);
           group.add(bridge);
-        } else if (modelType === 'appliance') {
-          // Espresso Machine
-          const bodyGeo = new THREE.BoxGeometry(1.6, 1.8, 1.2);
-          const bodyMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 });
-          const body = new THREE.Mesh(bodyGeo, bodyMat);
-          group.add(body);
         } else {
-          // Default Crystal Jewel Icosahedron
           const geo = new THREE.IcosahedronGeometry(1.2, 1);
           const mat = new THREE.MeshStandardMaterial({ color: 0x2dd4bf, wireframe: true });
           const mesh = new THREE.Mesh(geo, mat);
@@ -506,7 +556,6 @@
 
         scene.add(group);
 
-        // Animation loop
         let animationFrameId;
         let mouseX = 0, mouseY = 0;
 
@@ -552,6 +601,76 @@
       );
     };
 
+    // --- LANGUAGE SELECTOR MODAL COMPONENT ---
+    const LanguageModal = ({ isOpen, onClose, currentLang, onSelectLang }) => {
+      if (!isOpen) return null;
+
+      const languages = [
+        { code: 'fa', name: 'فارسی (Persian)', flag: '🇮🇷', dir: 'RTL', native: 'فارسی' },
+        { code: 'en', name: 'English (US & UK)', flag: '🇬🇧', dir: 'LTR', native: 'English' },
+        { code: 'ar', name: 'العربية (Arabic)', flag: '🇸🇦', dir: 'RTL', native: 'العربية' },
+        { code: 'tr', name: 'Türkچه (Turkish)', flag: '🇹🇷', dir: 'LTR', native: 'Türkçe' },
+        { code: 'ur', name: 'اردو (Urdu)', flag: '🇵🇰', dir: 'RTL', native: 'اردو' },
+      ];
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-fade-in">
+          <div className="glass-panel p-6 rounded-3xl border-slate-700 max-w-md w-full space-y-5 shadow-2xl relative">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-teal-500/20 border border-teal-500/40 flex items-center justify-center font-bold text-teal-300">
+                  <i data-lucide="globe" className="w-5 h-5 text-teal-400"></i>
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-white">انتخاب زبان سامانه / Language Selection</h3>
+                  <p className="text-[10px] text-teal-400 font-mono">Shahkar International Multilingual Ecosystem</p>
+                </div>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2 rounded-xl bg-slate-900 text-slate-400 hover:text-white border border-slate-800 transition"
+              >
+                <i data-lucide="x" className="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <div className="space-y-2.5">
+              {languages.map(l => (
+                <button
+                  key={l.code}
+                  onClick={() => {
+                    onSelectLang(l.code);
+                    onClose();
+                  }}
+                  className={`w-full flex items-center justify-between p-3.5 rounded-2xl border transition ${
+                    currentLang === l.code
+                      ? 'bg-gradient-to-r from-teal-500/25 to-amber-500/15 border-teal-400 text-teal-300 font-bold shadow-lg shadow-teal-500/10'
+                      : 'bg-slate-900/80 border-slate-800 text-slate-300 hover:bg-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-3.5">
+                    <span className="text-2xl">{l.flag}</span>
+                    <div className="text-right">
+                      <span className="text-xs font-bold block">{l.name}</span>
+                      <span className="text-[10px] text-slate-400">{l.native}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-950 border border-slate-800 text-teal-400 font-bold">
+                      {l.dir}
+                    </span>
+                    {currentLang === l.code && (
+                      <i data-lucide="check-circle" className="w-4 h-4 text-teal-400"></i>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
     // --- 3-LINE HAMBURGER DRAWER MENU COMPONENT ---
     const HamburgerDrawerMenu = ({
       isOpen,
@@ -580,59 +699,25 @@
         { code: 'ur', name: 'اردو', flag: '🇵🇰' },
       ];
 
-      const dict = {
-        menuTitle: { fa: 'منوی اصلی و تنظیمات', en: 'Main Menu & Settings', ar: 'القائمة الرئيسية والإعدادات', tr: 'Ana Menü ve Ayarlar', ur: 'مرکزی مینو اور ترتیبات' },
-        home: { fa: 'صفحه اصلی', en: 'Home', ar: 'الصفحة الرئيسية', tr: 'Ana Sayfa', ur: 'ہوم پیج' },
-        catalog: { fa: 'کاتالوگ و ویترین کالاها', en: 'Product Catalog', ar: 'كتالوج المنتجات', tr: 'Ürün Kataloğu', ur: 'مصنوعات کا کیٹلاگ' },
-        flashDeals: { fa: 'حراج‌های صاعقه‌ای', en: 'Lightning Deals', ar: 'التخفيضات السريعة', tr: 'Flaş İndirimler', ur: 'فلیش ڈیلز' },
-        sellerHub: { fa: 'پنل فروشندگان', en: 'Seller Hub', ar: 'لوحة البائعين', tr: 'Satıcı Paneli', ur: 'بائع کا ڈیش بورڈ' },
-        wishlist: { fa: 'لیست علاقه‌مندی‌ها', en: 'Wishlist', ar: 'قائمة الرغبات', tr: 'Favorilerim', ur: 'خواہشات کی فہرست' },
-        myOrders: { fa: 'سفارش‌های من', en: 'My Orders', ar: 'طلباتي', tr: 'Siparişlerim', ur: 'میرے آرڈرز' },
-        aiAdvisor: { fa: 'دستیار هوشمند خرید AI', en: 'AI Advisor', ar: 'مساعد الذكاء الاصطناعي', tr: 'Yapay Zeka Asistanı', ur: 'مصنوعی ذہانت معاون' },
-        settings: { fa: 'تنظیمات سامانه', en: 'System Settings', ar: 'إعدادات النظام', tr: 'Sistem Ayarları', ur: 'سسٹم کی ترتیبات' },
-        selectLang: { fa: 'تغییر زبان (Select Language)', en: 'Select Language', ar: 'اختر اللغة', tr: 'Dil Seçimi', ur: 'زبان منتخب کریں' },
-        colorTheme: { fa: 'حالت نمایش (Theme)', en: 'Color Theme', ar: 'مظهر الصفحة', tr: 'Tema Seçimi', ur: 'تھیم کا انتخاب' },
-        currency: { fa: 'واحد پول (Currency)', en: 'Currency', ar: 'العملة', tr: 'Para Birimi', ur: 'کرنسی' },
-        helpAndSupport: { fa: 'راهنما و پشتیبانی مشتریان', en: 'Help & Support', ar: 'المساعدة والدعم', tr: 'Yardım ve Destek', ur: 'مدد اور سپورٹ' },
-        logistics: { fa: 'پیگیری زنده مرسولات', en: 'Live Tracking', ar: 'تتبع الشحنات', tr: 'Kargo Takip', ur: 'لائیو ٹریکنگ' },
-        guarantee: { fa: 'ضمانت اصالت و بازگشت', en: 'Authenticity Guarantee', ar: 'ضمان الأصالة', tr: 'Orijinallik Garantisi', ur: 'اصلیت کی ضمانت' },
-        contact: { fa: 'تماس با پشتیبانی ۲۴/۷', en: '24/7 Support', ar: 'الدعم ٢٤/٧', tr: '7/24 Destek', ur: '24/7 سپورٹ' },
-        darkMode: { fa: 'حالت تاریک (شب)', en: 'Dark Mode', ar: 'الوضع الداكن', tr: 'Karanlık Mod', ur: 'ڈارک موڈ' },
-        lightMode: { fa: 'حالت روشن (روز)', en: 'Light Mode', ar: 'الوضع الفاتح', tr: 'Aydınlık Mod', ur: 'لائٹ موڈ' },
-        installApp: { fa: 'نصب اپلیکیشن موبایل', en: 'Install Mobile App', ar: 'تثبيت التطبيق', tr: 'Uygulamayı Yükle', ur: 'ایپ انسٹال کریں' },
-        securityAudit: { fa: 'مانیتورینگ و امنیت', en: 'Security Audit', ar: 'الرصد والأمان', tr: 'Güvenlik Denetimi', ur: 'سیکیورٹی آڈٹ' },
-      };
-
-      const t = (key) => dict[key]?.[lang] || dict[key]?.fa || key;
-
       return (
         <div className="fixed inset-0 z-50 overflow-hidden">
-          {/* Backdrop overlay */}
-          <div
-            onClick={onClose}
-            className="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity duration-300"
-          />
+          <div onClick={onClose} className="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity duration-300" />
 
-          {/* Slide-out drawer panel */}
           <div className={`fixed top-0 bottom-0 ${['en', 'tr'].includes(lang) ? 'left-0 border-r' : 'right-0 border-l'} w-88 max-w-[88vw] bg-slate-950 border-slate-800 p-6 z-50 flex flex-col justify-between overflow-y-auto shadow-2xl transition-transform duration-300`}>
             
             <div className="space-y-6">
-              {/* Header Bar */}
               <div className="flex items-center justify-between pb-4 border-b border-slate-800">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-2xl bg-teal-500/20 border border-teal-500/40 flex items-center justify-center font-bold text-teal-300">
                     <i data-lucide="menu" className="w-5 h-5 text-teal-400"></i>
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-white">{t('menuTitle')}</h3>
+                    <h3 className="text-sm font-black text-white">{t('menuBtn', lang)} & {t('brandName', lang)}</h3>
                     <span className="text-[10px] text-teal-400 font-mono">Shahkar Global System</span>
                   </div>
                 </div>
                 
-                <button
-                  onClick={onClose}
-                  className="p-2 rounded-xl bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition"
-                >
+                <button onClick={onClose} className="p-2 rounded-xl bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition">
                   <i data-lucide="x" className="w-5 h-5"></i>
                 </button>
               </div>
@@ -653,13 +738,10 @@
                   <div className="flex items-center justify-between w-full">
                     <div className="flex items-center gap-2">
                       <i data-lucide="user" className="w-5 h-5 text-teal-400"></i>
-                      <span className="text-xs font-bold text-slate-300">ورود / ثبت‌نام کاربر</span>
+                      <span className="text-xs font-bold text-slate-300">{t('signIn', lang)}</span>
                     </div>
-                    <button
-                      onClick={() => { onClose(); onOpenAuth(); }}
-                      className="bg-teal-500 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-xl hover:bg-teal-400 transition"
-                    >
-                      ورود
+                    <button onClick={() => { onClose(); onOpenAuth(); }} className="bg-teal-500 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-xl hover:bg-teal-400 transition">
+                      {t('signIn', lang)}
                     </button>
                   </div>
                 )}
@@ -671,87 +753,55 @@
                   {lang === 'fa' ? 'بخش‌های اصلی' : 'Main Navigation'}
                 </span>
 
-                <button
-                  onClick={() => { onNavigate('home'); onClose(); }}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
-                    currentRoute === 'home' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'
-                  }`}
-                >
+                <button onClick={() => { onNavigate('home'); onClose(); }} className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${currentRoute === 'home' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'}`}>
                   <i data-lucide="home" className="w-4 h-4 text-teal-400"></i>
-                  <span>{t('home')}</span>
+                  <span>{t('home', lang)}</span>
                 </button>
 
-                <button
-                  onClick={() => { onNavigate('catalog'); onClose(); }}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
-                    currentRoute === 'catalog' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'
-                  }`}
-                >
+                <button onClick={() => { onNavigate('catalog'); onClose(); }} className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${currentRoute === 'catalog' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'}`}>
                   <i data-lucide="grid" className="w-4 h-4 text-amber-400"></i>
-                  <span>{t('catalog')}</span>
+                  <span>{t('catalog', lang)}</span>
                 </button>
 
-                <button
-                  onClick={() => { onNavigate('home'); onClose(); }}
-                  className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-300 hover:bg-slate-900 transition"
-                >
+                <button onClick={() => { onNavigate('home'); onClose(); }} className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-300 hover:bg-slate-900 transition">
                   <div className="flex items-center gap-3">
                     <i data-lucide="zap" className="w-4 h-4 text-rose-400"></i>
-                    <span>{t('flashDeals')}</span>
+                    <span>{t('flashDeals', lang)}</span>
                   </div>
                   <span className="bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md animate-pulse">زنده</span>
                 </button>
 
-                <button
-                  onClick={() => { onNavigate('vendor-dashboard'); onClose(); }}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
-                    currentRoute === 'vendor-dashboard' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'
-                  }`}
-                >
+                <button onClick={() => { onNavigate('vendor-dashboard'); onClose(); }} className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${currentRoute === 'vendor-dashboard' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'}`}>
                   <i data-lucide="store" className="w-4 h-4 text-teal-400"></i>
-                  <span>{t('sellerHub')}</span>
+                  <span>{t('sellerHub', lang)}</span>
                 </button>
 
-                <button
-                  onClick={() => { onNavigate('wishlist'); onClose(); }}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
-                    currentRoute === 'wishlist' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'
-                  }`}
-                >
+                <button onClick={() => { onNavigate('wishlist'); onClose(); }} className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${currentRoute === 'wishlist' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'}`}>
                   <i data-lucide="heart" className="w-4 h-4 text-rose-400"></i>
-                  <span>{t('wishlist')}</span>
+                  <span>{t('wishlist', lang)}</span>
                 </button>
 
-                <button
-                  onClick={() => { onNavigate('orders'); onClose(); }}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
-                    currentRoute === 'orders' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'
-                  }`}
-                >
+                <button onClick={() => { onNavigate('orders'); onClose(); }} className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${currentRoute === 'orders' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'text-slate-300 hover:bg-slate-900'}`}>
                   <i data-lucide="package" className="w-4 h-4 text-amber-400"></i>
-                  <span>{t('myOrders')}</span>
+                  <span>{t('myOrders', lang)}</span>
                 </button>
 
-                <button
-                  onClick={() => { onClose(); onOpenAi(); }}
-                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-teal-300 hover:bg-slate-900 transition"
-                >
+                <button onClick={() => { onClose(); onOpenAi(); }} className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-teal-300 hover:bg-slate-900 transition">
                   <i data-lucide="sparkles" className="w-4 h-4 text-teal-400 animate-spin"></i>
-                  <span>{t('aiAdvisor')}</span>
+                  <span>{t('aiAdvisor', lang)}</span>
                 </button>
               </div>
 
               {/* SETTINGS SECTION (زبان، درون‌مایه شب/روز، واحد پول) */}
               <div className="space-y-3 pt-4 border-t border-slate-800">
                 <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block px-2">
-                  {t('settings')}
+                  {lang === 'fa' ? 'تنظیمات سامانه' : 'System Settings'}
                 </span>
 
-                {/* Language Selector in 3-Line Menu */}
                 <div className="glass-panel p-3.5 rounded-2xl border-slate-800 space-y-2.5">
                   <div className="flex items-center gap-2 text-xs font-bold text-slate-200">
                     <i data-lucide="globe" className="w-4 h-4 text-teal-400"></i>
-                    <span>{t('selectLang')}</span>
+                    <span>تغییر زبان (Select Language)</span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
@@ -760,9 +810,7 @@
                         key={l.code}
                         onClick={() => onSelectLang(l.code)}
                         className={`flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-medium border transition ${
-                          lang === l.code
-                            ? 'bg-teal-500/20 border-teal-400 text-teal-300 font-bold shadow-md shadow-teal-500/10'
-                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                          lang === l.code ? 'bg-teal-500/20 border-teal-400 text-teal-300 font-bold shadow-md' : 'bg-slate-900 border-slate-800 text-slate-400'
                         }`}
                       >
                         <span className="text-base">{l.flag}</span>
@@ -776,7 +824,7 @@
                 <div className="glass-panel p-3.5 rounded-2xl border-slate-800 flex items-center justify-between">
                   <div className="flex items-center gap-2.5 text-xs font-bold text-slate-200">
                     <i data-lucide={themeMode === 'dark' ? 'moon' : 'sun'} className={`w-4 h-4 ${themeMode === 'dark' ? 'text-indigo-400' : 'text-amber-400'}`}></i>
-                    <span>{t('colorTheme')}</span>
+                    <span>حالت نمایش (Theme)</span>
                   </div>
 
                   <button
@@ -786,12 +834,12 @@
                     {themeMode === 'dark' ? (
                       <>
                         <i data-lucide="moon" className="w-3.5 h-3.5 text-indigo-400"></i>
-                        <span className="text-indigo-300">{t('darkMode')}</span>
+                        <span className="text-indigo-300">حالت تاریک (شب)</span>
                       </>
                     ) : (
                       <>
                         <i data-lucide="sun" className="w-3.5 h-3.5 text-amber-400"></i>
-                        <span className="text-amber-300">{t('lightMode')}</span>
+                        <span className="text-amber-300">حالت روشن (روز)</span>
                       </>
                     )}
                   </button>
@@ -801,7 +849,7 @@
                 <div className="glass-panel p-3.5 rounded-2xl border-slate-800 flex items-center justify-between">
                   <div className="flex items-center gap-2.5 text-xs font-bold text-slate-200">
                     <i data-lucide="coins" className="w-4 h-4 text-amber-400"></i>
-                    <span>{t('currency')}</span>
+                    <span>واحد پول (Currency)</span>
                   </div>
 
                   <button
@@ -813,45 +861,6 @@
                 </div>
               </div>
 
-              {/* HELP & SUPPORT SECTION (راهنما، پیگیری، ضمانت، درباره، تماس) */}
-              <div className="space-y-1.5 pt-4 border-t border-slate-800">
-                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block px-2">
-                  {t('helpAndSupport')}
-                </span>
-
-                <button
-                  onClick={() => { onNavigate('orders'); onClose(); }}
-                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-900 transition"
-                >
-                  <i data-lucide="truck" className="w-4 h-4 text-teal-400"></i>
-                  <span>{t('logistics')}</span>
-                </button>
-
-                <button
-                  onClick={() => { showToast(lang === 'fa' ? 'تمامی کالاهای بازار شاهکار دارای ۷ روز ضمانت اصالت و بازگشت وجه هستند.' : '7 Days Authenticity Guarantee', 'info'); }}
-                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-900 transition"
-                >
-                  <i data-lucide="shield-check" className="w-4 h-4 text-amber-400"></i>
-                  <span>{t('guarantee')}</span>
-                </button>
-
-                <button
-                  onClick={() => { showToast(lang === 'fa' ? 'پشتیبانی ۲۴ ساعته: ۰۲۱-۸۸۸۸۹۹۹۹ | support@shahkar.ir' : 'Call 24/7 Support: +982188889999', 'info'); }}
-                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-900 transition"
-                >
-                  <i data-lucide="headphones" className="w-4 h-4 text-indigo-400"></i>
-                  <span>{t('contact')}</span>
-                </button>
-
-                <button
-                  onClick={() => { onNavigate('analytics'); onClose(); }}
-                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-900 transition"
-                >
-                  <i data-lucide="lock" className="w-4 h-4 text-rose-400"></i>
-                  <span>{t('securityAudit')}</span>
-                </button>
-              </div>
-
               {/* INSTALL MOBILE APP CTA */}
               <div className="pt-2">
                 <button
@@ -859,15 +868,13 @@
                   className="w-full bg-gradient-to-r from-teal-500/20 to-amber-500/20 border border-teal-500/30 text-teal-300 hover:bg-teal-500/30 font-bold text-xs py-3 rounded-2xl flex items-center justify-center gap-2 transition"
                 >
                   <i data-lucide="smartphone" className="w-4 h-4 text-amber-400"></i>
-                  <span>{t('installApp')}</span>
+                  <span>{t('mobileApp', lang)}</span>
                 </button>
               </div>
             </div>
 
-            {/* Footer info in drawer */}
             <div className="pt-6 border-t border-slate-800/80 text-[10px] text-slate-500 text-center space-y-1">
               <p>© 2026 Shahkar Global Commerce</p>
-              <p className="font-mono text-teal-400/60">Cloudflare DO & Next-Gen Engine</p>
             </div>
 
           </div>
@@ -877,23 +884,20 @@
 
     // --- MAIN APP CONTAINER ---
     const App = () => {
-      // Global States
-      const [lang, setLang] = useState('fa'); // 'fa' | 'en' | 'ar' | 'tr' | 'ur'
+      const [lang, setLang] = useState('fa');
       const [dir, setDir] = useState('rtl');
-      const [currency, setCurrency] = useState('TOMAN'); // 'TOMAN' | 'USD'
-      const [themeMode, setThemeMode] = useState('dark'); // 'dark' | 'light'
+      const [currency, setCurrency] = useState('TOMAN');
+      const [themeMode, setThemeMode] = useState('dark');
       const [isMenuOpen, setIsMenuOpen] = useState(false);
-      const [currentRoute, setCurrentRoute] = useState('home'); // home, catalog, product-detail, cart, checkout, orders, vendor-dashboard, vendor-store, wishlist, analytics
+      const [currentRoute, setCurrentRoute] = useState('home');
       const [selectedProductId, setSelectedProductId] = useState('prd_1');
       const [selectedVendorId, setSelectedVendorId] = useState('vnd_1');
 
-      // Data States from API
       const [products, setProducts] = useState([]);
       const [categories, setCategories] = useState([]);
       const [vendors, setVendors] = useState([]);
       const [loading, setLoading] = useState(true);
 
-      // Cart & Wishlist States
       const [cart, setCart] = useState([
         { productId: 'prd_1', variantId: 'prd_1_v1', quantity: 1 }
       ]);
@@ -902,6 +906,7 @@
       const [isAiOpen, setIsAiOpen] = useState(false);
       const [isAuthOpen, setIsAuthOpen] = useState(false);
       const [isAppInstallOpen, setIsAppInstallOpen] = useState(false);
+      const [isLangModalOpen, setIsLangModalOpen] = useState(false);
       const [user, setUser] = useState({
         id: 'usr_customer1',
         name: 'نوید رضایی',
@@ -911,13 +916,11 @@
         avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80'
       });
 
-      // Search & Autocomplete
       const [searchQuery, setSearchQuery] = useState('');
       const [searchResults, setSearchResults] = useState([]);
       const [suggestions, setSuggestions] = useState([]);
       const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-      // Notification Toasts
       const [toast, setToast] = useState(null);
 
       const showToast = (message, type = 'success') => {
@@ -925,7 +928,6 @@
         setTimeout(() => setToast(null), 3500);
       };
 
-      // Language & Direction Sync
       const handleSelectLang = (newLang) => {
         setLang(newLang);
         const rtlLangs = ['fa', 'ar', 'ur'];
@@ -960,7 +962,6 @@
         showToast(nextCurr === 'TOMAN' ? 'واحد پول: تومان' : 'Currency: USD ($)');
       };
 
-      // Fetch Initial Data
       const loadProducts = async () => {
         try {
           setLoading(true);
@@ -983,14 +984,12 @@
         loadProducts();
       }, []);
 
-      // Lucide Icon Auto-render
       useEffect(() => {
         if (window.lucide) {
           window.lucide.createIcons();
         }
       });
 
-      // Autocomplete Fetcher
       useEffect(() => {
         if (!searchQuery.trim() || searchQuery.length < 2) {
           setSuggestions([]);
@@ -1011,7 +1010,6 @@
         return () => clearTimeout(timer);
       }, [searchQuery]);
 
-      // Cart Actions
       const addToCart = (productId, variantId = null) => {
         setCart(prev => {
           const idx = prev.findIndex(item => item.productId === productId && item.variantId === variantId);
@@ -1042,8 +1040,7 @@
       const totalCartCount = useMemo(() => cart.reduce((acc, item) => acc + item.quantity, 0), [cart]);
 
       return (
-        <div className={`min-h-screen flex flex-col bg-[#05070d] text-slate-100 ${lang === 'fa' ? 'font-persian' : 'font-latin'}`} dir={dir}>
-          {/* Toast Notification */}
+        <div className={`app-container min-h-screen flex flex-col bg-[#05070d] text-slate-100 ${lang === 'fa' ? 'font-persian' : 'font-latin'}`} dir={dir}>
           {toast && (
             <div className="fixed bottom-6 left-6 z-50 flex items-center gap-3 glass-panel px-5 py-3 rounded-xl border-brand-500/40 text-teal-300 shadow-2xl animate-bounce">
               <i data-lucide="check-circle" className="w-5 h-5 text-teal-400"></i>
@@ -1055,17 +1052,17 @@
           <div className="bg-gradient-to-r from-teal-950 via-slate-900 to-amber-950 text-slate-300 text-xs py-2 px-4 border-b border-slate-800 flex justify-between items-center">
             <div className="flex items-center gap-3">
               <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider">
-                {lang === 'fa' ? 'جشنواره بین‌المللی شاهکار' : 'SHAHKAR FESTIVAL'}
+                {t('festivalNotice', lang)}
               </span>
               <span className="hidden sm:inline text-slate-300">
-                {lang === 'fa' ? 'ارسال رایگان اکسپرس سراسری با کد تخفیف: ' : 'Free Global Express Shipping with Code: '}
+                {t('freeShippingNotice', lang)}
                 <strong className="text-teal-400 font-mono">SHAHKAR2026</strong>
               </span>
             </div>
 
             <div className="flex items-center gap-4 text-xs">
               <span className="text-teal-400/90 font-medium hidden md:inline">
-                {lang === 'fa' ? 'پشتیبانی ۲۴ ساعته: ۰۲۱-۸۸۸۸۹۹۹۹' : '24/7 Support: +982188889999'}
+                {t('support247', lang)}
               </span>
             </div>
           </div>
@@ -1074,15 +1071,14 @@
           <header className="sticky top-0 z-40 glass-panel border-b border-slate-800/80">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4 sm:gap-6">
               
-              {/* 3-Line Hamburger Menu & Brand Logo */}
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setIsMenuOpen(true)}
                   className="p-2.5 bg-slate-900 border border-slate-700/80 rounded-2xl hover:bg-slate-800 text-slate-200 hover:text-white flex items-center gap-2 text-xs font-bold transition shadow-md group shrink-0"
-                  title={lang === 'fa' ? 'منوی اصلی و تنظیمات' : 'Main Menu & Settings'}
+                  title={t('menuBtn', lang)}
                 >
                   <i data-lucide="menu" className="w-5 h-5 text-teal-400 group-hover:scale-110 transition-transform"></i>
-                  <span className="hidden sm:inline">{lang === 'fa' ? 'منو' : 'Menu'}</span>
+                  <span className="hidden sm:inline">{t('menuBtn', lang)}</span>
                 </button>
 
                 <div className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentRoute('home')}>
@@ -1093,36 +1089,36 @@
                   </div>
                   <div className="hidden min-[420px]:block">
                     <h1 className="text-xl font-black tracking-tight text-white flex items-center gap-2">
-                      {lang === 'fa' ? 'شاهـکــار' : 'SHAHKAR'}
+                      {t('brandName', lang)}
                       <span className="text-[10px] bg-teal-500/20 text-teal-300 px-1.5 py-0.5 rounded border border-teal-500/30 font-mono">GLOBAL</span>
                     </h1>
                     <p className="text-[10px] text-slate-400 tracking-wider">
-                      {lang === 'fa' ? 'اکوسیستم بازار جهانی هوشمند' : 'AI Multi-Vendor Ecosystem'}
+                      {t('brandTagline', lang)}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Search Bar with Live Autocomplete Trigger */}
+              {/* Search Bar */}
               <div className="flex-1 max-w-2xl relative hidden md:block">
                 <div className="relative">
-	                  <input
-	                    type="text"
-	                    value={searchQuery}
-	                    onChange={(e) => {
-	                      setSearchQuery(e.target.value);
-	                      setIsSearchOpen(true);
-	                    }}
-	                    onFocus={() => setIsSearchOpen(true)}
-	                    onKeyDown={(e) => {
-	                      if (e.key === 'Enter') {
-	                        setCurrentRoute('catalog');
-	                        setIsSearchOpen(false);
-	                      }
-	                    }}
-	                    placeholder={lang === 'fa' ? 'جستجوی هوشمند در میلیون‌ها کالای فاخر و فروشندگان برتر...' : 'Search millions of verified products, brands and artisan stores...'}
-	                    className="w-full bg-slate-900/90 border border-slate-700/60 rounded-2xl py-2.5 px-10 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 transition-all shadow-inner"
-	                  />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setIsSearchOpen(true);
+                    }}
+                    onFocus={() => setIsSearchOpen(true)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        setCurrentRoute('catalog');
+                        setIsSearchOpen(false);
+                      }
+                    }}
+                    placeholder={t('searchPlaceholder', lang)}
+                    className="w-full bg-slate-900/90 border border-slate-700/60 rounded-2xl py-2.5 px-10 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 transition-all shadow-inner"
+                  />
                   <i data-lucide="search" className="w-4 h-4 text-slate-400 absolute right-3.5 top-3"></i>
                   {searchQuery && (
                     <button onClick={() => setSearchQuery('')} className="absolute left-3 top-3 text-slate-500 hover:text-slate-300">
@@ -1131,12 +1127,11 @@
                   )}
                 </div>
 
-                {/* Autocomplete Dropdown */}
                 {isSearchOpen && (suggestions.length > 0 || searchResults.length > 0) && (
                   <div className="absolute top-12 right-0 left-0 glass-panel rounded-2xl p-4 shadow-2xl border border-slate-700 z-50 mt-1 max-h-96 overflow-y-auto">
                     {suggestions.length > 0 && (
                       <div className="mb-3">
-                        <span className="text-[11px] text-slate-400 font-bold block mb-2">{lang === 'fa' ? 'کلیدواژه‌های پیشنهادی:' : 'Suggested Keywords:'}</span>
+                        <span className="text-[11px] text-slate-400 font-bold block mb-2">{t('suggestedKeywords', lang)}</span>
                         <div className="flex flex-wrap gap-2">
                           {suggestions.map((s, idx) => (
                             <button
@@ -1156,7 +1151,7 @@
 
                     {searchResults.length > 0 && (
                       <div>
-                        <span className="text-[11px] text-slate-400 font-bold block mb-2">{lang === 'fa' ? 'محصولات مرتبط:' : 'Matching Products:'}</span>
+                        <span className="text-[11px] text-slate-400 font-bold block mb-2">{t('matchingProducts', lang)}</span>
                         <div className="space-y-2">
                           {searchResults.map(p => (
                             <div
@@ -1185,76 +1180,82 @@
                 )}
               </div>
 
-	              {/* Action Navigation Buttons */}
-	              <div className="flex items-center gap-2.5">
-	                {/* User Login / Account Registration Button */}
-	                <button
-	                  onClick={() => setIsAuthOpen(true)}
-	                  className="relative p-2.5 bg-slate-900 border border-slate-700/80 rounded-2xl hover:bg-slate-800 text-slate-200 hover:text-white flex items-center gap-2 text-xs font-bold transition shadow-md"
-	                  title={user ? user.name : (lang === 'fa' ? 'ورود / ثبت‌نام کاربر' : 'User Sign In')}
-	                >
-	                  {user ? (
-	                    <>
-	                      <img src={user.avatar} alt={user.name} className="w-5 h-5 rounded-full object-cover border border-teal-400" />
-	                      <span className="hidden lg:inline text-teal-300 max-w-[100px] truncate">{user.name}</span>
-	                    </>
-	                  ) : (
-	                    <>
-	                      <i data-lucide="user" className="w-5 h-5 text-teal-400"></i>
-	                      <span className="hidden lg:inline">{lang === 'fa' ? 'ورود / ثبت‌نام' : 'Sign In'}</span>
-	                    </>
-	                  )}
-	                </button>
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2.5">
+                <button
+                  onClick={() => setIsLangModalOpen(true)}
+                  className="relative p-2.5 bg-slate-900 border border-slate-700/80 rounded-2xl hover:bg-slate-800 text-slate-200 hover:text-white flex items-center gap-1.5 text-xs font-bold transition shadow-md shrink-0"
+                  title="Language Selection"
+                >
+                  <span className="text-base leading-none">
+                    {lang === 'fa' ? '🇮🇷' : lang === 'en' ? '🇬🇧' : lang === 'ar' ? '🇸🇦' : lang === 'tr' ? '🇹🇷' : '🇵🇰'}
+                  </span>
+                  <span className="uppercase font-mono text-[11px] text-teal-300 font-bold">{lang}</span>
+                  <i data-lucide="chevron-down" className="w-3.5 h-3.5 text-slate-400"></i>
+                </button>
 
-	                {/* Mobile App Install Button */}
-	                <button
-	                  onClick={() => setIsAppInstallOpen(true)}
-	                  className="p-2.5 bg-slate-900/90 border border-teal-500/30 text-teal-300 hover:bg-teal-500/10 rounded-2xl flex items-center gap-1.5 text-xs font-bold transition shadow-md"
-	                  title={lang === 'fa' ? 'نصب اپلیکیشن موبایل' : 'Install Mobile App'}
-	                >
-	                  <i data-lucide="smartphone" className="w-5 h-5 text-amber-400"></i>
-	                  <span className="hidden md:inline">{lang === 'fa' ? 'اپلیکیشن' : 'App'}</span>
-	                </button>
+                <button
+                  onClick={() => setIsAuthOpen(true)}
+                  className="relative p-2.5 bg-slate-900 border border-slate-700/80 rounded-2xl hover:bg-slate-800 text-slate-200 hover:text-white flex items-center gap-2 text-xs font-bold transition shadow-md"
+                  title={user ? user.name : t('signIn', lang)}
+                >
+                  {user ? (
+                    <>
+                      <img src={user.avatar} alt={user.name} className="w-5 h-5 rounded-full object-cover border border-teal-400" />
+                      <span className="hidden lg:inline text-teal-300 max-w-[100px] truncate">{user.name}</span>
+                    </>
+                  ) : (
+                    <>
+                      <i data-lucide="user" className="w-5 h-5 text-teal-400"></i>
+                      <span className="hidden lg:inline">{t('signIn', lang)}</span>
+                    </>
+                  )}
+                </button>
 
-	                {/* AI Assistant Floating Trigger */}
-	                <button
-	                  onClick={() => setIsAiOpen(true)}
-	                  className="relative group bg-gradient-to-r from-teal-500/20 to-amber-500/20 hover:from-teal-500/30 hover:to-amber-500/30 border border-teal-500/40 text-teal-300 text-xs font-bold px-3 py-2.5 rounded-2xl flex items-center gap-2 transition shadow-lg shadow-teal-500/10"
-	                >
-	                  <i data-lucide="sparkles" className="w-4 h-4 text-amber-400 animate-spin"></i>
-	                  <span className="hidden xl:inline">{lang === 'fa' ? 'دستیار AI' : 'AI Advisor'}</span>
-	                </button>
+                <button
+                  onClick={() => setIsAppInstallOpen(true)}
+                  className="p-2.5 bg-slate-900/90 border border-teal-500/30 text-teal-300 hover:bg-teal-500/10 rounded-2xl flex items-center gap-1.5 text-xs font-bold transition shadow-md"
+                  title={t('mobileApp', lang)}
+                >
+                  <i data-lucide="smartphone" className="w-5 h-5 text-amber-400"></i>
+                  <span className="hidden md:inline">{t('mobileApp', lang)}</span>
+                </button>
 
-	                {/* Wishlist Button */}
-	                <button
-	                  onClick={() => setCurrentRoute('wishlist')}
-	                  className="relative p-2.5 bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 text-slate-300 hover:text-white transition"
-	                  title={lang === 'fa' ? 'علاقه‌مندی‌ها' : 'Wishlist'}
-	                >
-	                  <i data-lucide="heart" className="w-5 h-5"></i>
-	                  {wishlist.length > 0 && (
-	                    <span className="absolute -top-1 -right-1 bg-amber-500 text-slate-950 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
-	                      {wishlist.length}
-	                    </span>
-	                  )}
-	                </button>
+                <button
+                  onClick={() => setIsAiOpen(true)}
+                  className="relative group bg-gradient-to-r from-teal-500/20 to-amber-500/20 hover:from-teal-500/30 hover:to-amber-500/30 border border-teal-500/40 text-teal-300 text-xs font-bold px-3 py-2.5 rounded-2xl flex items-center gap-2 transition shadow-lg"
+                >
+                  <i data-lucide="sparkles" className="w-4 h-4 text-amber-400 animate-spin"></i>
+                  <span className="hidden xl:inline">{t('aiAdvisor', lang)}</span>
+                </button>
 
-	                {/* Orders History Button */}
-	                <button
-	                  onClick={() => setCurrentRoute('orders')}
-	                  className="p-2.5 bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 text-slate-300 hover:text-white transition hidden sm:flex"
-	                  title={lang === 'fa' ? 'سفارش‌های من' : 'My Orders'}
-	                >
-	                  <i data-lucide="package" className="w-5 h-5"></i>
-	                </button>
+                <button
+                  onClick={() => setCurrentRoute('wishlist')}
+                  className="relative p-2.5 bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 text-slate-300 hover:text-white transition"
+                  title={t('wishlist', lang)}
+                >
+                  <i data-lucide="heart" className="w-5 h-5"></i>
+                  {wishlist.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-amber-500 text-slate-950 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                      {wishlist.length}
+                    </span>
+                  )}
+                </button>
 
-                {/* Cart Drawer Trigger */}
+                <button
+                  onClick={() => setCurrentRoute('orders')}
+                  className="p-2.5 bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 text-slate-300 hover:text-white transition hidden sm:flex"
+                  title={t('myOrders', lang)}
+                >
+                  <i data-lucide="package" className="w-5 h-5"></i>
+                </button>
+
                 <button
                   onClick={() => setIsCartOpen(true)}
                   className="relative p-2.5 bg-teal-500 text-slate-950 font-bold rounded-2xl hover:bg-teal-400 transition flex items-center gap-2 shadow-lg shadow-teal-500/20"
                 >
                   <i data-lucide="shopping-bag" className="w-5 h-5"></i>
-                  <span className="text-xs hidden sm:inline">{lang === 'fa' ? 'سبد خرید' : 'Cart'}</span>
+                  <span className="text-xs hidden sm:inline">{t('cart', lang)}</span>
                   {totalCartCount > 0 && (
                     <span className="bg-slate-950 text-teal-300 text-[11px] font-black px-2 py-0.5 rounded-full font-mono">
                       {toPersianDigits(totalCartCount)}
@@ -1273,15 +1274,13 @@
                   className="flex items-center gap-1.5 text-teal-400 font-bold hover:text-teal-300 whitespace-nowrap"
                 >
                   <i data-lucide="grid" className="w-4 h-4"></i>
-                  <span>{lang === 'fa' ? 'دسته‌بندی کلیه محصولات' : 'All Categories'}</span>
+                  <span>{t('allCategories', lang)}</span>
                 </button>
 
                 {categories.map(cat => (
                   <button
                     key={cat.id}
-                    onClick={() => {
-                      setCurrentRoute('catalog');
-                    }}
+                    onClick={() => setCurrentRoute('catalog')}
                     className="text-slate-400 hover:text-slate-200 whitespace-nowrap transition"
                   >
                     {lang === 'fa' ? cat.name_fa : cat.name_en}
@@ -1293,7 +1292,7 @@
                   className="text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold whitespace-nowrap"
                 >
                   <i data-lucide="shield-check" className="w-3.5 h-3.5"></i>
-                  <span>{lang === 'fa' ? 'مانیتورینگ و امنیت' : 'Security Audit'}</span>
+                  <span>{t('securityAudit', lang)}</span>
                 </button>
               </div>
             </div>
@@ -1383,78 +1382,86 @@
             )}
           </main>
 
-		          {/* 3-LINE HAMBURGER MENU DRAWER */}
-		          <HamburgerDrawerMenu
-		            isOpen={isMenuOpen}
-		            onClose={() => setIsMenuOpen(false)}
-		            lang={lang}
-		            onSelectLang={handleSelectLang}
-		            themeMode={themeMode}
-		            onToggleTheme={handleToggleTheme}
-		            currency={currency}
-		            onToggleCurrency={handleToggleCurrency}
-		            currentRoute={currentRoute}
-		            onNavigate={(route) => setCurrentRoute(route)}
-		            user={user}
-		            onOpenAuth={() => setIsAuthOpen(true)}
-		            onOpenInstallApp={() => setIsAppInstallOpen(true)}
-		            onOpenAi={() => setIsAiOpen(true)}
-		            showToast={showToast}
-		          />
+          {/* 3-LINE HAMBURGER MENU DRAWER */}
+          <HamburgerDrawerMenu
+            isOpen={isMenuOpen}
+            onClose={() => setIsMenuOpen(false)}
+            lang={lang}
+            onSelectLang={handleSelectLang}
+            themeMode={themeMode}
+            onToggleTheme={handleToggleTheme}
+            currency={currency}
+            onToggleCurrency={handleToggleCurrency}
+            currentRoute={currentRoute}
+            onNavigate={(route) => setCurrentRoute(route)}
+            user={user}
+            onOpenAuth={() => setIsAuthOpen(true)}
+            onOpenInstallApp={() => setIsAppInstallOpen(true)}
+            onOpenAi={() => setIsAiOpen(true)}
+            showToast={showToast}
+          />
 
-		          {/* CART DRAWER */}
-	          {isCartOpen && (
-	            <CartDrawer
-	              cart={cart}
-	              products={products}
-	              lang={lang}
-	              onClose={() => setIsCartOpen(false)}
-	              onUpdateQuantity={(pid, vid, qty) => {
-	                if (qty <= 0) {
-	                  setCart(prev => prev.filter(i => !(i.productId === pid && i.variantId === vid)));
-	                } else {
-	                  setCart(prev => prev.map(i => (i.productId === pid && i.variantId === vid) ? { ...i, quantity: qty } : i));
-	                }
-	              }}
-	              onProceedCheckout={() => {
-	                setIsCartOpen(false);
-	                setCurrentRoute('checkout');
-	              }}
-	            />
-	          )}
+          {/* LANGUAGE SELECTION MODAL */}
+          <LanguageModal
+            isOpen={isLangModalOpen}
+            onClose={() => setIsLangModalOpen(false)}
+            currentLang={lang}
+            onSelectLang={handleSelectLang}
+          />
 
-	          {/* AI FLOATING ASSISTANT DRAWER */}
-	          {isAiOpen && (
-	            <AIAssistantDrawer
-	              lang={lang}
-	              onClose={() => setIsAiOpen(false)}
-	              onSelectProduct={(id) => {
-	                setSelectedProductId(id);
-	                setCurrentRoute('product-detail');
-	                setIsAiOpen(false);
-	              }}
-	            />
-	          )}
+          {/* CART DRAWER */}
+          {isCartOpen && (
+            <CartDrawer
+              cart={cart}
+              products={products}
+              lang={lang}
+              onClose={() => setIsCartOpen(false)}
+              onUpdateQuantity={(pid, vid, qty) => {
+                if (qty <= 0) {
+                  setCart(prev => prev.filter(i => !(i.productId === pid && i.variantId === vid)));
+                } else {
+                  setCart(prev => prev.map(i => (i.productId === pid && i.variantId === vid) ? { ...i, quantity: qty } : i));
+                }
+              }}
+              onProceedCheckout={() => {
+                setIsCartOpen(false);
+                setCurrentRoute('checkout');
+              }}
+            />
+          )}
 
-	          {/* AUTHENTICATION / LOGIN & REGISTER MODAL */}
-	          {isAuthOpen && (
-	            <AuthModal
-	              lang={lang}
-	              user={user}
-	              setUser={setUser}
-	              onClose={() => setIsAuthOpen(false)}
-	              onShowToast={showToast}
-	            />
-	          )}
+          {/* AI FLOATING ASSISTANT DRAWER */}
+          {isAiOpen && (
+            <AIAssistantDrawer
+              lang={lang}
+              onClose={() => setIsAiOpen(false)}
+              onSelectProduct={(id) => {
+                setSelectedProductId(id);
+                setCurrentRoute('product-detail');
+                setIsAiOpen(false);
+              }}
+            />
+          )}
 
-	          {/* APP INSTALL PWA MODAL */}
-	          {isAppInstallOpen && (
-	            <AppInstallModal
-	              lang={lang}
-	              onClose={() => setIsAppInstallOpen(false)}
-	              onShowToast={showToast}
-	            />
-	          )}
+          {/* AUTHENTICATION / LOGIN & REGISTER MODAL */}
+          {isAuthOpen && (
+            <AuthModal
+              lang={lang}
+              user={user}
+              setUser={setUser}
+              onClose={() => setIsAuthOpen(false)}
+              onShowToast={showToast}
+            />
+          )}
+
+          {/* APP INSTALL PWA MODAL */}
+          {isAppInstallOpen && (
+            <AppInstallModal
+              lang={lang}
+              onClose={() => setIsAppInstallOpen(false)}
+              onShowToast={showToast}
+            />
+          )}
 
           {/* FOOTER */}
           <footer className="bg-slate-950 border-t border-slate-800 mt-20 text-slate-400 text-xs">
@@ -1465,18 +1472,13 @@
                     <div className="w-9 h-9 rounded-xl bg-teal-500/20 border border-teal-500/40 flex items-center justify-center font-bold text-teal-300">
                       شـ
                     </div>
-                    <span className="text-lg font-black text-white">بازار بزرگ شاهکار</span>
+                    <span className="text-lg font-black text-white">{t('brandName', lang)}</span>
                   </div>
                   <p className="text-slate-400 leading-relaxed text-xs">
                     {lang === 'fa' 
                       ? 'پلتفرم تجارت الکترونیک چندفروشندگی بین‌المللی مبتنی بر هوش مصنوعی، زنجیره تامین هوشمند و تاییدیه اصالت اصالت کالا.'
                       : 'International AI-driven multi-vendor commerce ecosystem engineered for high-scale global trade.'}
                   </p>
-                  <div className="flex gap-3 text-slate-400">
-                    <span className="p-2 glass-panel rounded-lg hover:text-teal-400 cursor-pointer">Telegram</span>
-                    <span className="p-2 glass-panel rounded-lg hover:text-teal-400 cursor-pointer">Instagram</span>
-                    <span className="p-2 glass-panel rounded-lg hover:text-teal-400 cursor-pointer">LinkedIn</span>
-                  </div>
                 </div>
 
                 <div>
@@ -1539,7 +1541,6 @@
           <section className="relative overflow-hidden pt-8 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               
-              {/* Text Info Column */}
               <div className="lg:col-span-7 space-y-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-semibold">
                   <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
@@ -1582,7 +1583,6 @@
                   </button>
                 </div>
 
-                {/* Quick Trust Metrics */}
                 <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800/80">
                   <div>
                     <span className="text-xl sm:text-2xl font-black text-white font-mono">100%</span>
@@ -1590,7 +1590,7 @@
                   </div>
                   <div>
                     <span className="text-xl sm:text-2xl font-black text-teal-400 font-mono">۴ ساعت</span>
-                    <p className="text-[11px] text-slate-400">{lang === 'fa' ? 'تحویل اکسپرس تهران' : 'Express Delivery'}</p>
+                    <p className="text-[11px] text-slate-400">{lang === 'fa' ? 'تحویل اکسپرس کشوری' : 'Express Delivery'}</p>
                   </div>
                   <div>
                     <span className="text-xl sm:text-2xl font-black text-amber-400 font-mono">★ ۴.۹</span>
@@ -1599,7 +1599,6 @@
                 </div>
               </div>
 
-              {/* 3D WebGL Feature Stage */}
               <div className="lg:col-span-5 h-[340px] sm:h-[400px] relative">
                 <Three3DViewer modelType="watch" isInteractive={true} />
               </div>
@@ -1618,7 +1617,7 @@
                     </div>
                     <div>
                       <h3 className="text-xl font-black text-white flex items-center gap-2">
-                        {lang === 'fa' ? 'حراج صاعقه‌ای شاهکار (Lightning Flash Deals)' : 'Shahkar Lightning Flash Deals'}
+                        {t('flashDeals', lang)} (Lightning Flash Deals)
                         <span className="text-[10px] bg-rose-500/30 text-rose-300 border border-rose-500/40 px-2 py-0.5 rounded-full font-bold">زنده</span>
                       </h3>
                       <p className="text-xs text-slate-300 mt-0.5">
@@ -1629,7 +1628,7 @@
 
                   <div className="bg-slate-950/80 border border-slate-800 px-4 py-2 rounded-2xl flex items-center gap-2 text-xs font-mono font-bold text-amber-400">
                     <i data-lucide="clock" className="w-4 h-4 text-rose-400"></i>
-                    <span>زمان باقی‌مانده: ۰۳:۴۲:۱۹</span>
+                    <span>{t('timeLeft', lang)} ۰۳:۴۲:۱۹</span>
                   </div>
                 </div>
 
@@ -1639,7 +1638,7 @@
                       <div className="relative mb-3 cursor-pointer" onClick={() => onSelectProduct(fd.id)}>
                         <img src={fd.images?.[0] || ''} alt={fd.title_fa} className="w-full h-36 object-cover rounded-xl" />
                         <span className="absolute top-2 right-2 bg-rose-500 text-white text-[11px] font-black px-2 py-0.5 rounded-lg shadow">
-                          ٪{toPersianDigits(fd.discount_percent)} تخفیف
+                          ٪{toPersianDigits(fd.discount_percent)} OFF
                         </span>
                       </div>
 
@@ -1652,11 +1651,10 @@
                           <span className="text-[10px] text-slate-500 line-through font-mono">{formatTomans(fd.base_price_tomans, lang)}</span>
                         </div>
 
-                        {/* Claimed progress bar */}
                         <div>
                           <div className="flex justify-between text-[10px] text-slate-400 mb-1">
-                            <span>{toPersianDigits(fd.claimed_percent)}٪ رزرو شده</span>
-                            <span className="text-rose-400 font-bold">{toPersianDigits(fd.stock_remaining)} عدد باقیمانده</span>
+                            <span>{toPersianDigits(fd.claimed_percent)}{t('reservedPercent', lang)}</span>
+                            <span className="text-rose-400 font-bold">{toPersianDigits(fd.stock_remaining)} {t('remainingCount', lang)}</span>
                           </div>
                           <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
                             <div className="h-full bg-gradient-to-r from-amber-400 to-rose-500 rounded-full" style={{ width: `${fd.claimed_percent}%` }}></div>
@@ -1667,7 +1665,7 @@
                           onClick={() => onAddToCart(fd.id)}
                           className="w-full mt-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-slate-950 font-black text-xs py-2 rounded-xl transition"
                         >
-                          خرید با تخفیف صاعقه‌ای
+                          {t('buyFlashDealBtn', lang)}
                         </button>
                       </div>
                     </div>
@@ -1677,7 +1675,7 @@
             </section>
           )}
 
-          {/* FEATURED PRODUCTS CAROUSEL / GRID */}
+          {/* FEATURED PRODUCTS */}
           <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-end mb-8">
               <div>
@@ -1753,14 +1751,12 @@
     const ProductCard = ({ product, lang, onSelectProduct, onAddToCart, onToggleWishlist, isWishlisted }) => {
       return (
         <div className="glass-card rounded-2xl overflow-hidden flex flex-col group relative">
-          {/* Discount Badge */}
           {product.discount_percent > 0 && (
             <div className="absolute top-3 right-3 z-10 bg-rose-500 text-white font-extrabold text-[11px] px-2.5 py-1 rounded-lg shadow-lg">
-              ٪{toPersianDigits(product.discount_percent)} تخفیف
+              ٪{toPersianDigits(product.discount_percent)} OFF
             </div>
           )}
 
-          {/* Wishlist Button */}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -1773,7 +1769,6 @@
             <i data-lucide="heart" className="w-4 h-4"></i>
           </button>
 
-          {/* Product Image */}
           <div
             onClick={() => onSelectProduct(product.id)}
             className="relative h-56 bg-slate-900/80 overflow-hidden cursor-pointer"
@@ -1786,7 +1781,6 @@
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
           </div>
 
-          {/* Product Body */}
           <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
             <div>
               <div className="flex justify-between items-center text-[11px] text-slate-400 mb-1">
@@ -1850,7 +1844,6 @@
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Filter Sidebar */}
             <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-6 h-fit">
               <div>
                 <h3 className="text-sm font-bold text-white mb-3">{lang === 'fa' ? 'دسته‌بندی‌ها' : 'Categories'}</h3>
@@ -1892,7 +1885,6 @@
               </div>
             </div>
 
-            {/* Products Grid */}
             <div className="lg:col-span-3">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map(p => (
@@ -1952,23 +1944,18 @@
         });
 
         setNewComment('');
-        // Reload detail
         const updated = await fetch(`./api/products/${productId}`).then(r => r.json());
         setProduct(updated);
       };
 
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
-          
-          {/* Main Detail Header */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            {/* Left 3D Stage & Media Viewer */}
             <div className="lg:col-span-6 space-y-4">
               <div className="h-[380px] w-full relative">
                 <Three3DViewer modelType={active3DModel} isInteractive={true} />
               </div>
 
-              {/* Model Switcher Buttons */}
               <div className="flex gap-2 justify-center">
                 {['watch', 'headphones', 'carpet', 'glasses', 'appliance'].map(m => (
                   <button
@@ -1983,7 +1970,6 @@
                 ))}
               </div>
 
-              {/* Thumbnails */}
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {product.images?.map((img, idx) => (
                   <img
@@ -1999,7 +1985,6 @@
               </div>
             </div>
 
-            {/* Right Product Specifications & Purchase Box */}
             <div className="lg:col-span-6 space-y-6">
               <div>
                 <div
@@ -2015,7 +2000,6 @@
                 </h1>
               </div>
 
-              {/* Price Matrix */}
               <div className="glass-panel p-5 rounded-2xl border-slate-800 flex justify-between items-center">
                 <div>
                   <span className="text-xs text-slate-400 block">{lang === 'fa' ? 'قیمت برای خریدار:' : 'Your Price:'}</span>
@@ -2030,7 +2014,6 @@
                 </div>
               </div>
 
-              {/* Variants Selector */}
               {product.variants && product.variants.length > 0 && (
                 <div>
                   <label className="text-xs font-bold text-slate-300 block mb-2">{lang === 'fa' ? 'انتخاب تنوع / رنگ:' : 'Select Variant:'}</label>
@@ -2050,7 +2033,6 @@
                 </div>
               )}
 
-              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <button
                   onClick={() => onAddToCart(product.id, selectedVariant?.id)}
@@ -2078,7 +2060,6 @@
                 </button>
               </div>
 
-              {/* B2B Wholesale Modal */}
               {isB2BOpen && (
                 <B2BWholesaleQuoteModal
                   product={product}
@@ -2088,7 +2069,6 @@
                 />
               )}
 
-              {/* Tech Specs */}
               <div className="border-t border-slate-800 pt-6">
                 <h3 className="text-sm font-bold text-white mb-3">{lang === 'fa' ? 'مشخصات فنی کلیدی:' : 'Key Specifications:'}</h3>
                 <div className="grid grid-cols-2 gap-3 text-xs">
@@ -2107,7 +2087,6 @@
           <div className="glass-panel rounded-3xl p-8 border-slate-800 space-y-8">
             <h3 className="text-xl font-extrabold text-white">{lang === 'fa' ? 'دیدگاه‌ها و امتیاز خریداران واقعی' : 'Verified Customer Reviews'}</h3>
 
-            {/* Review Submission Form */}
             <form onSubmit={handleReviewSubmit} className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4">
               <span className="text-xs font-bold text-slate-300 block">{lang === 'fa' ? 'ثبت تجربه و نظرات شما:' : 'Submit Your Review:'}</span>
               <div className="flex gap-2">
@@ -2134,7 +2113,6 @@
               </button>
             </form>
 
-            {/* Existing Reviews List */}
             <div className="space-y-4">
               {product.reviews?.map(r => (
                 <div key={r.id} className="p-4 bg-slate-900/40 rounded-2xl border border-slate-800/80 space-y-2">
@@ -2152,13 +2130,28 @@
       );
     };
 
-    // --- CHECKOUT PAGE WITH IDEMPOTENCY & COUPON VALIDATION ---
+    // --- CHECKOUT PAGE WITH COMPREHENSIVE PROVINCE & CITY SELECTOR ---
     const CheckoutPage = ({ cart, lang, onOrderComplete }) => {
+      const [selectedProvinceName, setSelectedProvinceName] = useState(IRAN_PROVINCES[0].name);
+      const [selectedCityName, setSelectedCityName] = useState(IRAN_PROVINCES[0].cities[0]);
+
+      const currentProvinceObj = useMemo(() => {
+        return IRAN_PROVINCES.find(p => p.name === selectedProvinceName || p.name_en === selectedProvinceName) || IRAN_PROVINCES[0];
+      }, [selectedProvinceName]);
+
+      const handleProvinceChange = (e) => {
+        const provName = e.target.value;
+        setSelectedProvinceName(provName);
+        const provObj = IRAN_PROVINCES.find(p => p.name === provName || p.name_en === provName);
+        if (provObj && provObj.cities.length > 0) {
+          setSelectedCityName(provObj.cities[0]);
+        }
+      };
+
       const [address, setAddress] = useState({
-        city: 'تهران',
+        recipient_name: 'نوید رضایی',
         address: 'خیابان ولیعصر، نرسیده به میدان ونک، برج نگار، طبقه ۱۲',
         postal_code: '1991811111',
-        recipient_name: 'نوید رضایی',
         phone: '09124444444'
       });
       const [paymentMethod, setPaymentMethod] = useState('زرین‌پال / درگاه مستقیم شتاب');
@@ -2188,6 +2181,12 @@
         const idempotencyKey = `idemp_${Date.now()}`;
 
         try {
+          const fullAddressObj = {
+            ...address,
+            province: selectedProvinceName,
+            city: selectedCityName
+          };
+
           const res = await fetch('./api/checkout', {
             method: 'POST',
             headers: {
@@ -2198,7 +2197,7 @@
               userId: 'usr_customer1',
               items: cart,
               paymentMethod,
-              shippingAddress: address,
+              shippingAddress: fullAddressObj,
               couponCode
             })
           }).then(r => r.json());
@@ -2216,15 +2215,63 @@
 
       return (
         <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
-          <h2 className="text-2xl font-black text-white">{lang === 'fa' ? 'تکمیل سفارش و درگاه پرداخت' : 'Secure Checkout & Payment'}</h2>
+          <h2 className="text-2xl font-black text-white">{t('checkoutTitle', lang)}</h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-7 space-y-6">
+              
+              {/* Shipping Address & Province/City Selection Panel */}
               <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
-                <h3 className="text-sm font-bold text-teal-300">{lang === 'fa' ? '۱. آدرس گیرنده و تحویل' : '1. Shipping Address'}</h3>
-                <div className="space-y-3 text-xs">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <h3 className="text-sm font-bold text-teal-300 flex items-center gap-2">
+                    <i data-lucide="map-pin" className="w-4 h-4 text-teal-400"></i>
+                    <span>{t('shippingAddressTitle', lang)}</span>
+                  </h3>
+                  <span className="text-[10px] bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-0.5 rounded-full font-mono">
+                    {IRAN_PROVINCES.length} استان کشور
+                  </span>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  {/* PROVINCE & CITY DROPDOWN SELECTORS */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-slate-300 font-bold block mb-1">
+                        {t('provinceLabel', lang)}
+                      </label>
+                      <select
+                        value={selectedProvinceName}
+                        onChange={handleProvinceChange}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-teal-400 font-medium"
+                      >
+                        {IRAN_PROVINCES.map((prov) => (
+                          <option key={prov.name} value={prov.name}>
+                            {lang === 'fa' ? prov.name : prov.name_en}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-slate-300 font-bold block mb-1">
+                        {t('cityLabel', lang)}
+                      </label>
+                      <select
+                        value={selectedCityName}
+                        onChange={(e) => setSelectedCityName(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-teal-400 font-medium"
+                      >
+                        {currentProvinceObj.cities.map((ct) => (
+                          <option key={ct} value={ct}>
+                            {ct}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
                   <div>
-                    <label className="text-slate-400 block mb-1">نام گیرنده:</label>
+                    <label className="text-slate-300 font-bold block mb-1">{t('recipientNameLabel', lang)}</label>
                     <input
                       type="text"
                       value={address.recipient_name}
@@ -2232,8 +2279,9 @@
                       className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100"
                     />
                   </div>
+
                   <div>
-                    <label className="text-slate-400 block mb-1">نشانی کامل پستی:</label>
+                    <label className="text-slate-300 font-bold block mb-1">{t('addressLabel', lang)}</label>
                     <input
                       type="text"
                       value={address.address}
@@ -2241,34 +2289,43 @@
                       className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100"
                     />
                   </div>
+
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-slate-400 block mb-1">کد پستی ۱۰ رقمی:</label>
+                      <label className="text-slate-300 font-bold block mb-1">{t('postalCodeLabel', lang)}</label>
                       <input
                         type="text"
                         value={address.postal_code}
                         onChange={(e) => setAddress({ ...address, postal_code: e.target.value })}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100"
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 font-mono"
                       />
                     </div>
                     <div>
-                      <label className="text-slate-400 block mb-1">شماره تماس:</label>
+                      <label className="text-slate-300 font-bold block mb-1">{t('phoneLabel', lang)}</label>
                       <input
                         type="text"
                         value={address.phone}
                         onChange={(e) => setAddress({ ...address, phone: e.target.value })}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100"
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 font-mono"
                       />
                     </div>
                   </div>
                 </div>
               </div>
 
+              {/* Payment Method Selector */}
               <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
-                <h3 className="text-sm font-bold text-amber-300">{lang === 'fa' ? '۲. انتخاب درگاه پرداخت ایمن' : '2. Payment Method'}</h3>
+                <h3 className="text-sm font-bold text-amber-300 flex items-center gap-2">
+                  <i data-lucide="credit-card" className="w-4 h-4 text-amber-400"></i>
+                  <span>{t('paymentMethodTitle', lang)}</span>
+                </h3>
                 <div className="space-y-2">
-                  {['زرین‌پال / درگاه مستقیم شتاب', 'بانک ملت (سپهر)', 'رمز ارز USDT (تتر شبکه TRC20)'].map((method, idx) => (
-                    <label key={idx} className="flex items-center gap-3 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer">
+                  {[
+                    'زرین‌پال / درگاه مستقیم شتاب (ZarinPal SHETAB Gateway)',
+                    'بانک ملت / بانک سامان (Saman & Mellat IPG)',
+                    'رمز ارز USDT (تتر شبکه TRC20 Crypto Pay)'
+                  ].map((method, idx) => (
+                    <label key={idx} className="flex items-center gap-3 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer hover:border-slate-700">
                       <input
                         type="radio"
                         name="pay"
@@ -2285,7 +2342,7 @@
             {/* Price Summary Box */}
             <div className="lg:col-span-5 space-y-6">
               <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
-                <h3 className="text-sm font-bold text-white mb-2">{lang === 'fa' ? 'کد تخفیف و فاکتور نهایی' : 'Coupon & Summary'}</h3>
+                <h3 className="text-sm font-bold text-white mb-2">{t('couponTitle', lang)}</h3>
                 
                 <div className="flex gap-2">
                   <input
@@ -2293,21 +2350,21 @@
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
                     placeholder="کد تخفیف..."
-                    className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 flex-1 uppercase"
+                    className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 flex-1 uppercase font-mono"
                   />
                   <button onClick={recalculate} className="bg-teal-500/20 text-teal-300 border border-teal-500/40 text-xs px-3 py-2 rounded-xl font-bold">
-                    اعمال
+                    {t('applyCouponBtn', lang)}
                   </button>
                 </div>
 
                 {calculatedCart && (
                   <div className="space-y-2.5 text-xs border-t border-slate-800 pt-4">
                     <div className="flex justify-between text-slate-400">
-                      <span>جمع اقلام:</span>
+                      <span>{t('subtotalLabel', lang)}</span>
                       <span className="font-mono">{formatTomans(calculatedCart.subtotalTomans, lang)}</span>
                     </div>
                     <div className="flex justify-between text-teal-400">
-                      <span>تخفیف کالاها:</span>
+                      <span>{t('itemDiscountLabel', lang)}</span>
                       <span className="font-mono">- {formatTomans(calculatedCart.itemDiscountTomans, lang)}</span>
                     </div>
                     {calculatedCart.couponDiscountTomans > 0 && (
@@ -2317,15 +2374,15 @@
                       </div>
                     )}
                     <div className="flex justify-between text-slate-400">
-                      <span>هزینه ارسال اکسپرس:</span>
+                      <span>{t('shippingCostLabel', lang)}</span>
                       <span className="font-mono">{formatTomans(calculatedCart.totalShippingTomans, lang)}</span>
                     </div>
                     <div className="flex justify-between text-slate-400">
-                      <span>مالیات بر ارزش افزوده (۱۰٪):</span>
+                      <span>{t('vatTaxLabel', lang)}</span>
                       <span className="font-mono">{formatTomans(calculatedCart.vatTaxTomans, lang)}</span>
                     </div>
                     <div className="flex justify-between text-sm font-extrabold text-amber-400 border-t border-slate-800 pt-3">
-                      <span>مبلغ قابل پرداخت:</span>
+                      <span>{t('grandTotalLabel', lang)}</span>
                       <span className="font-mono">{formatTomans(calculatedCart.grandTotalTomans, lang)}</span>
                     </div>
                   </div>
@@ -2336,7 +2393,7 @@
                   disabled={isSubmitting}
                   className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-black text-sm py-4 rounded-2xl shadow-xl shadow-teal-500/25 transition mt-4"
                 >
-                  {isSubmitting ? 'در حال پرداخت و صدور فاکتور...' : 'پرداخت نهایی و ثبت سفارش'}
+                  {isSubmitting ? t('payingProcess', lang) : t('payAndOrderBtn', lang)}
                 </button>
               </div>
             </div>
@@ -2345,7 +2402,7 @@
       );
     };
 
-    // --- LOGISTICS TRACKING MODAL WITH GPS MAP ROUTE & COLD CHAIN STATS ---
+    // --- LOGISTICS TRACKING MODAL ---
     const LogisticsTrackingModal = ({ trackingCode, lang, onClose }) => {
       const [data, setData] = useState(null);
 
@@ -2370,34 +2427,28 @@
               </button>
             </div>
 
-            {/* GPS Route Map Simulation */}
             <div className="relative h-64 rounded-2xl bg-slate-950 overflow-hidden border border-slate-800 flex items-center justify-center">
               <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#14b8a6_1px,transparent_1px)] [background-size:16px_16px]"></div>
               
-              {/* Route Line Canvas Graphics */}
               <svg className="absolute inset-0 w-full h-full stroke-teal-500/40" strokeWidth="3" strokeDasharray="6 6">
                 <path d="M 50 180 Q 200 60 380 120" fill="none" />
               </svg>
 
-              {/* Origin Marker */}
               <div className="absolute top-36 left-12 flex items-center gap-2 bg-slate-900/90 p-2 rounded-xl border border-slate-700 text-[11px]">
                 <span className="w-3 h-3 rounded-full bg-teal-400"></span>
                 <span>مبدا: {data.origin}</span>
               </div>
 
-              {/* Vehicle Live Marker */}
               <div className="absolute top-20 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-amber-500 text-slate-950 px-3 py-1.5 rounded-full font-bold text-xs shadow-lg animate-bounce">
                 <i data-lucide="truck" className="w-4 h-4"></i>
                 <span>خودروی حمل اکسپرس در موقعیت میدان ونک</span>
               </div>
 
-              {/* Destination Marker */}
               <div className="absolute top-24 right-12 flex items-center gap-2 bg-slate-900/90 p-2 rounded-xl border border-slate-700 text-[11px]">
                 <span className="w-3 h-3 rounded-full bg-amber-400"></span>
                 <span>مقصد: {data.destination}</span>
               </div>
 
-              {/* Cold-Chain Telemetry Widget */}
               <div className="absolute bottom-3 left-3 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-teal-500/30 text-[10px] text-teal-300 flex items-center gap-3">
                 <div className="flex items-center gap-1 font-mono">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
@@ -2408,7 +2459,6 @@
               </div>
             </div>
 
-            {/* Timeline Milestones */}
             <div className="space-y-3">
               <h4 className="text-xs font-bold text-slate-300">مراحل توزیع مرسوله:</h4>
               <div className="space-y-2">
@@ -2450,7 +2500,6 @@
               </div>
             </div>
 
-            {/* Seller & Buyer Details Table */}
             <div className="grid grid-cols-2 gap-4 text-xs bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
               <div className="space-y-1">
                 <span className="text-teal-400 font-bold block mb-1">مشخصات فروشنده (بازار بزرگ شاهکار):</span>
@@ -2461,12 +2510,12 @@
               <div className="space-y-1 border-r border-slate-800 pr-4">
                 <span className="text-amber-400 font-bold block mb-1">مشخصات خریدار:</span>
                 <div>نام خریدار: {order.shipping_address?.recipient_name || 'نوید رضایی'}</div>
+                <div>استان و شهر: {order.shipping_address?.province || 'تهران'} - {order.shipping_address?.city || 'تهران'}</div>
                 <div>کد پستی: {order.shipping_address?.postal_code || '۱۹۹۱OD1111'}</div>
                 <div>نشانی تحویل: {order.shipping_address?.address}</div>
               </div>
             </div>
 
-            {/* Items Table */}
             <table className="w-full text-xs text-right border-collapse">
               <thead>
                 <tr className="bg-slate-800 text-slate-300">
@@ -2490,7 +2539,6 @@
               </tbody>
             </table>
 
-            {/* Tax Totals Breakdown */}
             <div className="border-t border-slate-800 pt-4 flex justify-between items-center text-xs">
               <div className="space-y-1 text-slate-400">
                 <div>روش پرداخت: {order.payment_method}</div>
@@ -2667,7 +2715,7 @@
 
       return (
         <div className="max-w-5xl mx-auto px-4 py-10 space-y-8">
-          <h2 className="text-2xl font-black text-white">{lang === 'fa' ? 'سفارش‌های من و پیگیری مرسوله' : 'My Orders & Real-time Tracking'}</h2>
+          <h2 className="text-2xl font-black text-white">{t('myOrders', lang)}</h2>
 
           <div className="space-y-6">
             {orders.map(o => (
@@ -2699,7 +2747,6 @@
                   </div>
                 </div>
 
-                {/* Items List */}
                 <div className="space-y-2">
                   {o.items?.map(it => (
                     <div key={it.id} className="flex justify-between items-center text-xs bg-slate-900/60 p-3 rounded-xl">
@@ -2709,7 +2756,6 @@
                   ))}
                 </div>
 
-                {/* Milestone Visual Progress */}
                 <div className="grid grid-cols-4 gap-2 text-center text-[10px] pt-2">
                   <div className="bg-teal-500/20 text-teal-300 p-2 rounded-xl font-bold">ثبت سفارش</div>
                   <div className="bg-teal-500/20 text-teal-300 p-2 rounded-xl font-bold">تایید فروشنده</div>
@@ -2720,7 +2766,6 @@
             ))}
           </div>
 
-          {/* Logistics Tracking Modal */}
           {trackingCodeModal && (
             <LogisticsTrackingModal
               trackingCode={trackingCodeModal}
@@ -2729,7 +2774,6 @@
             />
           )}
 
-          {/* Official Tax Invoice Modal */}
           {selectedOrderInvoice && (
             <OfficialTaxInvoiceModal
               order={selectedOrderInvoice}
@@ -2741,21 +2785,19 @@
       );
     };
 
-    // --- VENDOR DASHBOARD PAGE WITH PRODUCT MANAGEMENT & B2B QUOTES HUB ---
+    // --- VENDOR DASHBOARD PAGE ---
     const VendorDashboardPage = ({ lang, onRefreshProducts }) => {
       const [data, setData] = useState(null);
       const [b2bQuotes, setB2bQuotes] = useState([]);
       const [settlementAmount, setSettlementAmount] = useState('');
       const [isAddProductOpen, setIsAddProductOpen] = useState(false);
-      const [activeTab, setActiveTab] = useState('products'); // 'products' | 'b2b' | 'settlements'
+      const [activeTab, setActiveTab] = useState('products');
 
-      // B2B response state
       const [replyQuoteId, setReplyQuoteId] = useState(null);
       const [replyUnitPrice, setReplyUnitPrice] = useState('');
       const [replyDays, setReplyDays] = useState('7');
       const [replyNote, setReplyNote] = useState('');
 
-      // New product form
       const [newProd, setNewProd] = useState({
         title_fa: '',
         title_en: '',
@@ -2863,7 +2905,6 @@
             </div>
           </div>
 
-          {/* KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="glass-panel p-5 rounded-2xl border-slate-800">
               <span className="text-xs text-slate-400 block">تعداد محصولات فعال</span>
@@ -2879,7 +2920,6 @@
             </div>
           </div>
 
-          {/* Navigation Tabs */}
           <div className="flex border-b border-slate-800 text-xs font-bold gap-6">
             <button
               onClick={() => setActiveTab('products')}
@@ -2901,7 +2941,6 @@
             </button>
           </div>
 
-          {/* Tab Content 1: Products */}
           {activeTab === 'products' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {data.products.map(p => (
@@ -2921,7 +2960,6 @@
             </div>
           )}
 
-          {/* Tab Content 2: B2B Wholesale Quotes */}
           {activeTab === 'b2b' && (
             <div className="space-y-4">
               {b2bQuotes.length === 0 ? (
@@ -2989,7 +3027,6 @@
             </div>
           )}
 
-          {/* Tab Content 3: Settlements */}
           {activeTab === 'settlements' && (
             <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
               <h3 className="text-sm font-bold text-white">{lang === 'fa' ? 'درخواست تسویه حساب به شبا' : 'Payout Settlement Request'}</h3>
@@ -3022,7 +3059,6 @@
             </div>
           )}
 
-          {/* Add Product Modal */}
           {isAddProductOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
               <div className="glass-panel p-6 rounded-3xl border-slate-700 max-w-lg w-full space-y-4 shadow-2xl">
@@ -3137,7 +3173,7 @@
 
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-          <h2 className="text-2xl font-black text-white">{lang === 'fa' ? 'لیست علاقه‌مندی‌های من' : 'My Wishlist'}</h2>
+          <h2 className="text-2xl font-black text-white">{t('wishlist', lang)}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {list.map(p => (
               <ProductCard
@@ -3169,7 +3205,7 @@
 
       return (
         <div className="max-w-6xl mx-auto px-4 py-10 space-y-8">
-          <h2 className="text-2xl font-black text-white">{lang === 'fa' ? 'مانیتورینگ و ممیزی امنیت بستر' : 'Platform Security & Audit Trail'}</h2>
+          <h2 className="text-2xl font-black text-white">{t('securityAudit', lang)}</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
@@ -3218,7 +3254,7 @@
           <div className="w-full max-w-md bg-slate-900 border-r border-slate-800 h-full p-6 flex flex-col justify-between shadow-2xl">
             <div>
               <div className="flex justify-between items-center pb-4 border-b border-slate-800">
-                <h3 className="text-lg font-bold text-white">{lang === 'fa' ? 'سبد خرید شما' : 'Your Shopping Cart'}</h3>
+                <h3 className="text-lg font-bold text-white">{t('cart', lang)}</h3>
                 <button onClick={onClose} className="text-slate-400 hover:text-white">
                   <i data-lucide="x" className="w-5 h-5"></i>
                 </button>
@@ -3255,7 +3291,7 @@
                 onClick={onProceedCheckout}
                 className="w-full bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold py-3 rounded-xl transition"
               >
-                {lang === 'fa' ? 'تکمیل سفارش و پرداخت' : 'Checkout Now'}
+                {t('checkoutTitle', lang)}
               </button>
             </div>
           </div>
@@ -3263,7 +3299,7 @@
       );
     };
 
-    // --- AI ASSISTANT DRAWER COMPONENT WITH QUICK ACTION PROMPTS ---
+    // --- AI ASSISTANT DRAWER COMPONENT ---
     const AIAssistantDrawer = ({ lang, onClose, onSelectProduct }) => {
       const [messages, setMessages] = useState([
         { sender: 'ai', text: lang === 'fa' ? 'درود! من دستیار هوشمند خریدهای فاخر «شاهکار» هستم. چطور می‌توانم راهنماییتان کنم؟' : 'Greetings! How can I assist your shopping today?' }
@@ -3308,14 +3344,13 @@
               <div className="flex justify-between items-center pb-4 border-b border-slate-800">
                 <div className="flex items-center gap-2">
                   <i data-lucide="sparkles" className="w-5 h-5 text-amber-400"></i>
-                  <h3 className="text-base font-bold text-white">{lang === 'fa' ? 'دستیار هوش مصنوعی شاهکار' : 'Shahkar AI Shopping Advisor'}</h3>
+                  <h3 className="text-base font-bold text-white">{t('aiAdvisor', lang)}</h3>
                 </div>
                 <button onClick={onClose} className="text-slate-400 hover:text-white">
                   <i data-lucide="x" className="w-5 h-5"></i>
                 </button>
               </div>
 
-              {/* Quick Action Prompt Pills */}
               <div className="flex flex-wrap gap-1.5 mt-4">
                 {quickPrompts.map((qp, idx) => (
                   <button
@@ -3378,7 +3413,7 @@
 
     // --- AUTHENTICATION / LOGIN & REGISTER MODAL ---
     const AuthModal = ({ lang, user, setUser, onClose, onShowToast }) => {
-      const [step, setStep] = useState('phone'); // 'phone' | 'otp'
+      const [step, setStep] = useState('phone');
       const [phoneOrEmail, setPhoneOrEmail] = useState(user ? user.phone : '09124444444');
       const [otpCode, setOtpCode] = useState('');
       const [selectedRole, setSelectedRole] = useState(user ? user.role : 'customer');
@@ -3395,15 +3430,11 @@
         e.preventDefault();
         const newUser = {
           id: selectedRole === 'vendor' ? 'usr_vendor1' : selectedRole === 'admin' ? 'usr_admin' : 'usr_customer1',
-          name: userName || (selectedRole === 'vendor' ? 'کوروش هخامنش' : selectedRole === 'admin' ? 'سروش علوی' : 'نوید رضایی'),
+          name: userName || 'کاربر همراه‌ شاهکار',
           email: phoneOrEmail.includes('@') ? phoneOrEmail : 'navid@gmail.com',
           phone: phoneOrEmail,
           role: selectedRole,
-          avatar: selectedRole === 'vendor' 
-            ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
-            : selectedRole === 'admin' 
-            ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
-            : 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80'
+          avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80'
         };
         setUser(newUser);
         onShowToast(lang === 'fa' ? `ورود با موفقیت انجام شد. خوش آمدید ${newUser.name}` : `Welcome back ${newUser.name}`);
@@ -3433,7 +3464,7 @@
                   <i data-lucide="user-check" className="w-4 h-4 text-teal-400"></i>
                 </div>
                 <h3 className="text-base font-bold text-white">
-                  {user ? (lang === 'fa' ? 'حساب کاربری شاهکار' : 'Shahkar Account') : (lang === 'fa' ? 'ورود / ثبت‌نام در شاهکار' : 'Sign In / Register')}
+                  {user ? (lang === 'fa' ? 'حساب کاربری شاهکار' : 'Shahkar Account') : t('signIn', lang)}
                 </h3>
               </div>
               <button onClick={onClose} className="text-slate-400 hover:text-white">
@@ -3441,7 +3472,6 @@
               </button>
             </div>
 
-            {/* Quick Role Switcher */}
             <div className="bg-slate-900 p-2 rounded-2xl border border-slate-800 space-y-2">
               <span className="text-[11px] text-slate-400 font-bold block px-2">
                 {lang === 'fa' ? 'سوییچ سریع نقش کاربری (RBAC):' : 'Quick Role Switch (RBAC):'}
@@ -3486,7 +3516,7 @@
                     value={phoneOrEmail}
                     onChange={(e) => setPhoneOrEmail(e.target.value)}
                     placeholder="09121111111 or user@domain.com"
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-teal-400 font-mono"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 font-mono"
                   />
                 </div>
 
@@ -3499,7 +3529,7 @@
                     required
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-teal-400"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100"
                   />
                 </div>
 
@@ -3525,7 +3555,7 @@
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value)}
                     placeholder="1234"
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-center text-lg tracking-widest text-teal-400 font-mono focus:outline-none focus:border-teal-400"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-center text-lg tracking-widest text-teal-400 font-mono"
                   />
                 </div>
 
@@ -3603,7 +3633,6 @@
             </div>
 
             <div className="space-y-4 text-xs">
-              {/* Feature Highlights Grid */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 space-y-1">
                   <div className="flex items-center gap-1.5 text-teal-300 font-bold">
@@ -3638,7 +3667,6 @@
                 </div>
               </div>
 
-              {/* Install Step Instructions */}
               <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
                 <h4 className="font-bold text-amber-300 text-xs">راهنمای نصب سریع روی گوشی:</h4>
                 <div className="space-y-2 text-[11px] text-slate-300">
