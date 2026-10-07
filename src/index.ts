@@ -799,7 +799,10 @@ export default {
 
     // Serve static assets from public/ via env.ASSETS
     if (env.ASSETS) {
-      return env.ASSETS.fetch(request);
+      const assetRes = await env.ASSETS.fetch(request);
+      if (assetRes.status !== 404) {
+        return assetRes;
+      }
     }
 
     return app.fetch(request, env, ctx);
