@@ -45,7 +45,7 @@
     }
   </script>
 
-  <!-- Google Fonts: Vazirmatn for Persian & Outfit for English -->
+  <!-- Google Fonts: Vazirmatn for Persian/Arabic/Urdu & Outfit for English/Turkish -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -76,23 +76,23 @@
     html:not(.dark) body,
     html:not(.dark) #root,
     html:not(.dark) .app-container {
-      background-color: #f8fafc !important;
+      background-color: #f1f5f9 !important;
       color: #0f172a !important;
     }
 
     html:not(.dark) .glass-panel {
-      background: rgba(255, 255, 255, 0.9) !important;
+      background: rgba(255, 255, 255, 0.92) !important;
       backdrop-filter: blur(16px) !important;
       -webkit-backdrop-filter: blur(16px) !important;
-      border: 1px solid rgba(203, 213, 225, 0.8) !important;
+      border: 1px solid rgba(203, 213, 225, 0.9) !important;
       color: #0f172a !important;
       box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08) !important;
     }
 
     html:not(.dark) .glass-card {
-      background: rgba(255, 255, 255, 0.95) !important;
+      background: rgba(255, 255, 255, 0.96) !important;
       backdrop-filter: blur(14px) !important;
-      border: 1px solid rgba(226, 232, 240, 0.9) !important;
+      border: 1px solid rgba(226, 232, 240, 0.95) !important;
       color: #0f172a !important;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
     }
@@ -100,18 +100,18 @@
     html:not(.dark) .glass-card:hover {
       background: #ffffff !important;
       border-color: #0d9488 !important;
-      box-shadow: 0 12px 32px -8px rgba(13, 148, 136, 0.2) !important;
+      box-shadow: 0 12px 32px -8px rgba(13, 148, 136, 0.25) !important;
     }
 
     html:not(.dark) header {
-      background: rgba(255, 255, 255, 0.95) !important;
-      border-bottom-color: #e2e8f0 !important;
+      background: rgba(255, 255, 255, 0.96) !important;
+      border-bottom-color: #cbd5e1 !important;
     }
 
     html:not(.dark) footer {
-      background-color: #f1f5f9 !important;
-      border-top-color: #e2e8f0 !important;
-      color: #475569 !important;
+      background-color: #e2e8f0 !important;
+      border-top-color: #cbd5e1 !important;
+      color: #334155 !important;
     }
 
     html:not(.dark) input,
@@ -127,18 +127,16 @@
       color: #64748b !important;
     }
 
-    html:not(.dark) .text-white {
-      color: #0f172a !important;
-    }
-
+    html:not(.dark) .text-white,
     html:not(.dark) .text-slate-100,
     html:not(.dark) .text-slate-200,
     html:not(.dark) .text-slate-300 {
-      color: #1e293b !important;
+      color: #0f172a !important;
     }
 
-    html:not(.dark) .text-slate-400 {
-      color: #475569 !important;
+    html:not(.dark) .text-slate-400,
+    html:not(.dark) .text-slate-500 {
+      color: #334155 !important;
     }
 
     html:not(.dark) .bg-slate-900,
@@ -149,15 +147,16 @@
     html:not(.dark) .bg-slate-900\/40,
     html:not(.dark) .bg-slate-950\/80,
     html:not(.dark) .bg-slate-950\/60 {
-      background-color: #f1f5f9 !important;
+      background-color: #ffffff !important;
       color: #0f172a !important;
+      border-color: #cbd5e1 !important;
     }
 
     html:not(.dark) .border-slate-800,
     html:not(.dark) .border-slate-700,
     html:not(.dark) .border-slate-800\/80,
     html:not(.dark) .border-slate-800\/60 {
-      border-color: #e2e8f0 !important;
+      border-color: #cbd5e1 !important;
     }
 
     /* Glassmorphism & 3D Glass Button Styles */
@@ -325,15 +324,57 @@
 
     // --- MASTER INTERNATIONALIZATION DICTIONARY (FA, EN, AR, TR, UR) ---
     const I18N_DICTIONARY = {
-      festivalNotice: { fa: 'جشنواره بین‌المللی شاهکار | تخفیف‌های ویژه کالاهای لوکس و دیجیتال', en: 'SHAHKAR FESTIVAL | Special Discounts on Luxury & Digital Goods', ar: 'مهرجان شاهكار الدولي | خصومات خاصة على السلع الفاخرة والرقمية', tr: 'SHAHKAR FESTİVALİ | Lüks ve Dijital Ürünlerde Özel İndirimler', ur: 'شاہکار عالمی میلہ | لگژری اور ڈیجیٹل اشیاء پر خصوصی رعایتیں' },
-      freeShippingNotice: { fa: 'ارسال رایگان اکسپرس سراسری با کد تخفیف: ', en: 'Free Global Express Shipping with Code: ', ar: 'شحن مجاني سريع مع رمز الخصم: ', tr: 'Kupon Kodu ile Ücretsiz Ekspres Kargo: ', ur: 'ڈسکاؤنٹ کوڈ کے ساتھ مفت ایکسپریس ترسیل: ' },
-      support247: { fa: 'پشتیبانی ۲۴ ساعته: ۰۲۱-۸۸۸۸۹۹۹۹', en: '24/7 Support: +982188889999', ar: 'الدعم على مدار الساعة: ٠٢١-٨٨٨٨٩٩٩٩', tr: '7/24 Destek: +982188889999', ur: '24/7 سپورٹ: +982188889999' },
+      festivalNotice: { 
+        fa: 'جشنواره بین‌المللی شاهکار | تخفیف‌های ویژه کالاهای لوکس و دیجیتال', 
+        en: 'SHAHKAR FESTIVAL | Special Discounts on Luxury & Digital Goods', 
+        ar: 'مهرجان شاهكار الدولي | خصومات خاصة على السلع الفاخرة والرقمية', 
+        tr: 'SHAHKAR FESTİVALİ | Lüks ve Dijital Ürünlerde Özel İndirimler', 
+        ur: 'شاہکار عالمی میلہ | لگژری اور ڈیجیٹل اشیاء پر خصوصی رعایتیں' 
+      },
+      freeShippingNotice: { 
+        fa: 'ارسال رایگان اکسپرس سراسری با کد تخفیف: ', 
+        en: 'Free Global Express Shipping with Code: ', 
+        ar: 'شحن مجاني سريع مع رمز الخصم: ', 
+        tr: 'Kupon Kodu ile Ücretsiz Ekspres Kargo: ', 
+        ur: 'ڈسکاؤنٹ کوڈ کے ساتھ مفت ایکسپریس ترسیل: ' 
+      },
+      support247: { 
+        fa: 'پشتیبانی ۲۴ ساعته: ۰۲۱-۸۸۸۸۹۹۹۹', 
+        en: '24/7 Support: +982188889999', 
+        ar: 'الدعم على مدار الساعة: ٠٢١-٨٨٨٨٩٩٩٩', 
+        tr: '7/24 Destek: +982188889999', 
+        ur: '24/7 سپورٹ: +982188889999' 
+      },
       menuBtn: { fa: 'منو', en: 'Menu', ar: 'القائمة', tr: 'Menü', ur: 'مینو' },
       brandName: { fa: 'شاهـکــار', en: 'SHAHKAR', ar: 'شاهكار', tr: 'SHAHKAR', ur: 'شاہکار' },
-      brandTagline: { fa: 'اکوسیستم بازار جهانی هوشمند', en: 'AI Multi-Vendor Ecosystem', ar: 'منظومة السوق العالمي الذكي', tr: 'Yapay Zeka Çoklu Satıcı Ekosistemi', ur: 'مصنوعی ذہانت مارکیٹ پلیس' },
-      searchPlaceholder: { fa: 'جستجوی هوشمند در میلیون‌ها کالای فاخر، برندها و فروشندگان برتر...', en: 'Search millions of verified products, brands and artisan stores...', ar: 'ابحث في ملايين المنتجات الموثوقة والعلامات التجارية والمتاجر...', tr: 'Milyonlarca doğrulanmış ürün, marka ve mağazada arayın...', ur: 'لاکھوں تصدیق شدہ مصنوعات، برانڈز اور اسٹورز میں تلاش کریں...' },
-      suggestedKeywords: { fa: 'کلیدواژه‌های پیشنهادی:', en: 'Suggested Keywords:', ar: 'الكلمات المفتاحية المقترحة:', tr: 'Önerilen Anahtar Kelimeler:', ur: 'تجویز کردہ کلیدی الفاظ:' },
-      matchingProducts: { fa: 'محصولات مرتبط:', en: 'Matching Products:', ar: 'المنتجات المطابقة:', tr: 'Eşleşen Ürünler:', ur: 'متعلقہ مصنوعات:' },
+      brandTagline: { 
+        fa: 'اکوسیستم بازار جهانی هوشمند', 
+        en: 'AI Multi-Vendor Ecosystem', 
+        ar: 'منظومة السوق العالمي الذكي', 
+        tr: 'Yapay Zeka Çoklu Satıcı Ekosistemi', 
+        ur: 'مصنوعی ذہانت مارکیٹ پلیس' 
+      },
+      searchPlaceholder: { 
+        fa: 'جستجوی هوشمند در میلیون‌ها کالای فاخر، برندها و فروشندگان برتر...', 
+        en: 'Search millions of verified products, brands and artisan stores...', 
+        ar: 'ابحث في ملايين المنتجات الموثوقة والعلامات التجارية والمتاجر...', 
+        tr: 'Milyonlarca doğrulanmış ürün, marka ve mağazada arayın...', 
+        ur: 'لاکھوں تصدیق شدہ مصنوعات، برانڈز اور اسٹورز میں تلاش کریں...' 
+      },
+      suggestedKeywords: { 
+        fa: 'کلیدواژه‌های پیشنهادی:', 
+        en: 'Suggested Keywords:', 
+        ar: 'الكلمات المفتاحية المقترحة:', 
+        tr: 'Önerilen Anahtar Kelimeler:', 
+        ur: 'تجویز کردہ کلیدی الفاظ:' 
+      },
+      matchingProducts: { 
+        fa: 'محصولات مرتبط:', 
+        en: 'Matching Products:', 
+        ar: 'المنتجات المطابقة:', 
+        tr: 'Eşleşen Ürünler:', 
+        ur: 'متعلقہ مصنوعات:' 
+      },
       signIn: { fa: 'ورود / ثبت‌نام', en: 'Sign In / Register', ar: 'تسجيل الدخول / التسجيل', tr: 'Giriş Yap / Kaydol', ur: 'سائن ان / رجسٹریشن' },
       mobileApp: { fa: 'اپلیکیشن', en: 'Mobile App', ar: 'التطبيق', tr: 'Mobil Uygulama', ur: 'موبائل ایپ' },
       aiAdvisor: { fa: 'دستیار AI', en: 'AI Advisor', ar: 'مساعد الذكاء الاصطناعي', tr: 'Yapay Zeka Asistanı', ur: 'مصنوعی ذہانت معاون' },
@@ -350,6 +391,64 @@
       timeLeft: { fa: 'زمان باقی‌مانده:', en: 'Time Remaining:', ar: 'الوقت المتبقي:', tr: 'Kalan Süre:', ur: 'باقی وقت:' },
       reservedPercent: { fa: '٪ رزرو شده', en: '% Claimed', ar: '٪ محجوز', tr: '% Rezerve Edildi', ur: '٪ ریزرو شدہ' },
       remainingCount: { fa: 'عدد باقیمانده', en: 'items left', ar: 'قطع متبقية', tr: 'ürün kaldı', ur: 'باقی ہیں' },
+      heroBadge: { 
+        fa: 'نسل جدید تجارت الکترونیک هوشمند ایران', 
+        en: 'Next-Gen Global AI Commerce', 
+        ar: 'الجيل القادم من التجارة الذكية', 
+        tr: 'Yeni Nesil Yapay Zeka Ticareti', 
+        ur: 'اگلی نسل کی سمارٹ ای کامرس' 
+      },
+      heroTitle: { 
+        fa: 'خرید اصیل‌ترین کالاهای لوکس و دیجیتال', 
+        en: 'Discover Premium Luxury & Digital Goods', 
+        ar: 'اكتشف أرقى المنتجات الفاخرة والرقمية', 
+        tr: 'En Özel Lüks ve Dijital Ürünleri Keşfedin', 
+        ur: 'خالص ترین لگژری اور ڈیجیٹل اشیاء خریدیں' 
+      },
+      heroDesc: { 
+        fa: 'تجربه‌ای بی‌نظیر از خرید مستقیم از اصیل‌ترین برندها، هنرمندان و فروشندگان تاییدشده با دستیار هوش مصنوعی و پیش‌نمایش سه بعدی واقعی کالا.', 
+        en: 'Experience verified direct trading from top global brands, artisan masters, and tech flagships backed by real 3D previews.', 
+        ar: 'تجربة فريدة للتسوق المباشر من الماركات والأصحاب المعتمدين مع المساعد الذكي والمعاينة ثلاثية الأبعاد.', 
+        tr: 'Doğrulanmış markalardan, ustalardan ve teknoloji devlerinden gerçek 3D önizlemeli doğrudan alışveriş deneyimi.', 
+        ur: 'تصدیق شدہ برانڈز سے براہ راست خریداری کا بے مثال تجربہ، مصنوعی ذہانت اور 3D پیش نظارہ کے ساتھ۔' 
+      },
+      exploreCatalogBtn: { fa: 'ورود به ویترین کالاها', en: 'Explore Catalog', ar: 'استكشف الكتالوج', tr: 'Kataloğu İncele', ur: 'کیٹلاگ دیکھیں' },
+      view3DWatchBtn: { fa: 'نمایش ۳ بعدی ساعت شاهکار', en: 'View 3D Tourbillon', ar: 'عرض الساعة ثلاثية الأبعاد', tr: '3D Saat Görünümü', ur: '3D گھڑی دیکھیں' },
+      statAuthenticity: { fa: 'تضمین اصالت کالا', en: 'Verified Authenticity', ar: 'ضمان الأصالة', tr: 'Orijinallik Garantisi', ur: 'اصلیت کی ضمانت' },
+      statExpressDelivery: { fa: 'تحویل اکسپرس کشوری', en: 'Express Delivery', ar: 'توصيل سريع', tr: 'Ekspres Teslimat', ur: 'ایکسپریس ترسیل' },
+      statUserRating: { fa: 'رضایت خریداران', en: 'User Rating', ar: 'تقييم المستخدمين', tr: 'Kullanıcı Derecesi', ur: 'صارفین کی درجہ بندی' },
+      curatedSelection: { fa: 'ویترین برتر', en: 'CURATED SELECTION', ar: 'مختارات ممتازة', tr: 'ÖZEL SEÇİM', ur: 'منتخب کردہ انتخاب' },
+      featuredGoods: { fa: 'محصولات ویژه شاهکار', en: 'Featured Marketplace Goods', ar: 'منتجات شاهكار المميزة', tr: 'Öne Çıkan Ürünler', ur: 'شاہکار کی خصوصی مصنوعات' },
+      viewAll: { fa: 'مشاهده همه', en: 'View All', ar: 'عرض الكل', tr: 'Tümünü Gör', ur: 'سب دیکھیں' },
+      officialStores: { fa: 'فروشگاه‌ها و تامین‌کنندگان برتر', en: 'Official Verified Stores', ar: 'المتاجر والموردون المعتمدون', tr: 'Onaylı Mağazalar ve Tedarikçiler', ur: 'تصدیق شدہ اسٹورز اور سپلائرز' },
+      officialStoresDesc: { 
+        fa: 'خرید مستقیم و بی‌واسطه از برترین برندها و استادکاران ایرانی', 
+        en: 'Direct certified trading with top artisans and tech suppliers', 
+        ar: 'تسوق مباشر من أفضل العلامات التجارية والحرفيين', 
+        tr: 'En iyi markalar ve ustalarla doğrudan sertifikalı ticaret', 
+        ur: 'ٹاپ برانڈز اور کاریگروں سے براہ راست خریداری' 
+      },
+      successfulSales: { fa: 'فروش موفق', en: 'sales', ar: 'مبيعات ناجحة', tr: 'başarılı satış', ur: 'کامیاب فروخت' },
+      catalogTitle: { fa: 'کاتالوگ جامع کالاها', en: 'Complete Marketplace Catalog', ar: 'كتالوج المنتجات الشامل', tr: 'Kapsamlı Ürün Kataloğu', ur: 'مکمل مارکیٹ پلیس کیٹلاگ' },
+      catalogSubtitle: { fa: 'فیلتر هوشمند بر اساس دسته‌بندی، قیمت و امتیاز فروشگاه', en: 'Smart filtering across all categories', ar: 'تصفية ذكية حسب الفئة والسعر والتقييم', tr: 'Kategori, fiyat ve puana göre akıllı filtreleme', ur: 'زمرے، قیمت اور درجہ بندی کے لحاظ سے فلٹرنگ' },
+      categoriesLabel: { fa: 'دسته‌بندی‌ها', en: 'Categories', ar: 'الفئات', tr: 'Kategoriler', ur: 'زمرے' },
+      allCategoriesBtn: { fa: 'همه دسته‌ها', en: 'All Categories', ar: 'جميع الفئات', tr: 'Tüm Kategoriler', ur: 'تمام زمرے' },
+      sortByLabel: { fa: 'مرتب‌سازی', en: 'Sort By', ar: 'ترتيب حسب', tr: 'Sırala', ur: 'ترتیب دیں' },
+      sortDefault: { fa: 'پیش‌فرض (برترین‌ها)', en: 'Featured', ar: 'المميزة', tr: 'Öne Çıkanlar', ur: 'خصوصی' },
+      sortPriceLow: { fa: 'ارزان‌ترین', en: 'Price: Low to High', ar: 'السعر: من الأقل للأعلى', tr: 'Fiyat: Düşükten Yükseğe', ur: 'قیمت: کم سے زیادہ' },
+      sortPriceHigh: { fa: 'گران‌ترین', en: 'Price: High to Low', ar: 'السعر: من الأعلى للأقل', tr: 'Fiyat: Yüksekten Düşüğe', ur: 'قیمت: زیادہ سے کم' },
+      sortTopRated: { fa: 'بالاترین امتیاز', en: 'Top Rated', ar: 'الأعلى تقييماً', tr: 'En Yüksek Puanlı', ur: 'ٹاپ ریٹیڈ' },
+      addToCartBtn: { fa: 'افزودن به سبد خرید', en: 'Add to Cart', ar: 'إضافة إلى السلة', tr: 'Sepete Ekle', ur: 'کارٹ میں شامل کریں' },
+      sellerLabel: { fa: 'فروشنده:', en: 'Vendor:', ar: 'البائع:', tr: 'Satıcı:', ur: 'سیلر:' },
+      inStock: { fa: 'موجود در انبار', en: 'In Stock', ar: 'متوفر في المخزون', tr: 'Stokta Var', ur: 'اسٹاک میں دستیاب' },
+      expressTipax: { fa: 'ارسال فوری با تیپاکس / پست سفارشی', en: 'Fast Express Shipping via Courier', ar: 'شحن سريع عبر البريد السريع', tr: 'Hızlı Ekspres Kargo', ur: 'فاسٹ ایکسپریس شپنگ' },
+      selectVariant: { fa: 'انتخاب تنوع / رنگ:', en: 'Select Variant / Color:', ar: 'اختر النوع / اللون:', tr: 'Varyant / Renk Seçin:', ur: 'رنگ یا قسم منتخب کریں:' },
+      b2bQuoteBtn: { fa: 'استعلام قیمت عمده B2B', en: 'B2B Wholesale Quote', ar: 'طلب سعر بالجملة B2B', tr: 'B2B Toptan Fiyat Teklifi', ur: 'B2B ہول سیل اقتباس' },
+      keySpecs: { fa: 'مشخصات فنی کلیدی:', en: 'Key Specifications:', ar: 'المواصفات الرئيسية:', tr: 'Temel Teknik Özellikler:', ur: 'اہم تکنیکی خصوصیات:' },
+      reviewsTitle: { fa: 'دیدگاه‌ها و امتیاز خریداران واقعی', en: 'Verified Customer Reviews', ar: 'آراء وتقييمات المشترين الحقيقيين', tr: 'Doğrulanmış Müşteri Yorumları', ur: 'صارفین کے تبصرے' },
+      submitReviewTitle: { fa: 'ثبت تجربه و نظرات شما:', en: 'Submit Your Review:', ar: 'أضف تقييمك وتجربتك:', tr: 'Yorumunuzu Gönderin:', ur: 'اپنی رائے درج کریں:' },
+      reviewPlaceholder: { fa: 'نظر خود را در مورد کیفیت ساخت، بسته‌بندی و ارسال بنویسید...', en: 'Write your experience regarding quality, packaging and delivery...', ar: 'اكتب تجربتك حول الجودة والتغليف والتوصيل...', tr: 'Ürün kalitesi, paketleme ve kargo hakkında yorum yazın...', ur: 'معیار، پیکیجنگ اور ترسیل کے بارے میں اپنی رائے لکھیں...' },
+      submitReviewBtn: { fa: 'ثبت دیدگاه', en: 'Submit Review', ar: 'إرسال التقييم', tr: 'Yorumu Gönder', ur: 'رائے جمع کرائیں' },
       checkoutTitle: { fa: 'تکمیل سفارش و درگاه پرداخت', en: 'Secure Checkout & Payment', ar: 'إتمام الطلب والدفع الآمن', tr: 'Güvenli Ödeme ve Sipariş', ur: 'محفوظ چیک آؤٹ اور ادائیگی' },
       shippingAddressTitle: { fa: '۱. آدرس گیرنده و استان/شهر تحویل', en: '1. Recipient Address & Province/City', ar: '١. عنوان المستلم والمحافظة والمدينة', tr: '1. Alıcı Adresi, İl ve İlçe', ur: '1. وصول کنندہ کا پتہ اور صوبہ/شہر' },
       provinceLabel: { fa: 'استان محل سکونت:', en: 'Province / State:', ar: 'المحافظة:', tr: 'İl / Eyalet:', ur: 'صوبہ:' },
@@ -368,8 +467,25 @@
       shippingCostLabel: { fa: 'هزینه ارسال اکسپرس:', en: 'Express Shipping:', ar: 'رسوم الشحن السريع:', tr: 'Ekspres Kargo Ücreti:', ur: 'ترسیل کی فیس:' },
       vatTaxLabel: { fa: 'مالیات بر ارزش افزوده (۱۰٪):', en: 'VAT (10%):', ar: 'ضريبة القيمة المضافة (۱۰٪):', tr: 'KDV (%10):', ur: 'ٹیکس (10%):' },
       grandTotalLabel: { fa: 'مبلغ قابل پرداخت:', en: 'Grand Total:', ar: 'المبلغ الإجمالي:', tr: 'Toplam Tutar:', ur: 'کل قابل ادا رقم:' },
-      payAndOrderBtn: { fa: 'پرداخت نهایی و ثبت سفارش', en: 'Pay & Complete Order', ar: 'الدفع وتأكيد الطلب', tr: 'Öde و Siparişi Tamamla', ur: 'ادائیگی کریں اور آرڈر دیں' },
-      payingProcess: { fa: 'در حال پرداخت و صدور فاکتور...', en: 'Processing Payment & Invoice...', ar: 'جاري معالجة الدفع والفاتورة...', tr: 'Ödeme و Fatura İşleniyor...', ur: 'ادائیگی جاری ہے...' }
+      payAndOrderBtn: { fa: 'پرداخت نهایی و ثبت سفارش', en: 'Pay & Complete Order', ar: 'الدفع وتأكيد الطلب', tr: 'Öde ve Siparişi Tamamla', ur: 'ادائیگی کریں اور آرڈر دیں' },
+      payingProcess: { fa: 'در حال پرداخت و صدور فاکتور...', en: 'Processing Payment & Invoice...', ar: 'جاري معالجة الدفع والفاتورة...', tr: 'Ödeme ve Fatura İşleniyor...', ur: 'ادائیگی جاری ہے...' },
+      orderNo: { fa: 'شماره سفارش:', en: 'Order No:', ar: 'رقم الطلب:', tr: 'Sipariş No:', ur: 'آرڈر نمبر:' },
+      trackingCode: { fa: 'کد رهگیری پست/تیپاکس:', en: 'Tracking Code:', ar: 'رمز التتبع:', tr: 'Kargo Takip Kodu:', ur: 'ٹریکنگ کوڈ:' },
+      liveGpsMap: { fa: 'نقشه زنده GPS', en: 'Live GPS Map', ar: 'خريطة GPS المباشرة', tr: 'Canlı GPS Haritası', ur: 'لائیو GPS نقشہ' },
+      officialInvoice: { fa: 'فاکتور رسمی', en: 'Official Tax Invoice', ar: 'الفاتورة الرسمية', tr: 'Resmi Fatura', ur: 'سرکاری انوائس' },
+      availableBalance: { fa: 'موجودی قابل تسویه:', en: 'Available Balance:', ar: 'الرصيد المتاح:', tr: 'Kullanılabilir Bakiye:', ur: 'دستیاب رقم:' },
+      addProductBtn: { fa: 'افزودن محصول جدید', en: 'Add New Product', ar: 'إضافة منتج جديد', tr: 'Yeni Ürün Ekle', ur: 'نیا پروڈکٹ شامل کریں' },
+      activeProducts: { fa: 'تعداد محصولات فعال', en: 'Active Products', ar: 'المنتجات النشطة', tr: 'Aktif Ürünler', ur: 'فعال مصنوعات' },
+      totalSales: { fa: 'کل فروش‌های ثبت شده', en: 'Total Sales', ar: 'إجمالي المبيعات', tr: 'Toplam Satışlar', ur: 'کل فروخت' },
+      customerRating: { fa: 'امتیاز رضایت مشتریان', en: 'Customer Rating', ar: 'تقييم العملاء', tr: 'Müşteri Derecelendirmesi', ur: 'صارفین کی درجہ بندی' },
+      payoutRequest: { fa: 'درخواست تسویه حساب به شبا', en: 'Payout Settlement Request', ar: 'طلب تسوية الحساب', tr: 'Ödeme Talebi', ur: 'ادائیگی کی درخواست' },
+      payoutSubmit: { fa: 'ثبت درخواست تسویه', en: 'Request Payout', ar: 'إرسال طلب التسوية', tr: 'Ödeme Talebi Gönder', ur: 'درخواست جمع کروائیں' },
+      payoutHistory: { fa: 'سوابق تسویه‌حساب‌های اخیر:', en: 'Recent Settlement History:', ar: 'سجل التسويات الأخيرة:', tr: 'Son Ödeme Geçmişi:', ur: 'حالیہ ادائیگیاں:' },
+      themeModeLabel: { fa: 'حالت نمایش (Theme)', en: 'Theme Mode', ar: 'وضع العرض', tr: 'Tema Modu', ur: 'تھیم موڈ' },
+      darkMode: { fa: 'حالت تاریک (شب)', en: 'Dark Mode (Night)', ar: 'الوضع الداكن (الليل)', tr: 'Karanlık Mod (Gece)', ur: 'ڈارک موڈ (رات)' },
+      lightMode: { fa: 'حالت روشن (روز)', en: 'Light Mode (Day)', ar: 'الوضع الفاتح (النهار)', tr: 'Aydınlık Mod (Gündüz)', ur: 'لائٹ موڈ (دن)' },
+      currencyLabel: { fa: 'واحد پول (Currency)', en: 'Currency', ar: 'العملة', tr: 'Para Birimi', ur: 'کرنسی' },
+      provinces31Title: { fa: '۳۱ استان و شهرهای ایران', en: '31 Provinces of Iran', ar: '٣١ محافظة إيران', tr: 'İran\'ın 31 Eyaleti', ur: 'ایران کے 31 صوبے' }
     };
 
     const t = (key, lang = 'fa') => {
@@ -377,6 +493,17 @@
         return I18N_DICTIONARY[key][lang] || I18N_DICTIONARY[key]['fa'] || key;
       }
       return key;
+    };
+
+    // Helper to extract localized text based on language
+    const getLocalizedText = (obj, fieldPrefix, lang) => {
+      if (!obj) return '';
+      if (lang === 'fa' && obj[`${fieldPrefix}_fa`]) return obj[`${fieldPrefix}_fa`];
+      if (lang === 'en' && obj[`${fieldPrefix}_en`]) return obj[`${fieldPrefix}_en`];
+      if (lang === 'ar' && obj[`${fieldPrefix}_ar`]) return obj[`${fieldPrefix}_ar`];
+      if (lang === 'tr' && obj[`${fieldPrefix}_tr`]) return obj[`${fieldPrefix}_tr`];
+      if (lang === 'ur' && obj[`${fieldPrefix}_ur`]) return obj[`${fieldPrefix}_ur`];
+      return obj[`${fieldPrefix}_en`] || obj[`${fieldPrefix}_fa`] || '';
     };
 
     // --- IRAN PROVINCES & CITIES COMPREHENSIVE DATASET ---
@@ -824,7 +951,7 @@
                 <div className="glass-panel p-3.5 rounded-2xl border-slate-800 flex items-center justify-between">
                   <div className="flex items-center gap-2.5 text-xs font-bold text-slate-200">
                     <i data-lucide={themeMode === 'dark' ? 'moon' : 'sun'} className={`w-4 h-4 ${themeMode === 'dark' ? 'text-indigo-400' : 'text-amber-400'}`}></i>
-                    <span>حالت نمایش (Theme)</span>
+                    <span>{t('themeModeLabel', lang)}</span>
                   </div>
 
                   <button
@@ -834,12 +961,12 @@
                     {themeMode === 'dark' ? (
                       <>
                         <i data-lucide="moon" className="w-3.5 h-3.5 text-indigo-400"></i>
-                        <span className="text-indigo-300">حالت تاریک (شب)</span>
+                        <span className="text-indigo-300">{t('darkMode', lang)}</span>
                       </>
                     ) : (
                       <>
                         <i data-lucide="sun" className="w-3.5 h-3.5 text-amber-400"></i>
-                        <span className="text-amber-300">حالت روشن (روز)</span>
+                        <span className="text-amber-300">{t('lightMode', lang)}</span>
                       </>
                     )}
                   </button>
@@ -849,7 +976,7 @@
                 <div className="glass-panel p-3.5 rounded-2xl border-slate-800 flex items-center justify-between">
                   <div className="flex items-center gap-2.5 text-xs font-bold text-slate-200">
                     <i data-lucide="coins" className="w-4 h-4 text-amber-400"></i>
-                    <span>واحد پول (Currency)</span>
+                    <span>{t('currencyLabel', lang)}</span>
                   </div>
 
                   <button
@@ -1040,7 +1167,7 @@
       const totalCartCount = useMemo(() => cart.reduce((acc, item) => acc + item.quantity, 0), [cart]);
 
       return (
-        <div className={`app-container min-h-screen flex flex-col bg-[#05070d] text-slate-100 ${lang === 'fa' ? 'font-persian' : 'font-latin'}`} dir={dir}>
+        <div className={`app-container min-h-screen flex flex-col ${themeMode === 'dark' ? 'bg-[#05070d] text-slate-100' : 'bg-slate-100 text-slate-900'} ${lang === 'fa' ? 'font-persian' : 'font-latin'}`} dir={dir}>
           {toast && (
             <div className="fixed bottom-6 left-6 z-50 flex items-center gap-3 glass-panel px-5 py-3 rounded-xl border-brand-500/40 text-teal-300 shadow-2xl animate-bounce">
               <i data-lucide="check-circle" className="w-5 h-5 text-teal-400"></i>
@@ -1166,7 +1293,7 @@
                               <div className="flex items-center gap-3">
                                 <img src={p.images?.[0] || ''} alt={p.title_fa} className="w-10 h-10 object-cover rounded-lg" />
                                 <div>
-                                  <h4 className="text-xs font-semibold text-slate-200">{lang === 'fa' ? p.title_fa : p.title_en}</h4>
+                                  <h4 className="text-xs font-semibold text-slate-200">{getLocalizedText(p, 'title', lang)}</h4>
                                   <span className="text-[10px] text-amber-400 font-mono">{formatTomans(p.final_price_tomans, lang)}</span>
                                 </div>
                               </div>
@@ -1192,6 +1319,14 @@
                   </span>
                   <span className="uppercase font-mono text-[11px] text-teal-300 font-bold">{lang}</span>
                   <i data-lucide="chevron-down" className="w-3.5 h-3.5 text-slate-400"></i>
+                </button>
+
+                <button
+                  onClick={handleToggleTheme}
+                  className="p-2.5 bg-slate-900 border border-slate-700/80 rounded-2xl hover:bg-slate-800 text-slate-200 hover:text-white flex items-center gap-1 text-xs font-bold transition shadow-md"
+                  title={themeMode === 'dark' ? t('lightMode', lang) : t('darkMode', lang)}
+                >
+                  <i data-lucide={themeMode === 'dark' ? 'sun' : 'moon'} className={`w-4 h-4 ${themeMode === 'dark' ? 'text-amber-400' : 'text-indigo-400'}`}></i>
                 </button>
 
                 <button
@@ -1283,7 +1418,7 @@
                     onClick={() => setCurrentRoute('catalog')}
                     className="text-slate-400 hover:text-slate-200 whitespace-nowrap transition"
                   >
-                    {lang === 'fa' ? cat.name_fa : cat.name_en}
+                    {getLocalizedText(cat, 'name', lang)}
                   </button>
                 ))}
 
@@ -1476,7 +1611,7 @@
                   </div>
                   <p className="text-slate-400 leading-relaxed text-xs">
                     {lang === 'fa' 
-                      ? 'پلتفرم تجارت الکترونیک چندفروشندگی بین‌المللی مبتنی بر هوش مصنوعی، زنجیره تامین هوشمند و تاییدیه اصالت اصالت کالا.'
+                      ? 'پلتفرم تجارت الکترونیک چندفروشندگی بین‌المللی مبتنی بر هوش مصنوعی، زنجیره تامین هوشمند و تاییدیه اصالت کالا.'
                       : 'International AI-driven multi-vendor commerce ecosystem engineered for high-scale global trade.'}
                   </p>
                 </div>
@@ -1544,25 +1679,15 @@
               <div className="lg:col-span-7 space-y-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-semibold">
                   <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
-                  {lang === 'fa' ? 'نسل جدید تجارت الکترونیک هوشمند ایران' : 'Next-Gen Global AI-Powered Commerce'}
+                  {t('heroBadge', lang)}
                 </div>
 
                 <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">
-                  {lang === 'fa' ? (
-                    <>
-                      خرید اصیل‌ترین <span className="gold-gradient-text">کالاهای لوکس</span> و دیجیتال
-                    </>
-                  ) : (
-                    <>
-                      Discover Premium <span className="gold-gradient-text">Luxury & Digital</span> Products
-                    </>
-                  )}
+                  {t('heroTitle', lang)}
                 </h2>
 
                 <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
-                  {lang === 'fa' 
-                    ? 'تجربه‌ای بی‌نظیر از خرید مستقیم از اصیل‌ترین برندها، هنرمندان و فروشندگان تاییدشده با دستیار هوش مصنوعی و پیش‌نمایش سه بعدی واقعی کالا.'
-                    : 'Experience verified direct trading from top global brands, artisan masters, and tech flagships backed by real 3D previews.'}
+                  {t('heroDesc', lang)}
                 </p>
 
                 <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -1570,7 +1695,7 @@
                     onClick={onGoCatalog}
                     className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-extrabold text-sm px-7 py-3.5 rounded-2xl shadow-xl shadow-teal-500/25 transition flex items-center gap-2"
                   >
-                    <span>{lang === 'fa' ? 'ورود به ویترین کالاها' : 'Explore Catalog'}</span>
+                    <span>{t('exploreCatalogBtn', lang)}</span>
                     <i data-lucide="arrow-left" className="w-4 h-4"></i>
                   </button>
 
@@ -1579,22 +1704,22 @@
                     className="glass-panel hover:bg-slate-800 text-slate-200 text-sm font-semibold px-6 py-3.5 rounded-2xl border-slate-700 transition flex items-center gap-2"
                   >
                     <i data-lucide="eye" className="w-4 h-4 text-amber-400"></i>
-                    <span>{lang === 'fa' ? 'نمایش ۳ بعدی ساعت شاهکار' : 'View 3D Tourbillon'}</span>
+                    <span>{t('view3DWatchBtn', lang)}</span>
                   </button>
                 </div>
 
                 <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800/80">
                   <div>
                     <span className="text-xl sm:text-2xl font-black text-white font-mono">100%</span>
-                    <p className="text-[11px] text-slate-400">{lang === 'fa' ? 'تضمین اصالت کالا' : 'Verified Authenticity'}</p>
+                    <p className="text-[11px] text-slate-400">{t('statAuthenticity', lang)}</p>
                   </div>
                   <div>
                     <span className="text-xl sm:text-2xl font-black text-teal-400 font-mono">۴ ساعت</span>
-                    <p className="text-[11px] text-slate-400">{lang === 'fa' ? 'تحویل اکسپرس کشوری' : 'Express Delivery'}</p>
+                    <p className="text-[11px] text-slate-400">{t('statExpressDelivery', lang)}</p>
                   </div>
                   <div>
                     <span className="text-xl sm:text-2xl font-black text-amber-400 font-mono">★ ۴.۹</span>
-                    <p className="text-[11px] text-slate-400">{lang === 'fa' ? 'رضایت خریداران' : 'User Rating'}</p>
+                    <p className="text-[11px] text-slate-400">{t('statUserRating', lang)}</p>
                   </div>
                 </div>
               </div>
@@ -1617,7 +1742,7 @@
                     </div>
                     <div>
                       <h3 className="text-xl font-black text-white flex items-center gap-2">
-                        {t('flashDeals', lang)} (Lightning Flash Deals)
+                        {t('flashDeals', lang)}
                         <span className="text-[10px] bg-rose-500/30 text-rose-300 border border-rose-500/40 px-2 py-0.5 rounded-full font-bold">زنده</span>
                       </h3>
                       <p className="text-xs text-slate-300 mt-0.5">
@@ -1644,7 +1769,7 @@
 
                       <div className="space-y-2">
                         <h4 onClick={() => onSelectProduct(fd.id)} className="text-xs font-bold text-white line-clamp-1 cursor-pointer hover:text-teal-300">
-                          {lang === 'fa' ? fd.title_fa : fd.title_en}
+                          {getLocalizedText(fd, 'title', lang)}
                         </h4>
                         <div className="flex justify-between items-baseline">
                           <span className="text-xs text-amber-400 font-mono font-bold">{formatTomans(fd.final_price_tomans, lang)}</span>
@@ -1679,12 +1804,12 @@
           <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-end mb-8">
               <div>
-                <span className="text-amber-400 text-xs font-bold tracking-wider uppercase">{lang === 'fa' ? 'ویترین برتر' : 'CURATED SELECTION'}</span>
-                <h3 className="text-2xl font-extrabold text-white mt-1">{lang === 'fa' ? 'محصولات ویژه شاهکار' : 'Featured Marketplace Goods'}</h3>
+                <span className="text-amber-400 text-xs font-bold tracking-wider uppercase">{t('curatedSelection', lang)}</span>
+                <h3 className="text-2xl font-extrabold text-white mt-1">{t('featuredGoods', lang)}</h3>
               </div>
 
               <button onClick={onGoCatalog} className="text-teal-400 hover:text-teal-300 text-xs font-bold flex items-center gap-1">
-                <span>{lang === 'fa' ? 'مشاهده همه' : 'View All'}</span>
+                <span>{t('viewAll', lang)}</span>
                 <i data-lucide="chevron-left" className="w-4 h-4"></i>
               </button>
             </div>
@@ -1711,10 +1836,10 @@
                 <div>
                   <h3 className="text-xl font-bold text-white flex items-center gap-2">
                     <i data-lucide="award" className="w-5 h-5 text-amber-400"></i>
-                    {lang === 'fa' ? 'فروشگاه‌ها و تامین‌کنندگان برتر' : 'Official Verified Stores'}
+                    {t('officialStores', lang)}
                   </h3>
                   <p className="text-xs text-slate-400 mt-1">
-                    {lang === 'fa' ? 'خرید مستقیم و بی‌واسطه از برترین برندها و استادکاران ایرانی' : 'Direct certified trading with top Iranian artisans and tech suppliers'}
+                    {t('officialStoresDesc', lang)}
                   </p>
                 </div>
               </div>
@@ -1735,7 +1860,7 @@
                       <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-2">
                         <span>★ {v.rating}</span>
                         <span>•</span>
-                        <span>{toPersianDigits(v.total_sales)} فروش موفق</span>
+                        <span>{toPersianDigits(v.total_sales)} {t('successfulSales', lang)}</span>
                       </div>
                     </div>
                   </div>
@@ -1794,7 +1919,7 @@
                 onClick={() => onSelectProduct(product.id)}
                 className="text-sm font-bold text-slate-100 hover:text-teal-300 line-clamp-2 cursor-pointer transition leading-snug"
               >
-                {lang === 'fa' ? product.title_fa : product.title_en}
+                {getLocalizedText(product, 'title', lang)}
               </h3>
             </div>
 
@@ -1809,7 +1934,7 @@
               <button
                 onClick={() => onAddToCart(product.id)}
                 className="bg-teal-500/20 hover:bg-teal-500 text-teal-300 hover:text-slate-950 border border-teal-500/30 p-2.5 rounded-xl transition shadow-lg"
-                title={lang === 'fa' ? 'افزودن به سبد' : 'Add to Cart'}
+                title={t('addToCartBtn', lang)}
               >
                 <i data-lucide="plus" className="w-4 h-4"></i>
               </button>
@@ -1839,14 +1964,14 @@
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="mb-8">
-            <h2 className="text-2xl font-black text-white">{lang === 'fa' ? 'کاتالوگ جامع کالاها' : 'Complete Marketplace Catalog'}</h2>
-            <p className="text-xs text-slate-400 mt-1">{lang === 'fa' ? 'فیلتر هوشمند بر اساس دسته‌بندی، قیمت و امتیاز فروشگاه' : 'Smart filtering across all categories'}</p>
+            <h2 className="text-2xl font-black text-white">{t('catalogTitle', lang)}</h2>
+            <p className="text-xs text-slate-400 mt-1">{t('catalogSubtitle', lang)}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-6 h-fit">
               <div>
-                <h3 className="text-sm font-bold text-white mb-3">{lang === 'fa' ? 'دسته‌بندی‌ها' : 'Categories'}</h3>
+                <h3 className="text-sm font-bold text-white mb-3">{t('categoriesLabel', lang)}</h3>
                 <div className="space-y-1.5">
                   <button
                     onClick={() => setSelectedCategory('')}
@@ -1854,7 +1979,7 @@
                       selectedCategory === '' ? 'bg-teal-500/20 text-teal-300 font-bold border border-teal-500/30' : 'text-slate-400 hover:bg-slate-800'
                     }`}
                   >
-                    {lang === 'fa' ? 'همه دسته‌ها' : 'All Categories'}
+                    {t('allCategoriesBtn', lang)}
                   </button>
                   {categories.map(c => (
                     <button
@@ -1864,23 +1989,23 @@
                         selectedCategory === c.id ? 'bg-teal-500/20 text-teal-300 font-bold border border-teal-500/30' : 'text-slate-400 hover:bg-slate-800'
                       }`}
                     >
-                      {lang === 'fa' ? c.name_fa : c.name_en}
+                      {getLocalizedText(c, 'name', lang)}
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="border-t border-slate-800 pt-4">
-                <h3 className="text-sm font-bold text-white mb-3">{lang === 'fa' ? 'مرتب‌سازی' : 'Sort By'}</h3>
+                <h3 className="text-sm font-bold text-white mb-3">{t('sortByLabel', lang)}</h3>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none"
                 >
-                  <option value="featured">{lang === 'fa' ? 'پیش‌فرض (برترین‌ها)' : 'Featured'}</option>
-                  <option value="price_asc">{lang === 'fa' ? 'ارزان‌ترین' : 'Price: Low to High'}</option>
-                  <option value="price_desc">{lang === 'fa' ? 'گران‌ترین' : 'Price: High to Low'}</option>
-                  <option value="rating">{lang === 'fa' ? 'بالاترین امتیاز' : 'Top Rated'}</option>
+                  <option value="featured">{t('sortDefault', lang)}</option>
+                  <option value="price_asc">{t('sortPriceLow', lang)}</option>
+                  <option value="price_desc">{t('sortPriceHigh', lang)}</option>
+                  <option value="rating">{t('sortTopRated', lang)}</option>
                 </select>
               </div>
             </div>
@@ -1992,11 +2117,11 @@
                   className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-xs text-amber-400 cursor-pointer hover:border-amber-400 mb-3"
                 >
                   <i data-lucide="store" className="w-3.5 h-3.5"></i>
-                  <span>فروشنده: {product.store_name} ({product.vendor_badge})</span>
+                  <span>{t('sellerLabel', lang)} {product.store_name} ({product.vendor_badge})</span>
                 </div>
 
                 <h1 className="text-2xl font-black text-white leading-snug">
-                  {lang === 'fa' ? product.title_fa : product.title_en}
+                  {getLocalizedText(product, 'title', lang)}
                 </h1>
               </div>
 
@@ -2009,14 +2134,14 @@
                 </div>
 
                 <div className="text-left text-xs text-slate-400">
-                  <span className="text-teal-400 font-bold block">موجود در انبار ({toPersianDigits(product.stock)} عدد)</span>
-                  <span>ارسال فوری با تیپاکس / پست سفارشی</span>
+                  <span className="text-teal-400 font-bold block">{t('inStock', lang)} ({toPersianDigits(product.stock)} عدد)</span>
+                  <span>{t('expressTipax', lang)}</span>
                 </div>
               </div>
 
               {product.variants && product.variants.length > 0 && (
                 <div>
-                  <label className="text-xs font-bold text-slate-300 block mb-2">{lang === 'fa' ? 'انتخاب تنوع / رنگ:' : 'Select Variant:'}</label>
+                  <label className="text-xs font-bold text-slate-300 block mb-2">{t('selectVariant', lang)}</label>
                   <div className="flex flex-wrap gap-3">
                     {product.variants.map(v => (
                       <button
@@ -2026,7 +2151,7 @@
                           selectedVariant?.id === v.id ? 'bg-teal-500/20 border-teal-400 text-teal-300' : 'bg-slate-900 border-slate-800 text-slate-400'
                         }`}
                       >
-                        {v.title_fa}
+                        {getLocalizedText(v, 'title', lang) || v.title_fa}
                       </button>
                     ))}
                   </div>
@@ -2039,7 +2164,7 @@
                   className="flex-1 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-extrabold py-3.5 rounded-2xl shadow-xl shadow-teal-500/20 transition flex justify-center items-center gap-2"
                 >
                   <i data-lucide="shopping-bag" className="w-5 h-5"></i>
-                  <span>{lang === 'fa' ? 'افزودن به سبد خرید' : 'Add to Shopping Cart'}</span>
+                  <span>{t('addToCartBtn', lang)}</span>
                 </button>
 
                 <button
@@ -2047,7 +2172,7 @@
                   className="bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500 hover:text-slate-950 font-bold px-4 py-3.5 rounded-2xl transition flex items-center justify-center gap-1.5 text-xs"
                 >
                   <i data-lucide="briefcase" className="w-4 h-4"></i>
-                  <span>{lang === 'fa' ? 'استعلام قیمت عمده B2B' : 'B2B Wholesale Quote'}</span>
+                  <span>{t('b2bQuoteBtn', lang)}</span>
                 </button>
 
                 <button
@@ -2070,7 +2195,7 @@
               )}
 
               <div className="border-t border-slate-800 pt-6">
-                <h3 className="text-sm font-bold text-white mb-3">{lang === 'fa' ? 'مشخصات فنی کلیدی:' : 'Key Specifications:'}</h3>
+                <h3 className="text-sm font-bold text-white mb-3">{t('keySpecs', lang)}</h3>
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   {Object.entries(product.specifications || {}).map(([key, val]) => (
                     <div key={key} className="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/60">
@@ -2085,10 +2210,10 @@
 
           {/* REVIEWS SECTION */}
           <div className="glass-panel rounded-3xl p-8 border-slate-800 space-y-8">
-            <h3 className="text-xl font-extrabold text-white">{lang === 'fa' ? 'دیدگاه‌ها و امتیاز خریداران واقعی' : 'Verified Customer Reviews'}</h3>
+            <h3 className="text-xl font-extrabold text-white">{t('reviewsTitle', lang)}</h3>
 
             <form onSubmit={handleReviewSubmit} className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4">
-              <span className="text-xs font-bold text-slate-300 block">{lang === 'fa' ? 'ثبت تجربه و نظرات شما:' : 'Submit Your Review:'}</span>
+              <span className="text-xs font-bold text-slate-300 block">{t('submitReviewTitle', lang)}</span>
               <div className="flex gap-2">
                 {[1,2,3,4,5].map(star => (
                   <button
@@ -2104,12 +2229,12 @@
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder={lang === 'fa' ? 'نظر خود را در مورد کیفیت ساخت، بسته‌بندی و ارسال بنویسید...' : 'Write your review...'}
+                placeholder={t('reviewPlaceholder', lang)}
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 focus:outline-none focus:border-teal-400"
                 rows={3}
               />
               <button type="submit" className="bg-teal-500 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl hover:bg-teal-400">
-                {lang === 'fa' ? 'ثبت دیدگاه' : 'Submit Review'}
+                {t('submitReviewBtn', lang)}
               </button>
             </form>
 
@@ -2228,7 +2353,7 @@
                     <span>{t('shippingAddressTitle', lang)}</span>
                   </h3>
                   <span className="text-[10px] bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-0.5 rounded-full font-mono">
-                    {IRAN_PROVINCES.length} استان کشور
+                    {t('provinces31Title', lang)}
                   </span>
                 </div>
 
@@ -2722,11 +2847,11 @@
               <div key={o.id} className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs border-b border-slate-800 pb-3 gap-2">
                   <div>
-                    <span className="text-slate-400">{lang === 'fa' ? 'شماره سفارش:' : 'Order No:'}</span>
+                    <span className="text-slate-400">{t('orderNo', lang)}</span>
                     <strong className="text-teal-400 font-mono font-bold mr-2">{o.order_number}</strong>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-slate-400">{lang === 'fa' ? 'کد رهگیری پست/تیپاکس:' : 'Tracking Code:'}</span>
+                    <span className="text-slate-400">{t('trackingCode', lang)}</span>
                     <strong className="text-amber-400 font-mono font-bold">{o.tracking_code}</strong>
                     
                     <button
@@ -2734,7 +2859,7 @@
                       className="bg-teal-500/20 text-teal-300 border border-teal-500/40 px-3 py-1 rounded-lg text-[11px] hover:bg-teal-500 hover:text-slate-950 font-bold transition flex items-center gap-1"
                     >
                       <i data-lucide="map-pin" className="w-3.5 h-3.5"></i>
-                      <span>نقشه زنده GPS</span>
+                      <span>{t('liveGpsMap', lang)}</span>
                     </button>
 
                     <button
@@ -2742,7 +2867,7 @@
                       className="bg-amber-500/20 text-amber-300 border border-amber-500/40 px-3 py-1 rounded-lg text-[11px] hover:bg-amber-500 hover:text-slate-950 font-bold transition flex items-center gap-1"
                     >
                       <i data-lucide="file-text" className="w-3.5 h-3.5"></i>
-                      <span>فاکتور رسمی</span>
+                      <span>{t('officialInvoice', lang)}</span>
                     </button>
                   </div>
                 </div>
@@ -2895,11 +3020,11 @@
                 className="bg-teal-500 text-slate-950 font-extrabold text-xs px-5 py-2.5 rounded-xl hover:bg-teal-400 transition flex items-center gap-2 shadow-lg"
               >
                 <i data-lucide="plus" className="w-4 h-4"></i>
-                <span>{lang === 'fa' ? 'افزودن محصول جدید' : 'Add New Product'}</span>
+                <span>{t('addProductBtn', lang)}</span>
               </button>
 
               <div className="text-left">
-                <span className="text-xs text-slate-400 block">{lang === 'fa' ? 'موجودی قابل تسویه:' : 'Available Balance:'}</span>
+                <span className="text-xs text-slate-400 block">{t('availableBalance', lang)}</span>
                 <strong className="text-xl font-mono text-teal-400">{formatTomans(data.balanceTomans, lang)}</strong>
               </div>
             </div>
@@ -2907,15 +3032,15 @@
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="glass-panel p-5 rounded-2xl border-slate-800">
-              <span className="text-xs text-slate-400 block">تعداد محصولات فعال</span>
+              <span className="text-xs text-slate-400 block">{t('activeProducts', lang)}</span>
               <strong className="text-2xl text-white font-mono">{toPersianDigits(data.productsCount)}</strong>
             </div>
             <div className="glass-panel p-5 rounded-2xl border-slate-800">
-              <span className="text-xs text-slate-400 block">کل فروش‌های ثبت شده</span>
+              <span className="text-xs text-slate-400 block">{t('totalSales', lang)}</span>
               <strong className="text-2xl text-amber-400 font-mono">{toPersianDigits(data.totalSalesCount)}</strong>
             </div>
             <div className="glass-panel p-5 rounded-2xl border-slate-800">
-              <span className="text-xs text-slate-400 block">امتیاز رضایت مشتریان</span>
+              <span className="text-xs text-slate-400 block">{t('customerRating', lang)}</span>
               <strong className="text-2xl text-teal-400 font-mono">★ {data.vendor.rating}</strong>
             </div>
           </div>
@@ -2948,7 +3073,7 @@
                   <div className="flex items-center gap-3">
                     <img src={p.images?.[0] || ''} alt="p" className="w-12 h-12 object-cover rounded-xl" />
                     <div>
-                      <h4 className="text-xs font-bold text-white line-clamp-1">{p.title_fa}</h4>
+                      <h4 className="text-xs font-bold text-white line-clamp-1">{getLocalizedText(p, 'title', lang)}</h4>
                       <span className="text-amber-400 font-mono text-xs">{formatTomans(p.base_price_tomans, lang)}</span>
                     </div>
                   </div>
@@ -3029,7 +3154,7 @@
 
           {activeTab === 'settlements' && (
             <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
-              <h3 className="text-sm font-bold text-white">{lang === 'fa' ? 'درخواست تسویه حساب به شبا' : 'Payout Settlement Request'}</h3>
+              <h3 className="text-sm font-bold text-white">{t('payoutRequest', lang)}</h3>
               <div className="flex gap-4">
                 <input
                   type="number"
@@ -3042,12 +3167,12 @@
                   onClick={handleSettlement}
                   className="bg-teal-500 text-slate-950 font-bold text-xs px-6 py-3 rounded-xl hover:bg-teal-400"
                 >
-                  ثبت درخواست تسویه
+                  {t('payoutSubmit', lang)}
                 </button>
               </div>
 
               <div className="pt-4 space-y-2">
-                <h4 className="text-xs font-bold text-slate-300">سوابق تسویه‌حساب‌های اخیر:</h4>
+                <h4 className="text-xs font-bold text-slate-300">{t('payoutHistory', lang)}</h4>
                 {data.settlements?.map(s => (
                   <div key={s.id} className="flex justify-between items-center text-xs p-3 bg-slate-950 rounded-xl border border-slate-800 font-mono">
                     <span className="text-teal-400">{formatTomans(s.amount_tomans, lang)}</span>
@@ -3266,7 +3391,7 @@
                     <div className="flex items-center gap-3">
                       <img src={item.product.images?.[0] || ''} alt="p" className="w-12 h-12 object-cover rounded-lg" />
                       <div>
-                        <h4 className="text-xs font-bold text-white line-clamp-1">{item.product.title_fa}</h4>
+                        <h4 className="text-xs font-bold text-white line-clamp-1">{getLocalizedText(item.product, 'title', lang)}</h4>
                         <span className="text-[10px] text-amber-400 font-mono">{formatTomans(item.product.final_price_tomans, lang)}</span>
                       </div>
                     </div>
@@ -3380,7 +3505,7 @@
                           >
                             <img src={p.images?.[0] || ''} alt="p" className="w-10 h-10 object-cover rounded-lg" />
                             <div>
-                              <strong className="block text-white line-clamp-1">{p.title_fa}</strong>
+                              <strong className="block text-white line-clamp-1">{getLocalizedText(p, 'title', lang)}</strong>
                               <span className="text-amber-400 font-mono">{formatTomans(p.final_price_tomans, lang)}</span>
                             </div>
                           </div>
