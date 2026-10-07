@@ -76,12 +76,12 @@
     html:not(.dark) body,
     html:not(.dark) #root,
     html:not(.dark) .app-container {
-      background-color: #f1f5f9 !important;
+      background-color: #f8fafc !important;
       color: #0f172a !important;
     }
 
     html:not(.dark) .glass-panel {
-      background: rgba(255, 255, 255, 0.92) !important;
+      background: rgba(255, 255, 255, 0.95) !important;
       backdrop-filter: blur(16px) !important;
       -webkit-backdrop-filter: blur(16px) !important;
       border: 1px solid rgba(203, 213, 225, 0.9) !important;
@@ -90,9 +90,9 @@
     }
 
     html:not(.dark) .glass-card {
-      background: rgba(255, 255, 255, 0.96) !important;
+      background: #ffffff !important;
       backdrop-filter: blur(14px) !important;
-      border: 1px solid rgba(226, 232, 240, 0.95) !important;
+      border: 1px solid #e2e8f0 !important;
       color: #0f172a !important;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
     }
@@ -104,12 +104,12 @@
     }
 
     html:not(.dark) header {
-      background: rgba(255, 255, 255, 0.96) !important;
+      background: rgba(255, 255, 255, 0.98) !important;
       border-bottom-color: #cbd5e1 !important;
     }
 
     html:not(.dark) footer {
-      background-color: #e2e8f0 !important;
+      background-color: #f1f5f9 !important;
       border-top-color: #cbd5e1 !important;
       color: #334155 !important;
     }
@@ -122,25 +122,42 @@
       color: #0f172a !important;
     }
 
+    html:not(.dark) select option {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+    }
+
     html:not(.dark) input::placeholder,
     html:not(.dark) textarea::placeholder {
       color: #64748b !important;
     }
 
-    html:not(.dark) .text-white,
-    html:not(.dark) .text-slate-100,
-    html:not(.dark) .text-slate-200,
-    html:not(.dark) .text-slate-300 {
-      color: #0f172a !important;
+    /* Buttons readability fix for light mode */
+    html:not(.dark) button.bg-slate-900,
+    html:not(.dark) button.bg-slate-950 {
+      background-color: #0f172a !important;
+      color: #ffffff !important;
+      border-color: #334155 !important;
     }
 
-    html:not(.dark) .text-slate-400,
-    html:not(.dark) .text-slate-500 {
-      color: #334155 !important;
+    html:not(.dark) button.bg-slate-900 span,
+    html:not(.dark) button.bg-slate-950 span,
+    html:not(.dark) button.bg-slate-900 i,
+    html:not(.dark) button.bg-slate-950 i {
+      color: #ffffff !important;
     }
 
-    html:not(.dark) .bg-slate-900,
-    html:not(.dark) .bg-slate-950,
+    html:not(.dark) button.bg-teal-500,
+    html:not(.dark) button.bg-teal-600,
+    html:not(.dark) .btn-3d-teal {
+      color: #042f2e !important;
+    }
+
+    html:not(.dark) button.bg-rose-500,
+    html:not(.dark) button.bg-gradient-to-r {
+      color: #ffffff !important;
+    }
+
     html:not(.dark) .bg-slate-900\/90,
     html:not(.dark) .bg-slate-900\/80,
     html:not(.dark) .bg-slate-900\/60,
@@ -798,6 +815,104 @@
       );
     };
 
+    // --- LOCATION / PROVINCE & CITY MODAL COMPONENT ---
+    const LocationModal = ({ isOpen, onClose, selectedProvince, setSelectedProvince, selectedCity, setSelectedCity, lang }) => {
+      if (!isOpen) return null;
+
+      const currentProvObj = IRAN_PROVINCES.find(p => p.name === selectedProvince || p.name_en === selectedProvince) || IRAN_PROVINCES[0];
+
+      const handleProvChange = (e) => {
+        const provName = e.target.value;
+        setSelectedProvince(provName);
+        const obj = IRAN_PROVINCES.find(p => p.name === provName || p.name_en === provName);
+        if (obj && obj.cities.length > 0) {
+          setSelectedCity(obj.cities[0]);
+        }
+      };
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-fade-in">
+          <div className="glass-panel p-6 rounded-3xl border-slate-700 max-w-md w-full space-y-5 shadow-2xl relative">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center font-bold text-amber-300">
+                  <i data-lucide="map-pin" className="w-5 h-5 text-amber-400"></i>
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-white">
+                    {lang === 'fa' ? 'انتخاب استان و شهر تحویل سفارش' : 'Select Delivery Province & City'}
+                  </h3>
+                  <p className="text-[10px] text-teal-400 font-mono">
+                    {lang === 'fa' ? '۳۱ استان و تمامی شهرستان‌های ایران' : '31 Iran Provinces & All Cities'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2 rounded-xl bg-slate-900 text-slate-400 hover:text-white border border-slate-800 transition"
+              >
+                <i data-lucide="x" className="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              <div>
+                <label className="text-slate-300 font-bold block mb-1.5">
+                  {lang === 'fa' ? 'انتخاب استان محل سکونت / مقصد:' : 'Select Province:'}
+                </label>
+                <select
+                  value={selectedProvince}
+                  onChange={handleProvChange}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-2xl p-3 text-slate-100 font-bold focus:outline-none focus:border-teal-400"
+                >
+                  {IRAN_PROVINCES.map((prov) => (
+                    <option key={prov.name} value={prov.name}>
+                      {lang === 'fa' ? prov.name : prov.name_en} ({prov.cities.length} {lang === 'fa' ? 'شهر' : 'cities'})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-slate-300 font-bold block mb-1.5">
+                  {lang === 'fa' ? 'انتخاب شهر محل تحویل:' : 'Select City:'}
+                </label>
+                <select
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-2xl p-3 text-slate-100 font-bold focus:outline-none focus:border-teal-400"
+                >
+                  {currentProvObj.cities.map((ct) => (
+                    <option key={ct} value={ct}>
+                      {ct}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="bg-teal-500/10 border border-teal-500/30 p-3.5 rounded-2xl flex items-center gap-2.5 text-teal-300 text-[11px]">
+                <i data-lucide="truck" className="w-4 h-4 text-teal-400 shrink-0"></i>
+                <span>
+                  {lang === 'fa' 
+                    ? <>ارسال اکسپرس و تحویل سریع درب منزل در <strong className="text-amber-300">{selectedProvince} - {selectedCity}</strong> فعال است.</>
+                    : <>Express delivery to <strong className="text-amber-300">{selectedProvince} - {selectedCity}</strong> is active.</>}
+                </span>
+              </div>
+
+              <button
+                onClick={onClose}
+                className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 font-black text-xs py-3 rounded-2xl shadow-lg transition"
+              >
+                {lang === 'fa' 
+                  ? `تایید و ثبت استان و شهر (${selectedProvince} - ${selectedCity})`
+                  : `Confirm Location (${selectedProvince} - ${selectedCity})`}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
     // --- 3-LINE HAMBURGER DRAWER MENU COMPONENT ---
     const HamburgerDrawerMenu = ({
       isOpen,
@@ -814,6 +929,12 @@
       onOpenAuth,
       onOpenInstallApp,
       onOpenAi,
+      selectedProvince,
+      setSelectedProvince,
+      selectedCity,
+      setSelectedCity,
+      onOpenLocationModal,
+      categories = [],
       showToast
     }) => {
       if (!isOpen) return null;
@@ -822,7 +943,7 @@
         { code: 'fa', name: 'فارسی', flag: '🇮🇷' },
         { code: 'en', name: 'English', flag: '🇬🇧' },
         { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-        { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+        { code: 'tr', name: 'Türkچه', flag: '🇹🇷' },
         { code: 'ur', name: 'اردو', flag: '🇵🇰' },
       ];
 
@@ -1019,6 +1140,10 @@
       const [currentRoute, setCurrentRoute] = useState('home');
       const [selectedProductId, setSelectedProductId] = useState('prd_1');
       const [selectedVendorId, setSelectedVendorId] = useState('vnd_1');
+
+      const [selectedProvince, setSelectedProvince] = useState('تهران');
+      const [selectedCity, setSelectedCity] = useState('تهران');
+      const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
       const [products, setProducts] = useState([]);
       const [categories, setCategories] = useState([]);
