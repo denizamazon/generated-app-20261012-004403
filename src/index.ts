@@ -93,6 +93,23 @@ interface AuditLog {
   created_at: number;
 }
 
+interface B2BQuote {
+  id: string;
+  company_name: string;
+  email: string;
+  phone: string;
+  product_id: string;
+  product_title_fa: string;
+  target_quantity: number;
+  destination_country: string;
+  notes: string;
+  status: string;
+  quoted_unit_price_tomans?: number;
+  estimated_days?: number;
+  vendor_note?: string;
+  created_at: number;
+}
+
 let dbVendors: Vendor[] = [];
 let dbCategories: Category[] = [];
 let dbProducts: Product[] = [];
@@ -100,6 +117,7 @@ let dbReviews: Review[] = [];
 let dbOrders: Order[] = [];
 let dbAuditLogs: AuditLog[] = [];
 let dbSettlements: any[] = [];
+let dbB2bQuotes: B2BQuote[] = [];
 
 function seedDatabase() {
   if (seeded) return;
@@ -463,6 +481,33 @@ function seedDatabase() {
     }
   ];
 
+  dbB2bQuotes = [
+    {
+      id: 'b2b_101',
+      company_name: 'بازرگانی آریا پارس دبی',
+      email: 'import@aryapars.ae',
+      phone: '+971501234567',
+      product_id: 'prd_1',
+      product_title_fa: 'هدفون بی‌سیم نویز کنسلینگ هوشمند آریا برو Pro',
+      target_quantity: 250,
+      destination_country: 'امارات متحده عربی (دبی)',
+      notes: 'درخواست حک لوگوی تجاری سفارشی و بسته‌بندی صادراتی پلتفرم',
+      status: 'pending',
+      created_at: now - 86400000
+    }
+  ];
+
+  dbSettlements = [
+    {
+      id: 'stl_1',
+      vendor_id: 'vnd_1',
+      amount_tomans: 50000000,
+      iban: 'IR980120000000012345678901',
+      status: 'completed',
+      created_at: now - 86400000 * 3
+    }
+  ];
+
   dbAuditLogs = [
     {
       id: 'log_1',
@@ -533,6 +578,7 @@ app.get('/api/products', (c) => {
     return {
       ...p,
       vendor_badge: v?.badge || 'فروشنده معتبر',
+      store_name: v?.store_name || 'غرفه اصلی شاهکار',
       final_price_tomans: Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100)
     };
   });
@@ -556,6 +602,7 @@ app.get('/api/products/:id', (c) => {
   return c.json({
     ...p,
     vendor_badge: v?.badge || 'فروشنده معتبر',
+    store_name: v?.store_name || 'غرفه اصلی شاهکار',
     vendor_logo: v?.logo_url,
     vendor_rating: v?.rating,
     final_price_tomans: Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100),
@@ -593,6 +640,53 @@ app.get('/api/flash-deals', (c) => {
     stock_remaining: Math.max(2, p.stock - 5)
   }));
   return c.json(deals);
+});
+
+// CART CALCULATION & COUPON VALIDATION ENDPOINT
+app.post('/api/cart/calculate', async (c) => {
+  try {
+    const body = await c.req.json<any>();
+    const { items = [], couponCode = '' } = body;
+
+    let subtotalTomans = 0;
+    let itemDiscountTomans = 0;
+
+    for (const item of items) {
+      const p = dbProducts.find(prod => prod.id === item.productId);
+      if (!p) continue;
+
+      const basePrice = p.base_price_tomans * item.quantity;
+      const finalPrice = Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100) * item.quantity;
+
+      subtotalTomans += basePrice;
+      itemDiscountTomans += (basePrice - finalPrice);
+    }
+
+    let couponDiscountTomans = 0;
+    let appliedCoupon = null;
+
+    if (couponCode.toUpperCase() === 'SHAHKAR2026') {
+      couponDiscountTomans = Math.min(2000000, Math.round((subtotalTomans - itemDiscountTomans) * 0.15));
+      appliedCoupon = { code: 'SHAHKAR2026', discountPercent: 15, maxTomans: 2000000 };
+    }
+
+    const netProductTomans = subtotalTomans - itemDiscountTomans - couponDiscountTomans;
+    const totalShippingTomans = items.length > 0 ? 65000 : 0;
+    const vatTaxTomans = Math.round(netProductTomans * 0.10);
+    const grandTotalTomans = netProductTomans + totalShippingTomans + vatTaxTomans;
+
+    return c.json({
+      subtotalTomans,
+      itemDiscountTomans,
+      couponDiscountTomans,
+      appliedCoupon,
+      totalShippingTomans,
+      vatTaxTomans,
+      grandTotalTomans
+    });
+  } catch (e: any) {
+    return c.json({ error: e.message || 'Cart calculation error' }, 400);
+  }
 });
 
 app.post('/api/checkout', async (c) => {
@@ -667,6 +761,86 @@ app.post('/api/checkout', async (c) => {
 
 app.get('/api/orders', (c) => {
   return c.json(dbOrders);
+});
+
+// LOGISTICS GPS TRACKING ENDPOINT
+app.get('/api/logistics/track/:code', (c) => {
+  const code = c.req.param('code');
+  const now = Date.now();
+
+  return c.json({
+    trackingCode: code,
+    carrier: 'تیپاکس اکسپرس بین‌المللی (Tipax Express Cold Chain)',
+    status: 'in_transit',
+    currentLocation: 'تهران - هاب هوشمند توزیع ونک',
+    origin: 'تهران (انبار مرکزی شاهکار)',
+    destination: 'تهران - برج نگار',
+    estimatedDelivery: 'امروز - ساعت ۱۶:۳۰',
+    timeline: [
+      { step: 1, title_fa: 'ثبت و پردازش سفارش در انبار مرکزی', completed: true, current: false, time: '۰۹:۱۵' },
+      { step: 2, title_fa: 'تایید کیفیت و صدور گواهی اصالت', completed: true, current: false, time: '۱۰:۳۰' },
+      { step: 3, title_fa: 'تحویل به ناوگان حمل هوشمند تیپاکس', completed: true, current: false, time: '۱۱:۴۵' },
+      { step: 4, title_fa: 'حمل در مسیر توزیع شهری (زنجیره سرد)', completed: true, current: true, time: 'در حال انجام' },
+      { step: 5, title_fa: 'تحویل نهایی به خریدار', completed: false, current: false, time: 'تخمینی ۱۶:۳۰' }
+    ]
+  });
+});
+
+// B2B WHOLESALE QUOTES ENDPOINTS
+app.post('/api/b2b/quote', async (c) => {
+  try {
+    const body = await c.req.json<any>();
+    const { companyName, email, phone, productId, targetQuantity = 100, destinationCountry = 'ایران', notes = '' } = body;
+
+    const p = dbProducts.find(prod => prod.id === productId);
+
+    const newQuote: B2BQuote = {
+      id: `b2b_${Date.now()}`,
+      company_name: companyName,
+      email,
+      phone,
+      product_id: productId,
+      product_title_fa: p ? p.title_fa : 'کالای سفارشی B2B',
+      target_quantity: targetQuantity,
+      destination_country: destinationCountry,
+      notes,
+      status: 'pending',
+      created_at: Date.now()
+    };
+
+    dbB2bQuotes.unshift(newQuote);
+
+    return c.json({
+      success: true,
+      quoteId: newQuote.id,
+      message_fa: 'استعلام قیمت عمده B2B شما ثبت شد. فروشنده تا کمتر از ۴ ساعت دیگر پروفرما را ارسال خواهد کرد.'
+    });
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message || 'Error creating quote' }, 400);
+  }
+});
+
+app.get('/api/b2b/quotes', (c) => {
+  return c.json(dbB2bQuotes);
+});
+
+app.post('/api/b2b/quote/respond', async (c) => {
+  try {
+    const body = await c.req.json<any>();
+    const { quoteId, quotedUnitPriceTomans, estimatedDays = 7, vendorNote = '' } = body;
+
+    const quote = dbB2bQuotes.find(q => q.id === quoteId);
+    if (!quote) return c.json({ error: 'Quote not found' }, 404);
+
+    quote.status = 'quoted';
+    quote.quoted_unit_price_tomans = quotedUnitPriceTomans;
+    quote.estimated_days = estimatedDays;
+    quote.vendor_note = vendorNote;
+
+    return c.json({ success: true, message: 'پروفرمای B2B با موفقیت ثبت و برای خریدار ارسال گردید.' });
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message || 'Error responding to quote' }, 400);
+  }
 });
 
 app.post('/api/reviews', async (c) => {
@@ -748,13 +922,44 @@ app.get('/api/vendor/dashboard', (c) => {
     totalSalesCount: vendor.total_sales,
     balanceTomans: vendor.balance_tomans,
     products,
-    settlements: dbSettlements
+    settlements: dbSettlements.filter(s => s.vendor_id === vendor.id)
   });
+});
+
+app.post('/api/vendor/settlements', async (c) => {
+  try {
+    const body = await c.req.json<any>();
+    const { vendorId = 'vnd_1', amountTomans, iban } = body;
+
+    const vendor = dbVendors.find(v => v.id === vendorId);
+    if (!vendor) return c.json({ error: 'Vendor not found' }, 404);
+
+    if (amountTomans > vendor.balance_tomans) {
+      return c.json({ error: 'Insufficient balance' }, 400);
+    }
+
+    vendor.balance_tomans -= amountTomans;
+
+    const settlement = {
+      id: `stl_${Date.now()}`,
+      vendor_id: vendorId,
+      amount_tomans: amountTomans,
+      iban: iban || 'IR980120000000012345678901',
+      status: 'completed',
+      created_at: Date.now()
+    };
+
+    dbSettlements.unshift(settlement);
+
+    return c.json({ success: true, settlement });
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message || 'Settlement error' }, 400);
+  }
 });
 
 app.post('/api/vendor/products', async (c) => {
   const body = await c.req.json<any>();
-  const { title_fa, title_en, description_fa, base_price_tomans, discount_percent = 0, stock = 20 } = body;
+  const { title_fa, title_en, description_fa, base_price_tomans, discount_percent = 0, stock = 20, model_type = 'watch' } = body;
 
   const newId = `prd_v_${Date.now()}`;
   const newProd: Product = {
@@ -766,14 +971,14 @@ app.post('/api/vendor/products', async (c) => {
     slug: `new-product-${Date.now()}`,
     description_fa: description_fa || 'توضیحات تکمیلی محصول',
     description_en: 'Vendor product description',
-    base_price_tomans: base_price_tomans || 10000000,
-    discount_percent,
-    stock,
+    base_price_tomans: Number(base_price_tomans) || 10000000,
+    discount_percent: Number(discount_percent),
+    stock: Number(stock),
     rating: 5.0,
     review_count: 0,
     featured: 0,
     is_3d_enabled: 1,
-    model_type: 'watch',
+    model_type,
     specifications: { 'ضمانت': 'اصالت و گارانتی فروشنده' },
     images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80'],
     tags: ['جدید'],

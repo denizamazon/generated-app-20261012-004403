@@ -84,7 +84,6 @@
     html:not(.dark) .bg-slate-950,
     html:not(.dark) .bg-slate-950\/95,
     html:not(.dark) .bg-slate-950\/85,
-    html:not(.dark) .bg-slate-950\/80,
     html:not(.dark) .bg-slate-950\/60,
     html:not(.dark) .bg-slate-950\/40 {
       background-color: #ffffff !important;
@@ -224,10 +223,10 @@
       color: #334155 !important;
     }
 
-    /* Modals & Drawer overlay backdrops */
+    /* Modals & Drawer overlay backdrops MUST be translucent dark overlays */
     html:not(.dark) .fixed.inset-0.bg-slate-950\/80,
     html:not(.dark) .fixed.inset-0.bg-slate-950\/85 {
-      background-color: rgba(15, 23, 42, 0.5) !important;
+      background-color: rgba(15, 23, 42, 0.65) !important;
     }
 
     /* 3D Stage Viewer background in Light Mode */
@@ -506,7 +505,7 @@
         en: 'Experience verified direct trading from top global brands, artisan masters, and tech flagships backed by real 3D previews.', 
         ar: 'تجربة فريدة للتسوق المباشر من الماركات والأصحاب المعتمدين مع المساعد الذكي والمعاينة ثلاثية الأبعاد.', 
         tr: 'Doğrulanmış markalardan, ustalardan ve teknoloji devlerinden gerçek 3D önizlemeli doğrudan alışveriş deneyimi.', 
-        ur: 'تصدیق شدہ برانڈز سے براہ راست خریداری کا بے مثال تجربہ، مصنوعی ذہانت اور 3D پیش نظارہ کے ساتھ۔' 
+        ur: 'تصدیق شدہ برانڈز سے برا ہ راست خریداری کا بے مثال تجربہ، مصنوعی ذہانت اور 3D پیش نظارہ کے ساتھ۔' 
       },
       exploreCatalogBtn: { fa: 'ورود به ویترین کالاها', en: 'Explore Catalog', ar: 'استكشف الكتالوج', tr: 'Kataloğu İncele', ur: 'کیٹلاگ دیکھیں' },
       view3DWatchBtn: { fa: 'نمایش ۳ بعدی ساعت شاهکار', en: 'View 3D Tourbillon', ar: 'عرض الساعة ثلاثية الأبعاد', tr: '3D Saat Görünümü', ur: '3D گھڑی دیکھیں' },
@@ -663,22 +662,6 @@
       if (str === null || str === undefined) return '';
       const persianDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
       return str.toString().replace(/[0-9]/g, w => persianDigits[parseInt(w)]);
-    };
-
-    // Safe Lucide Icon Wrapper Component
-    const Icon = ({ name, className = "w-5 h-5", ...props }) => {
-      const containerRef = useRef(null);
-
-      useEffect(() => {
-        if (containerRef.current && window.lucide) {
-          containerRef.current.innerHTML = `<i data-lucide="${name}" class="${className}"></i>`;
-          window.lucide.createIcons({
-            targets: [containerRef.current]
-          });
-        }
-      }, [name, className]);
-
-      return <span ref={containerRef} className="inline-flex items-center justify-center shrink-0" {...props} />;
     };
 
     // --- 3D THREE.JS CANVAS COMPONENT ---
@@ -1009,11 +992,8 @@
       onOpenInstallApp,
       onOpenAi,
       selectedProvince,
-      setSelectedProvince,
       selectedCity,
-      setSelectedCity,
       onOpenLocationModal,
-      categories = [],
       showToast
     }) => {
       if (!isOpen) return null;
@@ -1073,6 +1053,18 @@
                   </div>
                 )}
               </div>
+
+              {/* Location Picker Drawer Button */}
+              <button
+                onClick={() => { onClose(); onOpenLocationModal(); }}
+                className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold text-xs transition hover:bg-amber-500/20"
+              >
+                <div className="flex items-center gap-2.5">
+                  <i data-lucide="map-pin" className="w-4 h-4 text-amber-400"></i>
+                  <span>{lang === 'fa' ? `تحویل به: ${selectedProvince} - ${selectedCity}` : `Deliver to: ${selectedProvince} - ${selectedCity}`}</span>
+                </div>
+                <i data-lucide="chevron-left" className="w-4 h-4 text-amber-400"></i>
+              </button>
 
               {/* Navigation Items */}
               <div className="space-y-1.5">
@@ -1229,10 +1221,36 @@
       const [vendors, setVendors] = useState([]);
       const [loading, setLoading] = useState(true);
 
-      const [cart, setCart] = useState([
-        { productId: 'prd_1', variantId: 'prd_1_v1', quantity: 1 }
-      ]);
-      const [wishlist, setWishlist] = useState(['prd_2', 'prd_8']);
+      const [cart, setCart] = useState(() => {
+        try {
+          const saved = localStorage.getItem('shahkar_cart');
+          return saved ? JSON.parse(saved) : [{ productId: 'prd_1', variantId: 'prd_1_v1', quantity: 1 }];
+        } catch (e) {
+          return [{ productId: 'prd_1', variantId: 'prd_1_v1', quantity: 1 }];
+        }
+      });
+
+      const [wishlist, setWishlist] = useState(() => {
+        try {
+          const saved = localStorage.getItem('shahkar_wishlist');
+          return saved ? JSON.parse(saved) : ['prd_2', 'prd_8'];
+        } catch (e) {
+          return ['prd_2', 'prd_8'];
+        }
+      });
+
+      useEffect(() => {
+        try {
+          localStorage.setItem('shahkar_cart', JSON.stringify(cart));
+        } catch (e) {}
+      }, [cart]);
+
+      useEffect(() => {
+        try {
+          localStorage.setItem('shahkar_wishlist', JSON.stringify(wishlist));
+        } catch (e) {}
+      }, [wishlist]);
+
       const [isCartOpen, setIsCartOpen] = useState(false);
       const [isAiOpen, setIsAiOpen] = useState(false);
       const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -1297,9 +1315,9 @@
         try {
           setLoading(true);
           const [resP, resC, resV] = await Promise.all([
-            fetch('./api/products').then(r => r.json()),
-            fetch('./api/categories').then(r => r.json()),
-            fetch('./api/vendors').then(r => r.json())
+            fetch('/api/products').then(r => r.json()),
+            fetch('/api/categories').then(r => r.json()),
+            fetch('/api/vendors').then(r => r.json())
           ]);
           setProducts(resP);
           setCategories(resC);
@@ -1330,7 +1348,7 @@
 
         const timer = setTimeout(async () => {
           try {
-            const data = await fetch(`./api/search/autocomplete?q=${encodeURIComponent(searchQuery)}`).then(r => r.json());
+            const data = await fetch(`/api/search/autocomplete?q=${encodeURIComponent(searchQuery)}`).then(r => r.json());
             setSuggestions(data.suggestions || []);
             setSearchResults(data.products || []);
           } catch (e) {
@@ -1608,31 +1626,43 @@
             {/* CATEGORY NAV RIBBON */}
             <div className="border-t border-slate-800/60 bg-slate-950/40 px-4 sm:px-6">
               <div className="max-w-7xl mx-auto flex items-center justify-between text-xs font-medium py-2.5 overflow-x-auto gap-6 scrollbar-none">
-                <button
-                  onClick={() => setCurrentRoute('catalog')}
-                  className="flex items-center gap-1.5 text-teal-400 font-bold hover:text-teal-300 whitespace-nowrap"
-                >
-                  <i data-lucide="grid" className="w-4 h-4"></i>
-                  <span>{t('allCategories', lang)}</span>
-                </button>
-
-                {categories.map(cat => (
+                <div className="flex items-center gap-4">
                   <button
-                    key={cat.id}
                     onClick={() => setCurrentRoute('catalog')}
-                    className="text-slate-400 hover:text-slate-200 whitespace-nowrap transition"
+                    className="flex items-center gap-1.5 text-teal-400 font-bold hover:text-teal-300 whitespace-nowrap"
                   >
-                    {getLocalizedText(cat, 'name', lang)}
+                    <i data-lucide="grid" className="w-4 h-4"></i>
+                    <span>{t('allCategories', lang)}</span>
                   </button>
-                ))}
 
-                <button
-                  onClick={() => setCurrentRoute('analytics')}
-                  className="text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold whitespace-nowrap"
-                >
-                  <i data-lucide="shield-check" className="w-3.5 h-3.5"></i>
-                  <span>{t('securityAudit', lang)}</span>
-                </button>
+                  <button
+                    onClick={() => setIsLocationModalOpen(true)}
+                    className="flex items-center gap-1.5 text-amber-400 font-bold hover:text-amber-300 whitespace-nowrap bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-xl transition shadow-sm"
+                  >
+                    <i data-lucide="map-pin" className="w-3.5 h-3.5 text-amber-400"></i>
+                    <span>{lang === 'fa' ? `تحویل به: ${selectedProvince} - ${selectedCity}` : `Deliver to: ${selectedProvince} - ${selectedCity}`}</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-6">
+                  {categories.map(cat => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setCurrentRoute('catalog')}
+                      className="text-slate-400 hover:text-slate-200 whitespace-nowrap transition"
+                    >
+                      {getLocalizedText(cat, 'name', lang)}
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={() => setCurrentRoute('analytics')}
+                    className="text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold whitespace-nowrap"
+                  >
+                    <i data-lucide="shield-check" className="w-3.5 h-3.5"></i>
+                    <span>{t('securityAudit', lang)}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </header>
@@ -1659,6 +1689,7 @@
                 categories={categories}
                 vendors={vendors}
                 lang={lang}
+                initialSearchQuery={searchQuery}
                 onSelectProduct={(id) => { setSelectedProductId(id); setCurrentRoute('product-detail'); }}
                 onAddToCart={addToCart}
                 onToggleWishlist={toggleWishlist}
@@ -1681,6 +1712,8 @@
               <CheckoutPage
                 cart={cart}
                 lang={lang}
+                selectedProvince={selectedProvince}
+                selectedCity={selectedCity}
                 onOrderComplete={() => {
                   setCart([]);
                   setCurrentRoute('orders');
@@ -1737,7 +1770,21 @@
             onOpenAuth={() => setIsAuthOpen(true)}
             onOpenInstallApp={() => setIsAppInstallOpen(true)}
             onOpenAi={() => setIsAiOpen(true)}
+            selectedProvince={selectedProvince}
+            selectedCity={selectedCity}
+            onOpenLocationModal={() => setIsLocationModalOpen(true)}
             showToast={showToast}
+          />
+
+          {/* LOCATION SELECTION MODAL */}
+          <LocationModal
+            isOpen={isLocationModalOpen}
+            onClose={() => setIsLocationModalOpen(false)}
+            selectedProvince={selectedProvince}
+            setSelectedProvince={setSelectedProvince}
+            selectedCity={selectedCity}
+            setSelectedCity={setSelectedCity}
+            lang={lang}
           />
 
           {/* LANGUAGE SELECTION MODAL */}
@@ -1869,7 +1916,7 @@
       const [flashDeals, setFlashDeals] = useState([]);
 
       useEffect(() => {
-        fetch('./api/flash-deals')
+        fetch('/api/flash-deals')
           .then(r => r.json())
           .then(setFlashDeals);
       }, []);
@@ -2149,13 +2196,21 @@
     };
 
     // --- CATALOG PAGE COMPONENT ---
-    const CatalogPage = ({ products, categories, vendors, lang, onSelectProduct, onAddToCart, onToggleWishlist, wishlist }) => {
+    const CatalogPage = ({ products, categories, vendors, lang, initialSearchQuery = '', onSelectProduct, onAddToCart, onToggleWishlist, wishlist }) => {
       const [selectedCategory, setSelectedCategory] = useState('');
       const [sortBy, setSortBy] = useState('featured');
+      const [filterQuery, setFilterQuery] = useState(initialSearchQuery);
 
       const filtered = useMemo(() => {
         return products.filter(p => {
           if (selectedCategory && p.category_id !== selectedCategory) return false;
+          if (filterQuery.trim()) {
+            const q = filterQuery.toLowerCase().trim();
+            const matchTitleFa = p.title_fa?.toLowerCase().includes(q);
+            const matchTitleEn = p.title_en?.toLowerCase().includes(q);
+            const matchTag = p.tags?.some(t => t.toLowerCase().includes(q));
+            if (!matchTitleFa && !matchTitleEn && !matchTag) return false;
+          }
           return true;
         }).sort((a, b) => {
           if (sortBy === 'price_asc') return a.final_price_tomans - b.final_price_tomans;
@@ -2163,7 +2218,7 @@
           if (sortBy === 'rating') return b.rating - a.rating;
           return b.featured - a.featured;
         });
-      }, [products, selectedCategory, sortBy]);
+      }, [products, selectedCategory, sortBy, filterQuery]);
 
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -2174,6 +2229,17 @@
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <div className="glass-panel p-6 rounded-2xl border-slate-800 space-y-6 h-fit">
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-2">جستجو در کاتالوگ:</label>
+                <input
+                  type="text"
+                  value={filterQuery}
+                  onChange={(e) => setFilterQuery(e.target.value)}
+                  placeholder="جستجوی نام کالا..."
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-teal-400"
+                />
+              </div>
+
               <div>
                 <h3 className="text-sm font-bold text-white mb-3">{t('categoriesLabel', lang)}</h3>
                 <div className="space-y-1.5">
@@ -2245,7 +2311,7 @@
       const [isB2BOpen, setIsB2BOpen] = useState(false);
 
       useEffect(() => {
-        fetch(`./api/products/${productId}`)
+        fetch(`/api/products/${productId}`)
           .then(r => r.json())
           .then(data => {
             setProduct(data);
@@ -2262,7 +2328,7 @@
         e.preventDefault();
         if (!newComment.trim()) return;
 
-        await fetch('./api/reviews', {
+        await fetch('/api/reviews', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -2273,7 +2339,7 @@
         });
 
         setNewComment('');
-        const updated = await fetch(`./api/products/${productId}`).then(r => r.json());
+        const updated = await fetch(`/api/products/${productId}`).then(r => r.json());
         setProduct(updated);
       };
 
@@ -2460,9 +2526,9 @@
     };
 
     // --- CHECKOUT PAGE WITH COMPREHENSIVE PROVINCE & CITY SELECTOR ---
-    const CheckoutPage = ({ cart, lang, onOrderComplete }) => {
-      const [selectedProvinceName, setSelectedProvinceName] = useState(IRAN_PROVINCES[0].name);
-      const [selectedCityName, setSelectedCityName] = useState(IRAN_PROVINCES[0].cities[0]);
+    const CheckoutPage = ({ cart, lang, selectedProvince = 'تهران', selectedCity = 'تهران', onOrderComplete }) => {
+      const [selectedProvinceName, setSelectedProvinceName] = useState(selectedProvince);
+      const [selectedCityName, setSelectedCityName] = useState(selectedCity);
 
       const currentProvinceObj = useMemo(() => {
         return IRAN_PROVINCES.find(p => p.name === selectedProvinceName || p.name_en === selectedProvinceName) || IRAN_PROVINCES[0];
@@ -2490,7 +2556,7 @@
 
       const recalculate = async () => {
         try {
-          const res = await fetch('./api/cart/calculate', {
+          const res = await fetch('/api/cart/calculate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ items: cart, couponCode })
@@ -2516,7 +2582,7 @@
             city: selectedCityName
           };
 
-          const res = await fetch('./api/checkout', {
+          const res = await fetch('/api/checkout', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -2736,7 +2802,7 @@
       const [data, setData] = useState(null);
 
       useEffect(() => {
-        fetch(`./api/logistics/track/${trackingCode}`)
+        fetch(`/api/logistics/track/${trackingCode}`)
           .then(r => r.json())
           .then(setData);
       }, [trackingCode]);
@@ -2902,7 +2968,7 @@
         setSubmitting(true);
 
         try {
-          const res = await fetch('./api/b2b/quote', {
+          const res = await fetch('/api/b2b/quote', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -3037,7 +3103,7 @@
       const [selectedOrderInvoice, setSelectedOrderInvoice] = useState(null);
 
       useEffect(() => {
-        fetch('./api/orders?userId=usr_customer1')
+        fetch('/api/orders?userId=usr_customer1')
           .then(r => r.json())
           .then(setOrders);
       }, []);
@@ -3138,8 +3204,8 @@
 
       const loadDashboard = async () => {
         const [res, quotes] = await Promise.all([
-          fetch('./api/vendor/dashboard?vendorId=vnd_1').then(r => r.json()),
-          fetch('./api/b2b/quotes').then(r => r.json())
+          fetch('/api/vendor/dashboard?vendorId=vnd_1').then(r => r.json()),
+          fetch('/api/b2b/quotes').then(r => r.json())
         ]);
         setData(res);
         setB2bQuotes(quotes);
@@ -3151,7 +3217,7 @@
 
       const handleSettlement = async () => {
         if (!settlementAmount) return;
-        await fetch('./api/vendor/settlements', {
+        await fetch('/api/vendor/settlements', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -3168,7 +3234,7 @@
         e.preventDefault();
         if (!replyQuoteId || !replyUnitPrice) return;
 
-        await fetch('./api/b2b/quote/respond', {
+        await fetch('/api/b2b/quote/respond', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -3187,7 +3253,7 @@
 
       const handleAddProduct = async (e) => {
         e.preventDefault();
-        await fetch('./api/vendor/products', {
+        await fetch('/api/vendor/products', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -3458,7 +3524,7 @@
       const [vendorData, setVendorData] = useState(null);
 
       useEffect(() => {
-        fetch(`./api/vendors/${vendorId}`)
+        fetch(`/api/vendors/${vendorId}`)
           .then(r => r.json())
           .then(setVendorData);
       }, [vendorId]);
@@ -3483,7 +3549,11 @@
             {vendorData.products?.map(p => (
               <ProductCard
                 key={p.id}
-                product={{ ...p, images: JSON.parse(p.images_json || "[]"), final_price_tomans: Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100) }}
+                product={{
+                  ...p,
+                  images: Array.isArray(p.images) ? p.images : [],
+                  final_price_tomans: Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100)
+                }}
                 lang={lang}
                 onSelectProduct={onSelectProduct}
                 onAddToCart={onAddToCart}
@@ -3525,7 +3595,7 @@
       const [analytics, setAnalytics] = useState(null);
 
       useEffect(() => {
-        fetch('./api/analytics')
+        fetch('/api/analytics')
           .then(r => r.json())
           .then(setAnalytics);
       }, []);
@@ -3652,7 +3722,7 @@
         setIsTyping(true);
 
         try {
-          const res = await fetch('./api/ai/chat', {
+          const res = await fetch('/api/ai/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: textToSend, lang })
