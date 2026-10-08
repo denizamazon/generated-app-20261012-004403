@@ -1735,6 +1735,8 @@
                 lang={lang}
                 onSelectProduct={(id) => { setSelectedProductId(id); setCurrentRoute('product-detail'); }}
                 onAddToCart={addToCart}
+                onToggleWishlist={toggleWishlist}
+                wishlist={wishlist}
               />
             )}
 
@@ -3520,7 +3522,7 @@
     };
 
     // --- VENDOR STORE PAGE ---
-    const VendorStorePage = ({ vendorId, lang, onSelectProduct, onAddToCart }) => {
+    const VendorStorePage = ({ vendorId, lang, onSelectProduct, onAddToCart, onToggleWishlist, wishlist }) => {
       const [vendorData, setVendorData] = useState(null);
 
       useEffect(() => {
@@ -3557,8 +3559,8 @@
                 lang={lang}
                 onSelectProduct={onSelectProduct}
                 onAddToCart={onAddToCart}
-                onToggleWishlist={() => {}}
-                isWishlisted={false}
+                onToggleWishlist={onToggleWishlist}
+                isWishlisted={wishlist?.includes(p.id)}
               />
             ))}
           </div>
