@@ -692,7 +692,7 @@ app.post('/api/cart/calculate', async (c) => {
 app.post('/api/checkout', async (c) => {
   try {
     const body = await c.req.json<any>();
-    const { userId = 'usr_customer1', items = [], shippingAddress, paymentMethod = 'درگاه شتاب زرین‌پال' } = body;
+    const { userId = 'usr_customer1', items = [], shippingAddress, paymentMethod = 'درگاه شتاب زرین‌پال', couponCode = '' } = body;
 
     if (items.length === 0) return c.json({ error: 'Cart is empty' }, 400);
 
@@ -701,16 +701,20 @@ app.post('/api/checkout', async (c) => {
     const trackingCode = `TPX-${Math.floor(1000000000 + Math.random() * 9000000000)}`;
     const now = Date.now();
 
-    let grandTotal = 0;
+    let subtotalTomans = 0;
+    let itemDiscountTomans = 0;
     const orderItems: any[] = [];
 
     for (const item of items) {
       const p = dbProducts.find(prod => prod.id === item.productId);
       if (!p) continue;
 
+      const basePrice = p.base_price_tomans * item.quantity;
       const unitPrice = Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100);
       const lineTotal = unitPrice * item.quantity;
-      grandTotal += lineTotal;
+
+      subtotalTomans += basePrice;
+      itemDiscountTomans += (basePrice - lineTotal);
 
       // Deduct stock
       p.stock = Math.max(0, p.stock - item.quantity);
@@ -724,7 +728,15 @@ app.post('/api/checkout', async (c) => {
       });
     }
 
-    grandTotal = Math.round(grandTotal * 1.10) + 65000; // 10% VAT + Shipping
+    let couponDiscountTomans = 0;
+    if (couponCode && couponCode.toUpperCase() === 'SHAHKAR2026') {
+      couponDiscountTomans = Math.min(2000000, Math.round((subtotalTomans - itemDiscountTomans) * 0.15));
+    }
+
+    const netProductTomans = Math.max(0, subtotalTomans - itemDiscountTomans - couponDiscountTomans);
+    const totalShippingTomans = items.length > 0 ? 65000 : 0;
+    const vatTaxTomans = Math.round(netProductTomans * 0.10);
+    const grandTotal = netProductTomans + totalShippingTomans + vatTaxTomans;
 
     const newOrder: Order = {
       id: orderId,
@@ -894,9 +906,14 @@ app.post('/api/ai/chat', async (c) => {
     replyEn = 'Greetings! I am the Shahkar AI Shopping Advisor. I can assist you with real-time recommendations across all verified luxury marketplace stores.';
   }
 
+  const formattedMatched = matched.map(p => ({
+    ...p,
+    final_price_tomans: Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100)
+  }));
+
   return c.json({
     reply: lang === 'fa' ? replyFa : replyEn,
-    suggestedProducts: matched
+    suggestedProducts: formattedMatched
   });
 });
 
