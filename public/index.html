@@ -3553,6 +3553,8 @@
                 key={p.id}
                 product={{
                   ...p,
+                  vendor_badge: vendorData.badge || 'فروشنده معتبر',
+                  store_name: vendorData.store_name || 'غرفه اصلی شاهکار',
                   images: Array.isArray(p.images) ? p.images : [],
                   final_price_tomans: Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100)
                 }}
