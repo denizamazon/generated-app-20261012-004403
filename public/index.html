@@ -1360,14 +1360,15 @@
       }, [searchQuery]);
 
       const addToCart = (productId, variantId = null) => {
+        const effectiveVariantId = variantId || `${productId}_v1`;
         setCart(prev => {
-          const idx = prev.findIndex(item => item.productId === productId && item.variantId === variantId);
+          const idx = prev.findIndex(item => item.productId === productId && item.variantId === effectiveVariantId);
           if (idx >= 0) {
             const updated = [...prev];
             updated[idx].quantity += 1;
             return updated;
           }
-          return [...prev, { productId, variantId, quantity: 1 }];
+          return [...prev, { productId, variantId: effectiveVariantId, quantity: 1 }];
         });
         showToast(lang === 'fa' ? 'کالا با موفقیت به سبد خرید اضافه شد' : 'Item added to cart successfully');
         setIsCartOpen(true);
@@ -1705,6 +1706,7 @@
                 onToggleWishlist={toggleWishlist}
                 wishlist={wishlist}
                 onSelectVendor={(id) => { setSelectedVendorId(id); setCurrentRoute('vendor-store'); }}
+                onShowToast={showToast}
               />
             )}
 
@@ -2203,6 +2205,10 @@
       const [sortBy, setSortBy] = useState('featured');
       const [filterQuery, setFilterQuery] = useState(initialSearchQuery);
 
+      useEffect(() => {
+        setFilterQuery(initialSearchQuery);
+      }, [initialSearchQuery]);
+
       const filtered = useMemo(() => {
         return products.filter(p => {
           if (selectedCategory && p.category_id !== selectedCategory) return false;
@@ -2303,7 +2309,7 @@
     };
 
     // --- PRODUCT DETAIL PAGE WITH 3D CANVAS & REVIEWS ---
-    const ProductDetailPage = ({ productId, lang, onAddToCart, onToggleWishlist, wishlist, onSelectVendor }) => {
+    const ProductDetailPage = ({ productId, lang, onAddToCart, onToggleWishlist, wishlist, onSelectVendor, onShowToast }) => {
       const [product, setProduct] = useState(null);
       const [selectedVariant, setSelectedVariant] = useState(null);
       const [activeImage, setActiveImage] = useState(0);
@@ -2462,7 +2468,7 @@
                   product={product}
                   lang={lang}
                   onClose={() => setIsB2BOpen(false)}
-                  onSuccess={(msg) => alert(msg)}
+                  onSuccess={(msg) => onShowToast && onShowToast(msg)}
                 />
               )}
 
