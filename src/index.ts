@@ -655,11 +655,19 @@ app.post('/api/cart/calculate', async (c) => {
       const p = dbProducts.find(prod => prod.id === item.productId);
       if (!p) continue;
 
-      const basePrice = p.base_price_tomans * item.quantity;
-      const finalPrice = Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100) * item.quantity;
+      let unitBasePrice = p.base_price_tomans;
+      let unitFinalPrice = Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100);
 
-      subtotalTomans += basePrice;
-      itemDiscountTomans += (basePrice - finalPrice);
+      if (item.variantId && item.variantId.endsWith('_v2')) {
+        unitBasePrice = Math.round(p.base_price_tomans * 1.08);
+        unitFinalPrice = unitBasePrice;
+      }
+
+      const lineBase = unitBasePrice * item.quantity;
+      const lineFinal = unitFinalPrice * item.quantity;
+
+      subtotalTomans += lineBase;
+      itemDiscountTomans += (lineBase - lineFinal);
     }
 
     let couponDiscountTomans = 0;
@@ -709,8 +717,15 @@ app.post('/api/checkout', async (c) => {
       const p = dbProducts.find(prod => prod.id === item.productId);
       if (!p) continue;
 
-      const basePrice = p.base_price_tomans * item.quantity;
-      const unitPrice = Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100);
+      let unitBasePrice = p.base_price_tomans;
+      let unitPrice = Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100);
+
+      if (item.variantId && item.variantId.endsWith('_v2')) {
+        unitBasePrice = Math.round(p.base_price_tomans * 1.08);
+        unitPrice = unitBasePrice;
+      }
+
+      const basePrice = unitBasePrice * item.quantity;
       const lineTotal = unitPrice * item.quantity;
 
       subtotalTomans += basePrice;
@@ -722,7 +737,8 @@ app.post('/api/checkout', async (c) => {
       orderItems.push({
         id: `ori_${Date.now()}_${Math.random().toString(36).slice(2, 5)}`,
         product_id: p.id,
-        product_title: p.title_fa,
+        variant_id: item.variantId || `${p.id}_v1`,
+        product_title: item.variantId && item.variantId.endsWith('_v2') ? `${p.title_fa} (نسخه VIP)` : p.title_fa,
         quantity: item.quantity,
         unit_price_tomans: unitPrice
       });

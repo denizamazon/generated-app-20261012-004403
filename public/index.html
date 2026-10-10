@@ -3650,12 +3650,17 @@
       const cartItems = useMemo(() => {
         return cart.map(item => {
           const p = products.find(prod => prod.id === item.productId);
-          return { ...item, product: p };
-        }).filter(i => i.product);
+          if (!p) return null;
+          let unitPrice = p.final_price_tomans;
+          if (item.variantId && item.variantId.endsWith('_v2')) {
+            unitPrice = Math.round(p.base_price_tomans * 1.08);
+          }
+          return { ...item, product: p, unitPrice };
+        }).filter(Boolean);
       }, [cart, products]);
 
       const totalAmount = useMemo(() => {
-        return cartItems.reduce((acc, item) => acc + (item.product.final_price_tomans * item.quantity), 0);
+        return cartItems.reduce((acc, item) => acc + (item.unitPrice * item.quantity), 0);
       }, [cartItems]);
 
       return (
@@ -3675,8 +3680,10 @@
                     <div className="flex items-center gap-3">
                       <img src={item.product.images?.[0] || ''} alt="p" className="w-12 h-12 object-cover rounded-lg" />
                       <div>
-                        <h4 className="text-xs font-bold text-white line-clamp-1">{getLocalizedText(item.product, 'title', lang)}</h4>
-                        <span className="text-[10px] text-amber-400 font-mono">{formatTomans(item.product.final_price_tomans, lang)}</span>
+                        <h4 className="text-xs font-bold text-white line-clamp-1">
+                          {getLocalizedText(item.product, 'title', lang)} {item.variantId?.endsWith('_v2') ? '(VIP)' : ''}
+                        </h4>
+                        <span className="text-[10px] text-amber-400 font-mono">{formatTomans(item.unitPrice, lang)}</span>
                       </div>
                     </div>
 
