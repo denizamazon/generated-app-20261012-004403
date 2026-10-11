@@ -975,6 +975,348 @@
       );
     };
 
+    // --- READDY AI STUDIO & DESIGN COPILOT MODAL COMPONENT ---
+    const ReaddyStudioModal = ({
+      isOpen,
+      onClose,
+      lang,
+      showToast,
+      onProductGenerated,
+      viewportMode,
+      setViewportMode,
+      activeTheme,
+      setActiveTheme
+    }) => {
+      if (!isOpen) return null;
+
+      const [activeTab, setActiveTab] = useState('generate');
+      const [promptInput, setPromptInput] = useState('');
+      const [isGenerating, setIsGenerating] = useState(false);
+      const [generatedCopy, setGeneratedCopy] = useState(null);
+      const [copyProductInput, setCopyProductInput] = useState('');
+
+      const presets = [
+        { id: 'emerald-neon', name_fa: '💎 زمردی نئون (اصلی)', name_en: 'Emerald Neon', primary: '#2dd4bf', bg: '#05070d' },
+        { id: 'royal-gold', name_fa: '👑 طلای سلطنتی (فاخر)', name_en: 'Royal Gold', primary: '#facc15', bg: '#0b0c10' },
+        { id: 'cyber-violet', name_fa: '⚡ سایبرپانک وایولت', name_en: 'Cyber Violet', primary: '#a855f7', bg: '#0d0714' },
+        { id: 'slate-minimal', name_fa: '☀️ مینی‌مالیست روز', name_en: 'Minimalist Day', primary: '#0d9488', bg: '#f8fafc' }
+      ];
+
+      const quickPrompts = [
+        '🎧 هدفون ارگونومیک نویز کنسلینگ با بدنه تیتانیومی',
+        '💎 ساعت توربیون مکانیکی با بدنه سرامیک و طلا',
+        '🧶 فرش ابریشم بافنده قم با رنگ‌آمیزی سنتی گیاهی',
+        '👓 عینک واقعیت افزوده AR سبک ۷۶ گرمی Micro-OLED',
+        '☕ اسپرسوساز هوشمند با نازل بخار خودکار و کنترل AI'
+      ];
+
+      const handleGenerateProduct = async (promptToUse = promptInput) => {
+        const query = (promptToUse || promptInput).trim();
+        if (!query) {
+          showToast(lang === 'fa' ? 'لطفاً ابتدا پرامپت محصول را وارد کنید' : 'Please enter a product prompt', 'info');
+          return;
+        }
+
+        try {
+          setIsGenerating(true);
+          const res = await fetch('/api/readdy/generate-product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: query })
+          });
+          const data = await res.json();
+
+          if (data.success && data.product) {
+            if (window.confetti) {
+              window.confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+            }
+            showToast(data.message_fa || 'محصول با هوش مصنوعی Readdy AI تولید شد!');
+            onProductGenerated(data.product);
+            onClose();
+          } else {
+            showToast(data.error || 'خطا در تولید محصول', 'error');
+          }
+        } catch (e) {
+          showToast('خطای ارتباط با سرور Readdy AI', 'error');
+        } finally {
+          setIsGenerating(false);
+        }
+      };
+
+      const handleGenerateCopy = async () => {
+        if (!copyProductInput.trim()) return;
+        try {
+          setIsGenerating(true);
+          const res = await fetch('/api/readdy/generate-copy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productName: copyProductInput })
+          });
+          const data = await res.json();
+          setGeneratedCopy(data);
+          showToast('متن و کپی‌رایتینگ هوشمند تولید شد!');
+        } catch (e) {
+          showToast('خطا در تولید کپی‌رایتینگ', 'error');
+        } finally {
+          setIsGenerating(false);
+        }
+      };
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-lg p-4 animate-fade-in overflow-y-auto">
+          <div className="glass-panel p-6 sm:p-8 rounded-3xl border-slate-700 max-w-2xl w-full space-y-6 shadow-2xl relative my-8">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-4">
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-teal-500 via-amber-400 to-indigo-500 p-[2px] shadow-lg shadow-teal-500/30">
+                  <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-teal-300">
+                    <i data-lucide="sparkles" className="w-6 h-6 animate-spin text-teal-400"></i>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-black text-white">Readdy AI Studio & Copilot</h3>
+                    <span className="text-[9px] bg-gradient-to-r from-teal-500 to-amber-500 text-slate-950 font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                      v4.2 Engine
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400">
+                    {lang === 'fa' ? 'استودیو هوشمند تولید کالا، شخصی‌سازی تم و قاب پیش‌نمایش' : 'AI Product Generation, Theme Studio & Responsive Viewports'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2.5 rounded-2xl bg-slate-900 text-slate-400 hover:text-white border border-slate-800 transition"
+              >
+                <i data-lucide="x" className="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <div className="flex flex-wrap gap-2 p-1.5 bg-slate-900/90 rounded-2xl border border-slate-800">
+              <button
+                onClick={() => setActiveTab('generate')}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
+                  activeTab === 'generate' ? 'bg-teal-500 text-slate-950 shadow-lg' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <i data-lucide="zap" className="w-4 h-4"></i>
+                <span>{lang === 'fa' ? 'تولید کالا با AI' : 'AI Product Generator'}</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('theme')}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
+                  activeTab === 'theme' ? 'bg-teal-500 text-slate-950 shadow-lg' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <i data-lucide="palette" className="w-4 h-4"></i>
+                <span>{lang === 'fa' ? 'استودیو تم و رنگ' : 'Theme Studio'}</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('viewport')}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
+                  activeTab === 'viewport' ? 'bg-teal-500 text-slate-950 shadow-lg' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <i data-lucide="monitor" className="w-4 h-4"></i>
+                <span>{lang === 'fa' ? 'پیش‌نمایش دستگاه' : 'Device Viewport'}</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('copy')}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
+                  activeTab === 'copy' ? 'bg-teal-500 text-slate-950 shadow-lg' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <i data-lucide="file-text" className="w-4 h-4"></i>
+                <span>{lang === 'fa' ? 'تولید محتوا' : 'Copywriting'}</span>
+              </button>
+            </div>
+
+            {activeTab === 'generate' && (
+              <div className="space-y-4 text-xs animate-fade-in">
+                <div>
+                  <label className="text-slate-200 font-bold block mb-2">
+                    {lang === 'fa' ? 'پرامپت ایده کالا یا محصول مد نظر خود را بنویسید:' : 'Write product prompt or concept:'}
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={promptInput}
+                    onChange={(e) => setPromptInput(e.target.value)}
+                    placeholder={lang === 'fa' ? 'مثال: هدفون فوق هوشمند تیتانیومی با کیفیت صدای استودیویی ۲۴ بیت و نویز کنسلینگ...' : 'Example: High-end titanium noise-canceling headphones with studio 24-bit audio...'}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-2xl p-3.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-400 text-xs leading-relaxed"
+                  />
+                </div>
+
+                <div>
+                  <span className="text-[11px] text-teal-400 font-bold block mb-2">
+                    {lang === 'fa' ? '⚡ پرامپت‌های سریع پیشنهادی Readdy AI:' : '⚡ Suggested Quick Prompts:'}
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {quickPrompts.map((qp, i) => (
+                      <button
+                        key={i}
+                        onClick={() => {
+                          setPromptInput(qp);
+                          handleGenerateProduct(qp);
+                        }}
+                        className="bg-slate-900/90 border border-slate-800 hover:border-teal-500/50 hover:bg-teal-500/10 text-slate-300 hover:text-teal-300 text-[11px] px-3 py-1.5 rounded-xl transition text-right"
+                      >
+                        {qp}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  disabled={isGenerating}
+                  onClick={() => handleGenerateProduct()}
+                  className="w-full bg-gradient-to-r from-teal-500 via-amber-400 to-teal-400 text-slate-950 font-black py-3.5 rounded-2xl shadow-xl shadow-teal-500/20 hover:scale-[1.01] transition flex items-center justify-center gap-2 text-xs"
+                >
+                  {isGenerating ? (
+                    <>
+                      <i data-lucide="loader-2" className="w-4 h-4 animate-spin text-slate-950"></i>
+                      <span>{lang === 'fa' ? 'در حال خلق کالا با هوش مصنوعی Readdy AI...' : 'Creating Product with Readdy AI...'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <i data-lucide="sparkles" className="w-4 h-4 text-slate-950"></i>
+                      <span>{lang === 'fa' ? 'تولید آنی محصول و اضافه کردن به کاتالوگ' : 'Generate Product & Add to Marketplace'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+
+            {activeTab === 'theme' && (
+              <div className="space-y-4 text-xs animate-fade-in">
+                <span className="text-slate-300 font-bold block">
+                  {lang === 'fa' ? 'انتخاب درون‌مایه و پالت رنگی اختصاصی سامانه:' : 'Select Visual Theme Preset:'}
+                </span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {presets.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => {
+                        setActiveTheme(p.id);
+                        if (p.id === 'slate-minimal') {
+                          document.documentElement.classList.remove('dark');
+                        } else {
+                          document.documentElement.classList.add('dark');
+                        }
+                        showToast(`تم ${p.name_fa} فعال گردید`);
+                      }}
+                      className={`p-4 rounded-2xl border transition flex items-center justify-between text-right ${
+                        activeTheme === p.id ? 'bg-slate-900 border-teal-400 ring-2 ring-teal-400/30' : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
+                      }`}
+                    >
+                      <div>
+                        <h4 className="font-bold text-white text-xs">{p.name_fa}</h4>
+                        <span className="text-[10px] text-slate-400 font-mono">{p.name_en}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded-full border border-white/20" style={{ backgroundColor: p.primary }}></span>
+                        <span className="w-5 h-5 rounded-full border border-white/20" style={{ backgroundColor: p.bg }}></span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'viewport' && (
+              <div className="space-y-4 text-xs animate-fade-in">
+                <span className="text-slate-300 font-bold block">
+                  {lang === 'fa' ? 'قاب پیش‌نمایش ریسپانسیو مرورگر و دستگاه‌ها:' : 'Responsive Viewport Simulator Frame:'}
+                </span>
+
+                <div className="grid grid-cols-3 gap-3">
+                  <button
+                    onClick={() => {
+                      setViewportMode('desktop');
+                      showToast('نمایش دسکتاپ کامل فعال شد');
+                    }}
+                    className={`p-4 rounded-2xl border flex flex-col items-center gap-2 transition ${
+                      viewportMode === 'desktop' ? 'bg-teal-500/20 border-teal-400 text-teal-300' : 'bg-slate-900 border-slate-800 text-slate-400'
+                    }`}
+                  >
+                    <i data-lucide="monitor" className="w-6 h-6"></i>
+                    <span className="font-bold">{lang === 'fa' ? 'دسکتاپ (Full)' : 'Desktop'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setViewportMode('tablet');
+                      showToast('قاب آی‌پد (Tablet 768px) فعال شد');
+                    }}
+                    className={`p-4 rounded-2xl border flex flex-col items-center gap-2 transition ${
+                      viewportMode === 'tablet' ? 'bg-teal-500/20 border-teal-400 text-teal-300' : 'bg-slate-900 border-slate-800 text-slate-400'
+                    }`}
+                  >
+                    <i data-lucide="tablet" className="w-6 h-6"></i>
+                    <span className="font-bold">{lang === 'fa' ? 'تبلت (768px)' : 'Tablet'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setViewportMode('mobile');
+                      showToast('قاب آیفون (Mobile 390px) فعال شد');
+                    }}
+                    className={`p-4 rounded-2xl border flex flex-col items-center gap-2 transition ${
+                      viewportMode === 'mobile' ? 'bg-teal-500/20 border-teal-400 text-teal-300' : 'bg-slate-900 border-slate-800 text-slate-400'
+                    }`}
+                  >
+                    <i data-lucide="smartphone" className="w-6 h-6"></i>
+                    <span className="font-bold">{lang === 'fa' ? 'موبایل (390px)' : 'Mobile'}</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'copy' && (
+              <div className="space-y-4 text-xs animate-fade-in">
+                <div>
+                  <label className="text-slate-200 font-bold block mb-2">
+                    {lang === 'fa' ? 'نام محصول برای تولید متون تبلیغاتی و SEO:' : 'Enter product name for AI Sales Copy:'}
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={copyProductInput}
+                      onChange={(e) => setCopyProductInput(e.target.value)}
+                      placeholder="نام کالا..."
+                      className="flex-1 bg-slate-900 border border-slate-700 rounded-2xl p-3 text-slate-100"
+                    />
+                    <button
+                      onClick={handleGenerateCopy}
+                      className="bg-teal-500 text-slate-950 font-bold px-4 rounded-2xl hover:bg-teal-400 transition"
+                    >
+                      {lang === 'fa' ? 'تولید متن' : 'Generate'}
+                    </button>
+                  </div>
+                </div>
+
+                {generatedCopy && (
+                  <div className="p-4 rounded-2xl bg-slate-900 border border-teal-500/30 space-y-3">
+                    <div>
+                      <span className="text-[10px] text-amber-400 font-mono font-bold block mb-1">تیتر جذاب فروشگاهی (FA):</span>
+                      <p className="text-xs font-bold text-white leading-relaxed">{generatedCopy.headline_fa}</p>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-teal-400 font-mono font-bold block mb-1">Slogan (EN):</span>
+                      <p className="text-xs font-mono text-slate-200">{generatedCopy.headline_en}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
+
     // --- 3-LINE HAMBURGER DRAWER MENU COMPONENT ---
     const HamburgerDrawerMenu = ({
       isOpen,
@@ -1215,6 +1557,11 @@
       const [selectedProvince, setSelectedProvince] = useState('تهران');
       const [selectedCity, setSelectedCity] = useState('تهران');
       const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+
+      // Readdy AI Studio State
+      const [isReaddyStudioOpen, setIsReaddyStudioOpen] = useState(false);
+      const [viewportMode, setViewportMode] = useState('desktop'); // 'desktop' | 'tablet' | 'mobile'
+      const [activeTheme, setActiveTheme] = useState('emerald-neon');
 
       const [products, setProducts] = useState([]);
       const [categories, setCategories] = useState([]);
@@ -1577,6 +1924,15 @@
                 >
                   <i data-lucide="smartphone" className="w-5 h-5 text-amber-400"></i>
                   <span className="hidden md:inline">{t('mobileApp', lang)}</span>
+                </button>
+
+                <button
+                  onClick={() => setIsReaddyStudioOpen(true)}
+                  className="relative group bg-gradient-to-r from-teal-500 via-amber-400 to-indigo-500 text-slate-950 font-black text-xs px-3 py-2.5 rounded-2xl flex items-center gap-2 hover:scale-[1.03] transition shadow-lg shadow-teal-500/20 shrink-0"
+                  title="Readdy AI Studio"
+                >
+                  <i data-lucide="sparkles" className="w-4 h-4 text-slate-950 animate-spin"></i>
+                  <span className="hidden lg:inline">Readdy AI Studio</span>
                 </button>
 
                 <button

@@ -900,6 +900,116 @@ app.post('/api/reviews', async (c) => {
   return c.json({ success: true, reviewId: revId });
 });
 
+// READDY AI STUDIO ENDPOINTS FOR DYNAMIC GENERATION & THEME ENGINE
+app.post('/api/readdy/generate-product', async (c) => {
+  try {
+    const body = await c.req.json<any>();
+    const prompt = (body.prompt || 'کالای لوکس هوشمند').trim();
+    const vendorId = body.vendorId || 'vnd_1';
+    const now = Date.now();
+
+    // Readdy AI Synthesis Engine
+    let modelType = 'watch';
+    let categoryId = 'cat_elec';
+    let basePriceTomans = 25000000;
+    let titleFa = `کالای هوشمند Readdy AI: ${prompt}`;
+    let titleEn = `Readdy AI Product: ${prompt}`;
+    let img = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80';
+
+    if (prompt.includes('هدفون') || prompt.includes('صدا') || prompt.includes('صوتی') || prompt.includes('audio')) {
+      modelType = 'headphones';
+      categoryId = 'cat_elec';
+      basePriceTomans = 22000000;
+      titleFa = `هدفون هوشمند AI شارژی ${prompt}`;
+      titleEn = `Readdy AI Spatial Audio Headphones - ${prompt}`;
+      img = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80';
+    } else if (prompt.includes('فرش') || prompt.includes('دستباف') || prompt.includes('ابریشم') || prompt.includes('carpet')) {
+      modelType = 'carpet';
+      categoryId = 'cat_rugs';
+      basePriceTomans = 210000000;
+      titleFa = `فرش دستباف ابریشم طراحی شده با Readdy AI - ${prompt}`;
+      titleEn = `Readdy AI Silk Artisan Carpet - ${prompt}`;
+      img = 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&w=800&q=80';
+    } else if (prompt.includes('عینک') || prompt.includes('واقعیت') || prompt.includes('glasses') || prompt.includes('ar')) {
+      modelType = 'glasses';
+      categoryId = 'cat_elec';
+      basePriceTomans = 48000000;
+      titleFa = `عینک واقعیت افزوده Readdy AR - ${prompt}`;
+      titleEn = `Readdy Spatial AR Smart Glasses - ${prompt}`;
+      img = 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=800&q=80';
+    } else if (prompt.includes('قهوه') || prompt.includes('اسپرسو') || prompt.includes('خانه')) {
+      modelType = 'appliance';
+      categoryId = 'cat_home';
+      basePriceTomans = 34000000;
+      titleFa = `اسپرسوساز هوشمند با هوش مصنوعی Readdy AI - ${prompt}`;
+      titleEn = `Readdy AI Smart Espresso Craftsman - ${prompt}`;
+      img = 'https://images.unsplash.com/photo-1517668808822-9a428a248530?auto=format&fit=crop&w=800&q=80';
+    }
+
+    const newProduct: Product = {
+      id: `prd_readdy_${now}`,
+      vendor_id: vendorId,
+      category_id: categoryId,
+      title_fa: titleFa,
+      title_en: titleEn,
+      slug: `readdy-ai-${now}`,
+      description_fa: `این محصول به صورت اختصاصی با پرامپت «${prompt}» توسط موتور هوش مصنوعی Readdy AI طراحی و اعتبارسنجی گردید. دارای بدنه ارگونومیک، بالاترین استاندارد ساخت و پشتیبانی رسمی شاهکار.`,
+      description_en: `Created dynamically using Readdy AI Prompt Engine for query "${prompt}". Manufactured with top-tier material specs and full Shahkar warranty.`,
+      base_price_tomans: basePriceTomans,
+      discount_percent: 10,
+      stock: 25,
+      rating: 5.0,
+      review_count: 1,
+      featured: 1,
+      is_3d_enabled: 1,
+      model_type: modelType,
+      specifications: {
+        'موتور هوش مصنوعی': 'Readdy AI Generative Engine v4',
+        'کیفیت ساخت': 'پریمیوم درجه یک بین‌المللی',
+        'گواهی اصالت': 'تایید شده با شناسه NFT در شاهکار'
+      },
+      images: [img],
+      tags: ['Readdy AI', 'هوش مصنوعی', 'تولید هوشمند', 'شاهکار'],
+      created_at: now
+    };
+
+    dbProducts.unshift(newProduct);
+
+    return c.json({
+      success: true,
+      product: {
+        ...newProduct,
+        final_price_tomans: Math.round((newProduct.base_price_tomans * (100 - newProduct.discount_percent)) / 100)
+      },
+      message_fa: 'محصول شما با هوش مصنوعی Readdy AI تولید و به کاتالوگ شاهکار اضافه گردید!'
+    });
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message || 'Readdy AI product generation error' }, 400);
+  }
+});
+
+app.post('/api/readdy/generate-copy', async (c) => {
+  const body = await c.req.json<any>();
+  const productName = body.productName || 'محصول لوکس';
+
+  return c.json({
+    headline_fa: `تجربه‌ای فراتر از انتظار با ${productName} - طراحی شده برای سخت‌پسندان`,
+    headline_en: `Elevate Your Lifestyle with ${productName} - Readdy AI Verified`,
+    meta_description_fa: `خرید اینترنتی ${productName} با بهترین قیمت، ضمانت اصالت فیزیکی و ارسال سریع اکسپرس کشوری در بازار شاهکار.`,
+    meta_description_en: `Shop authentic ${productName} with guaranteed quality, fast express delivery and multi-vendor support on Shahkar Marketplace.`,
+    tags: [productName, 'Readdy AI', 'شاهکار', 'خرید آنلاین', 'لوکس']
+  });
+});
+
+app.get('/api/readdy/theme-presets', (c) => {
+  return c.json([
+    { id: 'emerald-neon', name_fa: 'زمردی نئون (اصلی شاهکار)', name_en: 'Emerald Neon', primary: '#2dd4bf', bg: '#05070d', cardBg: 'rgba(20, 30, 50, 0.55)', glowColor: 'rgba(45, 212, 191, 0.35)' },
+    { id: 'royal-gold', name_fa: 'طلای سلطنتی دارک', name_en: 'Royal Gold', primary: '#facc15', bg: '#0b0c10', cardBg: 'rgba(35, 30, 15, 0.65)', glowColor: 'rgba(250, 204, 21, 0.35)' },
+    { id: 'cyber-violet', name_fa: 'وایولت سایبرپانک', name_en: 'Cyber Violet', primary: '#a855f7', bg: '#0d0714', cardBg: 'rgba(30, 20, 45, 0.6)', glowColor: 'rgba(168, 85, 247, 0.35)' },
+    { id: 'slate-minimal', name_fa: 'مینی‌مالیست روز', name_en: 'Minimalist Day', primary: '#0d9488', bg: '#f8fafc', cardBg: '#ffffff', glowColor: 'rgba(13, 148, 136, 0.2)' }
+  ]);
+});
+
 app.post('/api/ai/chat', async (c) => {
   const body = await c.req.json<any>();
   const msg = (body.message || '').toLowerCase();
