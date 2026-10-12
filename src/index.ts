@@ -18,12 +18,12 @@ interface Product {
   base_price_tomans: number;
   discount_percent: number;
   stock: number;
+  moq: number; // Minimum Order Quantity
   rating: number;
   review_count: number;
   featured: number;
-  is_3d_enabled: number;
-  model_type: string;
   specifications: Record<string, string>;
+  tier_pricing?: { min_qty: number; max_qty: number; price_tomans: number }[];
   images: string[];
   tags: string[];
   created_at: number;
@@ -124,63 +124,65 @@ function seedDatabase() {
   const now = Date.now();
 
   dbCategories = [
-    { id: 'cat_elec', name_fa: 'دیجیتال و تکنولوژی', name_en: 'Electronics & Tech', slug: 'electronics', icon: 'Cpu', parent_id: null },
-    { id: 'cat_rugs', name_fa: 'فرش و صنایع دستی', name_en: 'Persian Carpets & Arts', slug: 'carpets-art', icon: 'Sparkles', parent_id: null },
-    { id: 'cat_fashion', name_fa: 'مد و ساعت لوکس', name_en: 'Fashion & Luxury', slug: 'fashion-watches', icon: 'Watch', parent_id: null },
-    { id: 'cat_home', name_fa: 'خانه و آشپزخانه هوشمند', name_en: 'Smart Home & Living', slug: 'smart-home', icon: 'Home', parent_id: null },
-    { id: 'cat_beauty', name_fa: 'عطر و زیبایی اصیل', name_en: 'Perfumes & Beauty', slug: 'beauty', icon: 'Gem', parent_id: null },
+    { id: 'cat_elec', name_fa: 'کالای دیجیتال و الکترونیک', name_en: 'Consumer Electronics & Tech', slug: 'electronics', icon: 'Cpu', parent_id: null },
+    { id: 'cat_rugs', name_fa: 'فرش دستباف و صنایع دستی', name_en: 'Persian Carpets & Craftsmanship', slug: 'carpets-art', icon: 'Sparkles', parent_id: null },
+    { id: 'cat_fashion', name_fa: 'ساعت، پوشاک و مد لوکس', name_en: 'Fashion, Apparel & Luxury Timepieces', slug: 'fashion-watches', icon: 'Watch', parent_id: null },
+    { id: 'cat_home', name_fa: 'لوازم خانه و آشپزخانه هوشمند', name_en: 'Smart Home & Kitchen Appliances', slug: 'smart-home', icon: 'Home', parent_id: null },
+    { id: 'cat_beauty', name_fa: 'عطر، آرایشی و زیبایی', name_en: 'Perfumes & Organic Cosmetics', slug: 'beauty', icon: 'Gem', parent_id: null },
+    { id: 'cat_food', name_fa: 'زعفران، خاویار و مواد غذایی صادراتی', name_en: 'Saffron, Caviar & Food Export', slug: 'food-export', icon: 'Apple', parent_id: null },
+    { id: 'cat_industry', name_fa: 'ماشین‌آلات و تجهیزات صنعتی', name_en: 'Industrial Machinery & Equipment', slug: 'industrial', icon: 'Wrench', parent_id: null },
   ];
 
   dbVendors = [
     {
       id: 'vnd_1',
       user_id: 'usr_vendor1',
-      store_name: 'آریا تکنولوژی - Arya Tech Premium',
+      store_name: 'آریا تکنولوژی | Arya Tech Global Gold Supplier',
       store_slug: 'arya-tech',
-      description_fa: 'نمایندگی رسمی عرضه جدیدترین کالاهای دیجیتال و گجت‌های هوشمند هیبریدی در ایران',
-      description_en: 'Official flagship store for premium hybrid gadgets, AI wearables, and audio in Iran.',
+      description_fa: 'عرضه‌کننده رسمی و دارنده گواهی بازرسی بین‌المللی تجهیزات صوتی، هوشمند و گجت‌های الکترونیک در ایران',
+      description_en: 'Certified Alibaba Gold Supplier & Official distributor for high-tech audio gear, wearables & AI hardware.',
       banner_url: 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=1200&q=80',
       logo_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&q=80',
       rating: 4.9,
-      total_sales: 1420,
+      total_sales: 1840,
       is_verified: 1,
       commission_rate: 0.08,
-      balance_tomans: 485000000,
-      badge: 'Gold Diamond Vendor',
+      balance_tomans: 520000000,
+      badge: 'Verified Gold Supplier 5 Yrs',
       created_at: now
     },
     {
       id: 'vnd_2',
       user_id: 'usr_vendor2',
-      store_name: 'فرش و ابریشم پارس - Persia Silk & Rugs',
+      store_name: 'فرش و ابریشم پارس | Persia Silk Master Weaver',
       store_slug: 'persia-silk',
-      description_fa: 'تولیدکننده و صادرکننده اصیل‌ترین فرش‌های دستباف ابریشم قم و تبریز با شناسه اصالت',
-      description_en: 'Master weaver & global exporter of hand-knotted authentic Silk Carpets from Qom & Tabriz.',
+      description_fa: 'تولیدکننده مستقیم و صادرکننده ارشد فرش‌های دستباف ۱۰۰٪ ابریشم قم و تبریز با شناسه اصالت و گواهی صادرات',
+      description_en: 'Direct factory manufacturer & global exporter of hand-knotted authentic Silk Carpets from Qom & Tabriz.',
       banner_url: 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&w=1200&q=80',
       logo_url: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=200&q=80',
       rating: 5.0,
-      total_sales: 680,
+      total_sales: 920,
       is_verified: 1,
       commission_rate: 0.06,
-      balance_tomans: 890000000,
-      badge: 'Master Artisan',
+      balance_tomans: 1140000000,
+      badge: 'Verified Factory Manufacturer',
       created_at: now
     },
     {
       id: 'vnd_3',
       user_id: 'usr_admin',
-      store_name: 'ساعت‌های فاخر کوروش - Kourosh Luxury Timepieces',
+      store_name: 'گالری ساعت‌های فاخر کوروش | Kourosh Luxury Timepieces',
       store_slug: 'kourosh-time',
-      description_fa: 'گالری تخصصی ساعت‌های مکانیکی لوکس، نسخه محدود و طلا کوب',
-      description_en: 'Specialized gallery of luxury tourbillon mechanical watches and limited edition timepieces.',
+      description_fa: 'نمایندگی انحصاری ساعت‌های توربیون مکانیکی طلا و اکسسوری‌های لوکس بین‌المللی',
+      description_en: 'Exclusive merchant for certified Swiss Tourbillon mechanical luxury timepieces and gold accessories.',
       banner_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80',
       logo_url: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=200&q=80',
       rating: 4.95,
-      total_sales: 310,
+      total_sales: 450,
       is_verified: 1,
       commission_rate: 0.10,
-      balance_tomans: 320000000,
-      badge: 'Official Brand',
+      balance_tomans: 410000000,
+      badge: 'Verified Brand Owner',
       created_at: now
     }
   ];
@@ -190,32 +192,36 @@ function seedDatabase() {
       id: 'prd_1',
       vendor_id: 'vnd_1',
       category_id: 'cat_elec',
-      title_fa: 'هدفون بی‌سیم نویز کنسلینگ هوشمند آریا برو Pro',
-      title_en: 'Arya Pro Smart Spatial ANC Headphones',
+      title_fa: 'هدفون بی‌سیم نویز کنسلینگ هوشمند آریا پرو Pro (صادراتی)',
+      title_en: 'Arya Pro Smart ANC Hi-Res Wireless Headphones',
       slug: 'arya-pro-anc-headphones',
       description_fa: 'هدفون پریمیوم با درایورهای تیتانیومی ۵۰ میلی‌متری، نویز کنسلینگ اکتیو ۵۵ دسی‌بل، کیفیت صوتی ۲۴ بیت LDAC و عمر باتری ۶۰ ساعته همراه با تراشه اختصاصی AI Audio.',
       description_en: 'Flagship wireless headphones featuring 50mm titanium drivers, 55dB active hybrid ANC, 24-bit Hi-Res audio playback, and 60h battery life powered by custom AI sound engine.',
       base_price_tomans: 18500000,
       discount_percent: 12,
-      stock: 35,
+      stock: 65,
+      moq: 1,
       rating: 4.9,
       review_count: 84,
       featured: 1,
-      is_3d_enabled: 1,
-      model_type: 'headphones',
+      tier_pricing: [
+        { min_qty: 1, max_qty: 5, price_tomans: 16280000 },
+        { min_qty: 6, max_qty: 20, price_tomans: 14800000 },
+        { min_qty: 21, max_qty: 100, price_tomans: 13500000 }
+      ],
       specifications: {
         'پردازنده صوتی': 'Arya Neural Sound Chip v2',
         'عمر باتری': '۶۰ ساعت پخش مداوم',
         'اتصال': 'Bluetooth 5.4 + Dual 2.4G Dongle',
         'وزن': '۲۷۵ گرم',
-        'ضمانت': '۲۴ ماه گارانتی طلایی آریا'
+        'ضمانت معامله': 'Trade Assurance + ۲۴ ماه گارانتی طلایی'
       },
       images: [
         'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80',
         'https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=800&q=80',
         'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80'
       ],
-      tags: ['هدفون', 'نویز کنسلینگ', 'دیجیتال', 'گجت', 'Audio', 'Headphones'],
+      tags: ['هدفون', 'نویز کنسلینگ', 'دیجیتال', 'عمده', 'Audio', 'Headphones'],
       created_at: now
     },
     {
@@ -226,21 +232,24 @@ function seedDatabase() {
       title_en: 'Shahkar Tourbillon Mechanical Watch - 18K Gold Edition',
       slug: 'shahkar-tourbillon-gold-watch',
       description_fa: 'ساعت مکانیکی اتوماتیک شاهکار با موتور توربیون سوئیسی، کریستال یاقوت کبود ضد خش، قاب طلا کوب و بند چرم طبیعی تمساح شاهی. تولید محدود ۱۰۰ عددی در جهان.',
-      description_en: 'Exquisite Swiss-movement mechanical Tourbillon timepiece with anti-reflective Sapphire glass, 18K gold inlaid casing, and royal alligator leather strap. Limited to 100 pieces worldwide.',
+      description_en: 'Exquisite Swiss-movement mechanical Tourbillon timepiece with anti-reflective Sapphire glass, 18K gold inlaid casing, and royal alligator leather strap.',
       base_price_tomans: 145000000,
       discount_percent: 5,
-      stock: 8,
+      stock: 12,
+      moq: 1,
       rating: 5.0,
       review_count: 29,
       featured: 1,
-      is_3d_enabled: 1,
-      model_type: 'watch',
+      tier_pricing: [
+        { min_qty: 1, max_qty: 2, price_tomans: 137750000 },
+        { min_qty: 3, max_qty: 10, price_tomans: 125000000 }
+      ],
       specifications: {
         'موتور': 'Swiss Automatic Tourbillon Caliber 88',
         'جنس بدنه': 'طلا ۱۸ عیار + استیل ۳۱۶L',
         'مقاومت در آب': '100 Meters / 10 ATM',
         'جنس شیشه': 'Sapphire Crystal anti-glare',
-        'اصالت': 'گواهی ثبت بین‌المللی همراه شناسه NFT'
+        'اصالت': 'گواهی ثبت بین‌المللی همراه شناسه صادراتی'
       },
       images: [
         'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80',
@@ -254,19 +263,18 @@ function seedDatabase() {
       id: 'prd_3',
       vendor_id: 'vnd_2',
       category_id: 'cat_rugs',
-      title_fa: 'فرش دستباف ابریشم ۱۰۰٪ قم طرح لچک ترنج اسلیمی (۶ متری)',
+      title_fa: 'فرش دستباف ابریشم ۱۰۰٪ قم طرح لچک ترنج اسلیمی (۶ متری صادراتی)',
       title_en: 'Authentic 100% Qom Pure Silk Hand-Knotted Rug (6 Sqm)',
       slug: 'qom-pure-silk-rug-6m',
-      description_fa: 'شاهکار بافندگی قم با تراکم ۱۲۰ رج، چله و پرز تمام ابریشم طبیعی، رنگ‌آمیزی گیاهی استادانه. همراه با شناسنامه معتبر فدراسیون فرش دستباف ایران.',
+      description_fa: 'شاهکار بافندگی قم با تراکم ۱زو رج، چله و پرز تمام ابریشم طبیعی، رنگ‌آمیزی گیاهی استادانه. همراه با شناسنامه معتبر فدراسیون فرش دستباف ایران.',
       description_en: 'Masterpiece pure silk Qom carpet woven at 120 Raj density with natural botanical dyes and verified Certificate of Authenticity.',
       base_price_tomans: 380000000,
       discount_percent: 8,
-      stock: 4,
+      stock: 5,
+      moq: 1,
       rating: 5.0,
       review_count: 18,
       featured: 1,
-      is_3d_enabled: 1,
-      model_type: 'carpet',
       specifications: {
         'تراکم': '۱۲۰ رج واقعی',
         'جنس تار و پود': 'ابریشم ۱۰۰٪ طبیعی',
@@ -292,12 +300,11 @@ function seedDatabase() {
       description_en: 'Next-gen spatial AR glasses equipped with dual 4K Micro-OLED panels, 50-degree FOV, directional spatial audio, and ultralight 76g titanium frame.',
       base_price_tomans: 42000000,
       discount_percent: 10,
-      stock: 19,
+      stock: 28,
+      moq: 1,
       rating: 4.8,
       review_count: 42,
       featured: 1,
-      is_3d_enabled: 1,
-      model_type: 'glasses',
       specifications: {
         'کیفیت تصویر': 'Dual 4K Micro-OLED @ 120Hz',
         'روشنایی': 'up to 3000 nits',
@@ -322,12 +329,11 @@ function seedDatabase() {
       description_en: 'Professional 19-bar espresso machine with integrated ceramic conical grinder, AI extraction profiler, automatic micro-foam steam wand, and 5" color touch display.',
       base_price_tomans: 32500000,
       discount_percent: 15,
-      stock: 22,
+      stock: 40,
+      moq: 1,
       rating: 4.9,
       review_count: 56,
       featured: 0,
-      is_3d_enabled: 1,
-      model_type: 'appliance',
       specifications: {
         'فشار پمپ': '19 Bar Italian Ulka Pump',
         'توان': '1650 Watt Dual Thermo-block',
@@ -352,12 +358,11 @@ function seedDatabase() {
       description_en: 'Handcrafted luxury Extrait de Parfum blending pure Ghaen saffron, aged Cambodian oud, and organic Kashan Damask rose.',
       base_price_tomans: 12800000,
       discount_percent: 0,
-      stock: 45,
+      stock: 80,
+      moq: 1,
       rating: 4.95,
       review_count: 67,
       featured: 0,
-      is_3d_enabled: 1,
-      model_type: 'perfume',
       specifications: {
         'غلظت': 'Extrait de Parfum (35% Oil)',
         'حجم': '۵۰ میلی‌لیتر',
@@ -383,12 +388,11 @@ function seedDatabase() {
       description_en: 'Apple flagship smartphone powered by A18 Pro chip, Grade 5 Titanium frame, 48MP fusion camera system and dedicated Camera Control button.',
       base_price_tomans: 98000000,
       discount_percent: 5,
-      stock: 14,
+      stock: 20,
+      moq: 1,
       rating: 4.9,
       review_count: 112,
       featured: 1,
-      is_3d_enabled: 1,
-      model_type: 'watch',
       specifications: {
         'پردازنده': 'Apple A18 Pro 3nm',
         'حافظه داخلی': '۲۵۶ گیگابایت',
@@ -405,20 +409,23 @@ function seedDatabase() {
     {
       id: 'prd_8',
       vendor_id: 'vnd_2',
-      category_id: 'cat_rugs',
-      title_fa: 'پک هدیه فاخر خاویار بلوگا امپریال و زعفران صادراتی قائنات',
-      title_en: 'Imperial Beluga Caviar & Premium Saffron Luxury Gift Box',
+      category_id: 'cat_food',
+      title_fa: 'پک هدیه فاخر خاویار بلوگا امپریال و زعفران سوپر نگین صادراتی',
+      title_en: 'Imperial Beluga Caviar & Super Negin Saffron Export Gift Set',
       slug: 'beluga-caviar-saffron-luxury-box',
       description_fa: 'بسته‌بندی شاهانه شامل ۱۰۰ گرم خاویار اصل بلوگا امپریال دریای خزر و ۵۰ گرم زعفران نگین سوپر صادراتی قائنات در جعبه چوبی خاتم‌کاری اصفهان.',
       description_en: 'Royal gift box containing 100g Caspian Beluga Imperial Caviar and 50g Super Negin Saffron presented in handcrafted Khatam-kari wooden case.',
       base_price_tomans: 28000000,
       discount_percent: 10,
-      stock: 12,
+      stock: 35,
+      moq: 1,
       rating: 5.0,
       review_count: 34,
       featured: 1,
-      is_3d_enabled: 1,
-      model_type: 'carpet',
+      tier_pricing: [
+        { min_qty: 1, max_qty: 5, price_tomans: 25200000 },
+        { min_qty: 6, max_qty: 25, price_tomans: 22800000 }
+      ],
       specifications: {
         'خاویار': '۱۰۰ گرم بلوگا امپریال پرورشی دریای خزر',
         'زعفران': '۵۰ گرم سوپر نگین قائنات',
@@ -429,7 +436,7 @@ function seedDatabase() {
         'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
         'https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=800&q=80'
       ],
-      tags: ['خاویار', 'زعفران', 'هدیه', 'لوکس', 'Caviar', 'Saffron'],
+      tags: ['خاویار', 'زعفران', 'هدیه', 'صادرات', 'Caviar', 'Saffron'],
       created_at: now
     }
   ];
@@ -441,7 +448,7 @@ function seedDatabase() {
       user_id: 'usr_customer1',
       user_name: 'نوید رضایی',
       rating: 5,
-      comment: 'کیفیت ساخت و طراحی فوق‌العاده است. پشتیبانی فروشنده هم بسیار محترمانه و سریع بود. تفکیک صدای این محصول در سطح محصولات استودیویی گران‌قیمت جهانی قرار داره.',
+      comment: 'کیفیت ساخت و بسته‌بندی صادراتی فوق‌العاده است. پشتیبانی فروشنده هم بسیار محترمانه و سریع بود. تفکیک صدای این محصول در سطح محصولات جهانی است.',
       verified_purchase: 1,
       vendor_response: 'با درود و احترام، از حسن اعتماد و دیدگاه ارزشمند شما صمیمانه سپاسگزاریم.',
       images: [],
@@ -473,7 +480,7 @@ function seedDatabase() {
           id: 'ori_1',
           vendor_id: 'vnd_1',
           product_id: 'prd_1',
-          product_title: 'هدفون بی‌سیم نویز کنسلینگ هوشمند آریا برو Pro',
+          product_title: 'هدفون بی‌سیم نویز کنسلینگ هوشمند آریا پرو Pro',
           quantity: 1,
           unit_price_tomans: 16280000
         }
@@ -577,7 +584,7 @@ app.get('/api/products', (c) => {
     const v = dbVendors.find(vend => vend.id === p.vendor_id);
     return {
       ...p,
-      vendor_badge: v?.badge || 'فروشنده معتبر',
+      vendor_badge: v?.badge || 'Verified Gold Supplier',
       store_name: v?.store_name || 'غرفه اصلی شاهکار',
       final_price_tomans: Math.round((p.base_price_tomans * (100 - p.discount_percent)) / 100)
     };
@@ -601,7 +608,7 @@ app.get('/api/products/:id', (c) => {
 
   return c.json({
     ...p,
-    vendor_badge: v?.badge || 'فروشنده معتبر',
+    vendor_badge: v?.badge || 'Verified Gold Supplier',
     store_name: v?.store_name || 'غرفه اصلی شاهکار',
     vendor_logo: v?.logo_url,
     vendor_rating: v?.rating,
@@ -673,12 +680,12 @@ app.post('/api/cart/calculate', async (c) => {
     let couponDiscountTomans = 0;
     let appliedCoupon = null;
 
-    if (couponCode.toUpperCase() === 'SHAHKAR2026') {
+    if (couponCode && couponCode.toUpperCase() === 'SHAHKAR2026') {
       couponDiscountTomans = Math.min(2000000, Math.round((subtotalTomans - itemDiscountTomans) * 0.15));
       appliedCoupon = { code: 'SHAHKAR2026', discountPercent: 15, maxTomans: 2000000 };
     }
 
-    const netProductTomans = subtotalTomans - itemDiscountTomans - couponDiscountTomans;
+    const netProductTomans = Math.max(0, subtotalTomans - itemDiscountTomans - couponDiscountTomans);
     const totalShippingTomans = items.length > 0 ? 65000 : 0;
     const vatTaxTomans = Math.round(netProductTomans * 0.10);
     const grandTotalTomans = netProductTomans + totalShippingTomans + vatTaxTomans;
@@ -794,7 +801,6 @@ app.get('/api/orders', (c) => {
 // LOGISTICS GPS TRACKING ENDPOINT
 app.get('/api/logistics/track/:code', (c) => {
   const code = c.req.param('code');
-  const now = Date.now();
 
   return c.json({
     trackingCode: code,
@@ -827,8 +833,8 @@ app.post('/api/b2b/quote', async (c) => {
       company_name: companyName,
       email,
       phone,
-      product_id: productId,
-      product_title_fa: p ? p.title_fa : 'کالای سفارشی B2B',
+      product_id: productId || 'custom',
+      product_title_fa: p ? p.title_fa : 'استعلام سفارشی کالا',
       target_quantity: targetQuantity,
       destination_country: destinationCountry,
       notes,
@@ -841,7 +847,7 @@ app.post('/api/b2b/quote', async (c) => {
     return c.json({
       success: true,
       quoteId: newQuote.id,
-      message_fa: 'استعلام قیمت عمده B2B شما ثبت شد. فروشنده تا کمتر از ۴ ساعت دیگر پروفرما را ارسال خواهد کرد.'
+      message_fa: 'استعلام قیمت عمده B2B شما ثبت شد. تامین‌کننده تا کمتر از ۴ ساعت دیگر پروفرما را ارسال خواهد کرد.'
     });
   } catch (e: any) {
     return c.json({ success: false, error: e.message || 'Error creating quote' }, 400);
@@ -850,25 +856,6 @@ app.post('/api/b2b/quote', async (c) => {
 
 app.get('/api/b2b/quotes', (c) => {
   return c.json(dbB2bQuotes);
-});
-
-app.post('/api/b2b/quote/respond', async (c) => {
-  try {
-    const body = await c.req.json<any>();
-    const { quoteId, quotedUnitPriceTomans, estimatedDays = 7, vendorNote = '' } = body;
-
-    const quote = dbB2bQuotes.find(q => q.id === quoteId);
-    if (!quote) return c.json({ error: 'Quote not found' }, 404);
-
-    quote.status = 'quoted';
-    quote.quoted_unit_price_tomans = quotedUnitPriceTomans;
-    quote.estimated_days = estimatedDays;
-    quote.vendor_note = vendorNote;
-
-    return c.json({ success: true, message: 'پروفرمای B2B با موفقیت ثبت و برای خریدار ارسال گردید.' });
-  } catch (e: any) {
-    return c.json({ success: false, error: e.message || 'Error responding to quote' }, 400);
-  }
 });
 
 app.post('/api/reviews', async (c) => {
@@ -891,7 +878,6 @@ app.post('/api/reviews', async (c) => {
 
   dbReviews.unshift(newRev);
 
-  // Update product review count
   const p = dbProducts.find(prod => prod.id === productId);
   if (p) {
     p.review_count += 1;
@@ -900,16 +886,14 @@ app.post('/api/reviews', async (c) => {
   return c.json({ success: true, reviewId: revId });
 });
 
-// READDY AI STUDIO ENDPOINTS FOR DYNAMIC GENERATION & THEME ENGINE
+// READDY AI STUDIO ENDPOINTS
 app.post('/api/readdy/generate-product', async (c) => {
   try {
     const body = await c.req.json<any>();
-    const prompt = (body.prompt || 'کالای لوکس هوشمند').trim();
+    const prompt = (body.prompt || 'کالای تجاری صادراتی').trim();
     const vendorId = body.vendorId || 'vnd_1';
     const now = Date.now();
 
-    // Readdy AI Synthesis Engine
-    let modelType = 'watch';
     let categoryId = 'cat_elec';
     let basePriceTomans = 25000000;
     let titleFa = `کالای هوشمند Readdy AI: ${prompt}`;
@@ -917,28 +901,24 @@ app.post('/api/readdy/generate-product', async (c) => {
     let img = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80';
 
     if (prompt.includes('هدفون') || prompt.includes('صدا') || prompt.includes('صوتی') || prompt.includes('audio')) {
-      modelType = 'headphones';
       categoryId = 'cat_elec';
       basePriceTomans = 22000000;
       titleFa = `هدفون هوشمند AI شارژی ${prompt}`;
       titleEn = `Readdy AI Spatial Audio Headphones - ${prompt}`;
       img = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80';
     } else if (prompt.includes('فرش') || prompt.includes('دستباف') || prompt.includes('ابریشم') || prompt.includes('carpet')) {
-      modelType = 'carpet';
       categoryId = 'cat_rugs';
       basePriceTomans = 210000000;
       titleFa = `فرش دستباف ابریشم طراحی شده با Readdy AI - ${prompt}`;
       titleEn = `Readdy AI Silk Artisan Carpet - ${prompt}`;
       img = 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&w=800&q=80';
     } else if (prompt.includes('عینک') || prompt.includes('واقعیت') || prompt.includes('glasses') || prompt.includes('ar')) {
-      modelType = 'glasses';
       categoryId = 'cat_elec';
       basePriceTomans = 48000000;
       titleFa = `عینک واقعیت افزوده Readdy AR - ${prompt}`;
       titleEn = `Readdy Spatial AR Smart Glasses - ${prompt}`;
       img = 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=800&q=80';
     } else if (prompt.includes('قهوه') || prompt.includes('اسپرسو') || prompt.includes('خانه')) {
-      modelType = 'appliance';
       categoryId = 'cat_home';
       basePriceTomans = 34000000;
       titleFa = `اسپرسوساز هوشمند با هوش مصنوعی Readdy AI - ${prompt}`;
@@ -957,16 +937,15 @@ app.post('/api/readdy/generate-product', async (c) => {
       description_en: `Created dynamically using Readdy AI Prompt Engine for query "${prompt}". Manufactured with top-tier material specs and full Shahkar warranty.`,
       base_price_tomans: basePriceTomans,
       discount_percent: 10,
-      stock: 25,
+      stock: 45,
+      moq: 1,
       rating: 5.0,
       review_count: 1,
       featured: 1,
-      is_3d_enabled: 1,
-      model_type: modelType,
       specifications: {
         'موتور هوش مصنوعی': 'Readdy AI Generative Engine v4',
         'کیفیت ساخت': 'پریمیوم درجه یک بین‌المللی',
-        'گواهی اصالت': 'تایید شده با شناسه NFT در شاهکار'
+        'گواهی اصالت': 'تایید شده با Trade Assurance در شاهکار'
       },
       images: [img],
       tags: ['Readdy AI', 'هوش مصنوعی', 'تولید هوشمند', 'شاهکار'],
@@ -988,28 +967,6 @@ app.post('/api/readdy/generate-product', async (c) => {
   }
 });
 
-app.post('/api/readdy/generate-copy', async (c) => {
-  const body = await c.req.json<any>();
-  const productName = body.productName || 'محصول لوکس';
-
-  return c.json({
-    headline_fa: `تجربه‌ای فراتر از انتظار با ${productName} - طراحی شده برای سخت‌پسندان`,
-    headline_en: `Elevate Your Lifestyle with ${productName} - Readdy AI Verified`,
-    meta_description_fa: `خرید اینترنتی ${productName} با بهترین قیمت، ضمانت اصالت فیزیکی و ارسال سریع اکسپرس کشوری در بازار شاهکار.`,
-    meta_description_en: `Shop authentic ${productName} with guaranteed quality, fast express delivery and multi-vendor support on Shahkar Marketplace.`,
-    tags: [productName, 'Readdy AI', 'شاهکار', 'خرید آنلاین', 'لوکس']
-  });
-});
-
-app.get('/api/readdy/theme-presets', (c) => {
-  return c.json([
-    { id: 'emerald-neon', name_fa: 'زمردی نئون (اصلی شاهکار)', name_en: 'Emerald Neon', primary: '#2dd4bf', bg: '#05070d', cardBg: 'rgba(20, 30, 50, 0.55)', glowColor: 'rgba(45, 212, 191, 0.35)' },
-    { id: 'royal-gold', name_fa: 'طلای سلطنتی دارک', name_en: 'Royal Gold', primary: '#facc15', bg: '#0b0c10', cardBg: 'rgba(35, 30, 15, 0.65)', glowColor: 'rgba(250, 204, 21, 0.35)' },
-    { id: 'cyber-violet', name_fa: 'وایولت سایبرپانک', name_en: 'Cyber Violet', primary: '#a855f7', bg: '#0d0714', cardBg: 'rgba(30, 20, 45, 0.6)', glowColor: 'rgba(168, 85, 247, 0.35)' },
-    { id: 'slate-minimal', name_fa: 'مینی‌مالیست روز', name_en: 'Minimalist Day', primary: '#0d9488', bg: '#f8fafc', cardBg: '#ffffff', glowColor: 'rgba(13, 148, 136, 0.2)' }
-  ]);
-});
-
 app.post('/api/ai/chat', async (c) => {
   const body = await c.req.json<any>();
   const msg = (body.message || '').toLowerCase();
@@ -1021,15 +978,15 @@ app.post('/api/ai/chat', async (c) => {
 
   if (msg.includes('هدفون') || msg.includes('صدا') || msg.includes('headphone')) {
     matched = dbProducts.filter(p => p.id === 'prd_1');
-    replyFa = 'پیشنهاد هوشمند شاهکار برای شما: **هدفون بی‌سیم نویز کنسلینگ هوشمند آریا برو Pro** است. دارای نویز کنسلینگ اکتیو ۵۵ دسی‌بل، درایورهای تیتانیومی و ۶۰ ساعت شارژدهی با تراشه صوتی هوش مصنوعی. قیمت با تخفیف ویژه: ۱۶,۲۸۰,۰۰۰ تومان.';
+    replyFa = 'پیشنهاد هوشمند شاهکار برای شما: **هدفون بی‌سیم نویز کنسلینگ هوشمند آریا پرو Pro** است. دارای نویز کنسلینگ اکتیو ۵۵ دسی‌بل، درایورهای تیتانیومی و ۶۰ ساعت شارژدهی. قیمت با تخفیف ویژه: ۱۶,۲۸۰,۰۰۰ تومان.';
     replyEn = 'Shahkar AI Recommendation: **Arya Pro Smart Spatial ANC Headphones**. Featuring 55dB active noise canceling, 50mm titanium drivers, and 60h battery life.';
   } else if (msg.includes('ساعت') || msg.includes('طلا') || msg.includes('watch')) {
     matched = dbProducts.filter(p => p.id === 'prd_2');
-    replyFa = 'برای علاقه‌مندان به ساعت‌های فاخر، **ساعت توربیون مکانیکی شاهکار کوروش** را پیشنهاد می‌کنم. نسخه محدود با موتور توربیون سوئیسی، کریستال یاقوت کبود و قاب طلا ۱۸ عیار. دارنده گواهی اصالت و NFT کد.';
-    replyEn = 'For luxury timepiece enthusiasts, I recommend the **Shahkar Tourbillon Mechanical Watch**. Swiss tourbillon movement, 18K gold casing, and verified NFT authentication.';
+    replyFa = 'برای علاقه‌مندان به ساعت‌های فاخر، **ساعت توربیون مکانیکی شاهکار کوروش** را پیشنهاد می‌کنم. نسخه محدود با موتور توربیون سوئیسی، کریستال یاقوت کبود و قاب طلا ۱۸ عیار.';
+    replyEn = 'For luxury timepiece enthusiasts, I recommend the **Shahkar Tourbillon Mechanical Watch**. Swiss tourbillon movement, 18K gold casing, and verified Trade Assurance.';
   } else {
-    replyFa = 'درود! من دستیار هوشمند خریدهای فاخر «شاهکار» هستم. با تحلیل دقیق گزینه‌های برتر بازار مانند هدفون‌های نویزکنسلینگ تیتانیومی، ساعت‌های توربیون طلای ۱۸ عیار، خاویار امپریال و فرش‌های ابریشم قم را برای شما معرفی می‌کنم. چطور می‌توانم راهنماییتان کنم؟';
-    replyEn = 'Greetings! I am the Shahkar AI Shopping Advisor. I can assist you with real-time recommendations across all verified luxury marketplace stores.';
+    replyFa = 'درود! من دستیار هوشمند خریدهای فاخر و تامین «شاهکار» هستم. با تحلیل دقیق گزینه‌های برتر بازار مانند هدفون‌های نویزکنسلینگ تیتانیومی، ساعت‌های توربیون طلای ۱۸ عیار، خاویار امپریال و فرش‌های ابریشم قم را برای شما معرفی می‌کنم. چطور می‌توانم راهنماییتان کنم؟';
+    replyEn = 'Greetings! I am the Shahkar AI Sourcing Advisor. I can assist you with real-time recommendations across all verified marketplace stores.';
   }
 
   const formattedMatched = matched.map(p => ({
@@ -1049,8 +1006,7 @@ app.get('/api/analytics', (c) => {
     totalVendors: dbVendors.length,
     totalOrders: dbOrders.length,
     totalRevenueTomans: dbOrders.reduce((sum, o) => sum + o.total_tomans, 0),
-    recentLogs: dbAuditLogs,
-    fraudAlerts: []
+    recentLogs: dbAuditLogs
   });
 });
 
@@ -1100,44 +1056,11 @@ app.post('/api/vendor/settlements', async (c) => {
   }
 });
 
-app.post('/api/vendor/products', async (c) => {
-  const body = await c.req.json<any>();
-  const { title_fa, title_en, description_fa, base_price_tomans, discount_percent = 0, stock = 20, model_type = 'watch' } = body;
-
-  const newId = `prd_v_${Date.now()}`;
-  const newProd: Product = {
-    id: newId,
-    vendor_id: 'vnd_1',
-    category_id: 'cat_elec',
-    title_fa: title_fa || 'محصول جدید فروشگاه',
-    title_en: title_en || 'New Vendor Product',
-    slug: `new-product-${Date.now()}`,
-    description_fa: description_fa || 'توضیحات تکمیلی محصول',
-    description_en: 'Vendor product description',
-    base_price_tomans: Number(base_price_tomans) || 10000000,
-    discount_percent: Number(discount_percent) || 0,
-    stock: Number(stock) || 1,
-    rating: 5.0,
-    review_count: 0,
-    featured: 0,
-    is_3d_enabled: 1,
-    model_type,
-    specifications: { 'ضمانت': 'اصالت و گارانتی فروشنده' },
-    images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80'],
-    tags: ['جدید'],
-    created_at: Date.now()
-  };
-
-  dbProducts.unshift(newProd);
-  return c.json({ success: true, productId: newId });
-});
-
 // Standard Worker Fetch Handler
 export default {
   async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
-    // Route /api/* requests to Hono with stripped path prefix
     if (url.pathname.includes("/api/")) {
       const apiPath = url.pathname.substring(url.pathname.indexOf("/api/"));
       const newUrl = new URL(apiPath + url.search, url.origin);
@@ -1145,7 +1068,6 @@ export default {
       return app.fetch(apiRequest, env, ctx);
     }
 
-    // Serve static assets from public/ via env.ASSETS
     if (env.ASSETS) {
       const assetRes = await env.ASSETS.fetch(request);
       if (assetRes.status !== 404) {
